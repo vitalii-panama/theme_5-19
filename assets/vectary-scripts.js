@@ -294,6 +294,7 @@ document.addEventListener("DOMContentLoaded", () => {
       lockId: "lockBG",
       objects: ["background_object"],
       material: "MAT-GLOSS-BG",
+    },
   ];
 
   // --- Define ALL functions first ---
