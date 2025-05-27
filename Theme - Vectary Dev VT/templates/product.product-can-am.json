@@ -1,0 +1,272 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-product-custom",
+      "blocks": {
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "separator": {
+          "type": "separator",
+          "settings": {}
+        },
+        "variant_picker": {
+          "type": "variant_picker",
+          "settings": {
+            "variant_labels": true,
+            "picker_type": "button",
+            "color_swatches": true
+          }
+        },
+        "4ace5886-7327-4487-9ab3-d902adc6cc8c": {
+          "type": "custom",
+          "settings": {
+            "code": ""
+          }
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_dynamic_checkout": true,
+            "surface_pickup_enable": true
+          }
+        },
+        "description": {
+          "type": "description",
+          "disabled": true,
+          "settings": {
+            "is_tab": false
+          }
+        },
+        "a06b7e9f-1793-418c-b068-550e67861176": {
+          "type": "trust_badge",
+          "settings": {
+            "trust_image": "shopify://shop_images/BRP-Licensed_SCS_trust-badge_can-am.jpg"
+          }
+        },
+        "6a409040-9a0f-4bb1-be55-4539a6ebf487": {
+          "type": "tab",
+          "settings": {
+            "title": "SUPPORT AND INSTALLATION",
+            "content": "<p><a href=\"https://support.scsunlimited.com/hc/en-us/articles/115004871794-Customize-Color-FREE-from-Limitations-\">Customize Color - FREE from Limitations</a><a href=\"https://support.scsunlimited.com/hc/en-us/articles/202342274-Add-Remove-Logos-Names-and-Other\">Add/Remove Logos -- pick from our font and color chart</a><a href=\"https://support.scsunlimited.com/hc/en-us/articles/115000117733-I-just-received-my-wrap-kit-where-do-I-start-\">I just received my wrap kit, where do I start?</a><a href=\"https://support.scsunlimited.com/hc/en-us/articles/115002896173-Gloss-verse-Matte-Lamination-\">Gloss verse Matte Lamination</a><a href=\"https://www.scsunlimited.com/pages/about-us\">Licensed and Endorsed Ski-Doo Sled Wraps</a><a href=\"https://support.scsunlimited.com/hc/en-us/articles/115000120814-Premium-Material-and-Cutting-Edge-Facility-\">Advanced UV Vinyl Media with 7 years of outdoor durability<br/>resistant to sun-fade, bubbling, and cracking</a><a href=\"https://support.scsunlimited.com/hc/en-us/articles/115004846233-Installing-Seat-Tank-on-Low-Energy-surfaces-\">Aggressive, permanent pressure-sensitive Air-Release adhesive<br/>& engineering grade high tensile vinyl</a><a href=\"https://support.scsunlimited.com/hc/en-us/articles/200390825-How-is-my-order-shipped-\">Worldwide fast shipping</a><a href=\"https://support.scsunlimited.com/hc/en-us/articles/200390795-Production-Estimates-\">Production Estimates</a><a href=\"https://support.scsunlimited.com/hc/en-us/articles/231496848-Warranty-Support\">Warranty & Support</a><a href=\"https://support.scsunlimited.com/hc/en-us/articles/360005381493-File-Requests-\">File Requests</a></p>",
+            "page": ""
+          }
+        },
+        "tab": {
+          "type": "tab",
+          "settings": {
+            "title": "Shipping information",
+            "content": "<p>We typically process orders within one business day. Our goal is to print, cure (1-2 days), and ship using your preferred shipping method within our <a href=\"https://support.scsunlimited.com/hc/en-us/articles/200390795\">production estimates.</a></p>",
+            "page": ""
+          }
+        },
+        "contact": {
+          "type": "contact",
+          "disabled": true,
+          "settings": {
+            "title": "Ask a question",
+            "phone": false
+          }
+        },
+        "sales_point": {
+          "type": "sales_point",
+          "settings": {
+            "icon": "globe",
+            "text": "Free Worldwide Shipping - orders over $749.95 USD"
+          }
+        },
+        "inventory_status": {
+          "type": "inventory_status",
+          "disabled": true,
+          "settings": {
+            "inventory_threshold": 10,
+            "inventory_transfers_enable": true
+          }
+        },
+        "share": {
+          "type": "share",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "price",
+        "separator",
+        "variant_picker",
+        "4ace5886-7327-4487-9ab3-d902adc6cc8c",
+        "buy_buttons",
+        "description",
+        "a06b7e9f-1793-418c-b068-550e67861176",
+        "6a409040-9a0f-4bb1-be55-4539a6ebf487",
+        "tab",
+        "contact",
+        "sales_point",
+        "inventory_status",
+        "share"
+      ],
+      "settings": {
+        "sku_enable": false,
+        "image_position": "left",
+        "image_size": "large",
+        "product_zoom_enable": true,
+        "thumbnail_position": "below",
+        "thumbnail_arrows": false,
+        "mobile_layout": "full",
+        "enable_video_looping": true,
+        "product_video_style": "muted"
+      }
+    },
+    "sub": {
+      "type": "product-full-width",
+      "blocks": {
+        "7b6d530e-14d5-4621-83d5-7b83bd15c0ba": {
+          "type": "custom",
+          "settings": {
+            "code": "{{ product.description }}"
+          }
+        }
+      },
+      "block_order": [
+        "7b6d530e-14d5-4621-83d5-7b83bd15c0ba"
+      ],
+      "settings": {
+        "max_width": true
+      }
+    },
+    "background_image_text_GQfqf6": {
+      "type": "background-image-text",
+      "custom_css": [
+        "/* Ensure the image container takes the full width and maintains aspect ratio */.background-media-text__container {width: 100%; height: auto;}",
+        ".background-media-text__image {width: 100%; height: auto; display: block; /* Optional: Remove potential extra space below the image */ object-fit: cover; /* Optional: Make the image cover the container, cropping if necessary */}"
+      ],
+      "settings": {
+        "subtitle": "",
+        "title": "Defender Door Options",
+        "text": "",
+        "button_label": "",
+        "button_link": "",
+        "image": "shopify://shop_images/Defender_Door-Coverage-Options.jpg",
+        "focal_point": "80% 100%",
+        "layout": "left",
+        "height": 750,
+        "framed": false,
+        "parallax": false
+      }
+    },
+    "background-image-text": {
+      "type": "background-image-text",
+      "settings": {
+        "subtitle": "ONLY LICENSED AND ENDORSED",
+        "title": "Can-Am Off-Road Graphics Supplier",
+        "text": "<p>We are privileged to be a licensed partner with BRP Ski-Doo snowmobiles, Sea-Doo watercraft, Can-Am off-road vehicles, Lynx snowmobiles, and Evinrude Marine.</p>",
+        "button_label": "",
+        "button_link": "",
+        "image": "shopify://shop_images/can-am-hero.jpg",
+        "focal_point": "80% 0",
+        "layout": "left",
+        "height": 550,
+        "framed": false,
+        "parallax": false
+      }
+    },
+    "text-and-image": {
+      "type": "text-and-image",
+      "settings": {
+        "image": "shopify://shop_images/Project_20220406_0001.jpg",
+        "image_width": 510,
+        "subtitle": "AIR RELEASE",
+        "title": "pressure-sensitive media",
+        "text": "<p>Digitally printed on engineering grade high-tensile <strong>AIR RELEASE </strong>vinyl with aggressive, permanent pressure-sensitive adhesive. Our special adhesive system is designed to adhere to “hard-to-stick” low-energy surfaces.</p>",
+        "button_label": "",
+        "button_link": "",
+        "button_style": "primary",
+        "align_text": "left",
+        "layout": "right",
+        "divider": false
+      }
+    },
+    "testimonials": {
+      "type": "testimonials",
+      "blocks": {
+        "testimonials-0": {
+          "type": "testimonial",
+          "settings": {
+            "icon": "5-stars",
+            "testimonial": "<p>Add customer reviews and testimonials to showcase your store’s happy customers.</p>",
+            "author": "Author's name",
+            "author_info": "Los Angeles, CA"
+          }
+        },
+        "testimonials-1": {
+          "type": "testimonial",
+          "settings": {
+            "icon": "5-stars",
+            "testimonial": "<p>Add customer reviews and testimonials to showcase your store’s happy customers.</p>",
+            "author": "Author's name",
+            "author_info": "Los Angeles, CA"
+          }
+        },
+        "testimonials-2": {
+          "type": "testimonial",
+          "settings": {
+            "icon": "5-stars",
+            "testimonial": "<p>Add customer reviews and testimonials to showcase your store’s happy customers.</p>",
+            "author": "Author's name",
+            "author_info": "Los Angeles, CA"
+          }
+        }
+      },
+      "block_order": [
+        "testimonials-0",
+        "testimonials-1",
+        "testimonials-2"
+      ],
+      "disabled": true,
+      "settings": {
+        "title": "Testimonials",
+        "align_text": "center",
+        "round_images": true,
+        "color_background": "#f9f9f9",
+        "color_text": "#1c1d1d"
+      }
+    },
+    "product-recommendations": {
+      "type": "product-recommendations",
+      "settings": {
+        "show_product_recommendations": false,
+        "product_recommendations_heading": "You may also like",
+        "related_count": 3
+      }
+    },
+    "recently-viewed": {
+      "type": "recently-viewed",
+      "settings": {
+        "recent_count": 5
+      }
+    },
+    "collection-return": {
+      "type": "collection-return",
+      "settings": {}
+    }
+  },
+  "order": [
+    "main",
+    "sub",
+    "background_image_text_GQfqf6",
+    "background-image-text",
+    "text-and-image",
+    "testimonials",
+    "product-recommendations",
+    "recently-viewed",
+    "collection-return"
+  ]
+}

@@ -1,0 +1,21 @@
+{{ 'vectary-styles.css' | asset_url | stylesheet_tag }}
+
+<iframe
+  id="VECTARY_EMBED_ID"
+  src="https://app.vectary.com/p/{{ product.metafields.global.vectary_project_id | default: '4D6fSi02LObh3AD5quFrbA' }}"
+  frameborder="0"
+  allowfullscreen
+></iframe>
+
+{% comment %}
+  <iframe
+    id="VECTARY_EMBED_ID"
+    src="https://app.vectary.com/p/4D6fSi02LObh3AD5quFrbA"
+    frameborder="0"
+    allowfullscreen
+  ></iframe>
+{% endcomment %}
+
+{% render 'selected-options-display-dynamic' %}
+
+<script type="module" src="{{ 'vectary-scripts.js' | asset_url }}" defer></script>
