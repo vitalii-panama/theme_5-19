@@ -293,7 +293,7 @@ document.addEventListener("DOMContentLoaded", () => {
       nameId: "colorNameBG",
       lockId: "lockBG",
       objects: ["background_object"],
-      material: "MAT-GLOSS-BG", "MAT-MATTE-BG",
+      materials: ["MAT-GLOSS-BG", "MAT-MATTE-BG"], 
     },
   ];
 
