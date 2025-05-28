@@ -1,11 +1,16 @@
 {{ 'vectary-styles.css' | asset_url | stylesheet_tag }}
+// Vectary 3D Embed
+{% comment %}
+  This snippet is used to embed a Vectary 3D model into a Shopify product page.
+  It uses the product's metafield to dynamically set the Vectary project ID.
+  If the metafield is not set, it defaults to a specific project ID.
+{% endcomment %}
 
+{% assign vectary_project_id = product.metafields.global.vectary_project_id | default: '4D6fSi02LObh3AD5quFrbA' %}  
 <iframe
   id="VECTARY_EMBED_ID"
   src="https://app.vectary.com/p/{{ product.metafields.global.vectary_project_id | default: '4D6fSi02LObh3AD5quFrbA' }}"
   frameborder="0"
-  allowfullscreen
-></iframe>
 
 {% comment %}
   <iframe
