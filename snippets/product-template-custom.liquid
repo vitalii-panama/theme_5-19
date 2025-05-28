@@ -65,7 +65,7 @@
         {%- if image_position == 'left' -%}
           <div class="grid__item {{ product_image_width }} product-single__sticky">
 
-{% render 'vectary-embed' %}
+          {% render 'vectary-embed' %}
 
             {% comment %} {%- render 'product-images',
               section_id: section_id,
@@ -94,6 +94,7 @@
               {%- if settings.show_breadcrumbs and isModal != true -%}
                 {%- render 'breadcrumbs' -%}
               {%- endif -%}
+              {% render 'vectary-controls' %}
 				<div class="product-nav clearfix">
                 {% if collection.previous_product %}<div class="btn btn--secondary btn--small">{% endif %}
                   <span style="float:left;">{% if collection.previous_product %}
@@ -106,7 +107,9 @@
                     {% endif %}</span>
                  {% if collection.next_product %}</div>{% endif %}
               </div> 
-{{product.type}}
+                
+                {{product.type}}
+             
               {%- if settings.vendor_enable -%}
                 <div class="product-single__vendor">
                   {%- assign vendor_handle = product.vendor | handleize -%}
@@ -328,7 +331,7 @@
                       {%- endif -%}
                     </div> 
                     
-                    {% render 'vectary-controls' %}
+                
                              
 
                   {%- when 'sales_point' -%}
