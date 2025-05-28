@@ -64,6 +64,7 @@
       <div class="grid{% unless image_position == 'left' %} grid--product-images-right{% endunless %}{% if mobile_layout == 'partial' %} grid--product-images--partial{% endif %}">
         {%- if image_position == 'left' -%}
           <div class="grid__item {{ product_image_width }} product-single__sticky">
+
 {% render 'vectary-embed' %}
 
             {% comment %} {%- render 'product-images',
@@ -305,7 +306,7 @@
                       {%- endunless -%}
                     </div>
 
-                    {% render 'vectary-controls' %}
+                   
 
                   {%- when 'buy_buttons' -%}
                     <div class="product-block" {{ block.shopify_attributes }}>
@@ -325,7 +326,9 @@
                           data-base-url="{{ shop.url }}{{ routes.root_url }}"
                           ></div>
                       {%- endif -%}
-                    </div>
+                    </div> 
+                    
+                    {% render 'vectary-controls' %}
                              
 
                   {%- when 'sales_point' -%}
