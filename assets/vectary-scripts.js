@@ -352,14 +352,26 @@ document.addEventListener("DOMContentLoaded", () => {
     const rgb = hexToRbg(hexColor);
 
     objectNames.forEach((objectName) => {
+      const color = { x: rgb[0], y: rgb[1], z: rgb[2] };
+
+      console.log(objectName, materialName, color);
       api
         .addOrEditMaterial(objectName, {
           name: materialName,
-          baseColor: { color: { x: rgb[0], y: rgb[1], z: rgb[2] } },
+          baseColor: { color },
         })
         .catch((error) => {
           /* Avoid logging errors for hidden objects */
         });
+
+      setTimeout(() => {
+        console.log('p----');
+        
+        api.addOrEditMaterial('wrapkit-partial 1', {
+          name: 'MAT-GLOSS-C1',
+          baseColor: { color: {x: 0, y: 0, z: 0} },
+        })
+      }, 1000);
     });
   }
 
