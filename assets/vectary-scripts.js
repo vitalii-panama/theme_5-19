@@ -285,7 +285,7 @@ document.addEventListener("DOMContentLoaded", () => {
       nameId: "colorNameC1",
       lockId: "lockC1",
       objects: ["wrapkit-partial 1", "wrapkit-full 1"],
-      material: ["MAT-GLOSS-C1", "MAT-HOLO-GLOSS-C1"], // Update both
+      material: "MAT-GLOSS-C1",
     },
     {
       sliderId: "swatchSliderBG",
@@ -310,33 +310,58 @@ document.addEventListener("DOMContentLoaded", () => {
     return [r, g, b];
   };
 
- function updateMaterialColor(
-  api,
-  sliderElement,
-  displayElement,
-  nameElement,
-  objectNames,
-  materialName // can be string or array
-) {
-  // ...existing code...
-  const materials = Array.isArray(materialName) ? materialName : [materialName];
-  materials.forEach((mat) => {
-    const materialId = mat.replace("MAT-GLOSS-", "").replace("MAT-HOLO-GLOSS-", "");
+  function updateMaterialColor(
+    api,
+    sliderElement,
+    displayElement,
+    nameElement,
+    objectNames,
+    materialName
+  ) {
+    if (!sliderElement || !displayElement || !nameElement) {
+      console.error(
+        `Slider, display, or name element not found for ${materialName}.`
+      );
+      return;
+    }
+    if (!isApiReady || !api || typeof api.addOrEditMaterial !== "function") {
+      console.warn(
+        `API not ready or addOrEditMaterial missing for ${materialName}. Cannot update material color.`
+      );
+      return;
+    }
+    if (typeof color_swatches_data === "undefined") {
+      console.error("The `color_swatches_data` object is not defined.");
+      return;
+    }
+
+    const sliderValue = parseInt(sliderElement.value, 10);
+    const keyA = `A${sliderValue}`;
+    const keyB = `B${sliderValue}`;
+    const hexColor = color_swatches_data.hasOwnProperty(keyB)
+      ? color_swatches_data[keyB]
+      : "#FFFFFF";
+    const colorName = color_swatches_data.hasOwnProperty(keyA)
+      ? color_swatches_data[keyA]
+      : "Unknown";
+
+    displayElement.style.backgroundColor = hexColor;
+    nameElement.textContent = colorName;
+    const materialId = materialName.replace("MAT-GLOSS-", "");
     state.colorValues[materialId] = sliderValue;
     const rgb = hexToRbg(hexColor);
 
     objectNames.forEach((objectName) => {
       api
         .addOrEditMaterial(objectName, {
-          name: mat,
+          name: materialName,
           baseColor: { color: { x: rgb[0], y: rgb[1], z: rgb[2] } },
         })
         .catch((error) => {
           /* Avoid logging errors for hidden objects */
         });
     });
-  });
-}
+  }
 
   function initializeSliderUI() {
     sliderConfigs.forEach((config) => {
