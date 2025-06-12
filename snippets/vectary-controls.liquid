@@ -422,7 +422,7 @@
       </div>
     </div>
 
-    <div class="overlaminate-buttons">
+    <div class="media-buttons">
       <h3 class="section-title">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -440,41 +440,41 @@
           <path d="m8 11 4 4 4-4"></path>
           <path d="M8 5H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-4"></path>
         </svg>
-        Overlaminate Options
+        media Options
       </h3>
 
-      <div class="overlaminate-grid">
-        <button id="overlaminateMetallicSilver" class="overlaminate-button " data-overlaminate-handle="overlaminate-metallic-silver" data-id="{{ all_products['overlaminate-metallic-silver'].selected_or_first_available_variant.id }}">
+      <div class="media-grid">
+        <button id="mediaMetallicSilver" class="media-button " data-media-handle="media-metallic-silver" data-id="{{ all_products['media-metallic-silver'].selected_or_first_available_variant.id }}">
           <span>Metallic Silver</span>
-          <span class="overlaminate-price">{{ all_products['overlaminate-metallic-silver'].price | money }}</span>
+          <span class="media-price">{{ all_products['media-metallic-silver'].price | money }}</span>
         </button>
-        <button id="overlaminateMetallicGold" class="overlaminate-button " data-overlaminate-handle="overlaminate-metallic-gold" data-id="{{ all_products['overlaminate-metallic-gold'].selected_or_first_available_variant.id }}">
+        <button id="mediaMetallicGold" class="media-button " data-media-handle="media-metallic-gold" data-id="{{ all_products['media-metallic-gold'].selected_or_first_available_variant.id }}">
           <span>Metallic Gold</span>
-          <span class="overlaminate-price">{{ all_products['overlaminate-metallic-gold'].price | money }}</span>
+          <span class="media-price">{{ all_products['media-metallic-gold'].price | money }}</span>
         </button>
-        <button id="overlaminateMatte" class="overlaminate-button " data-overlaminate-handle="overlaminate-matte" data-id="{{ all_products['overlaminate-matte'].selected_or_first_available_variant.id }}">
+        <button id="mediaMatte" class="media-button " data-media-handle="media-matte" data-id="{{ all_products['media-matte'].selected_or_first_available_variant.id }}">
           <span>Matte</span>
-          <span class="overlaminate-price">{{ all_products['overlaminate-matte'].price | money }}</span>
+          <span class="media-price">{{ all_products['media-matte'].price | money }}</span>
         </button>
-        <button id="overlaminateStandardGloss" class="overlaminate-button " data-overlaminate-handle="standard-gloss" data-id="{{ all_products['standard-gloss'].selected_or_first_available_variant.id }}">
+        <button id="mediaStandardGloss" class="media-button " data-media-handle="standard-gloss" data-id="{{ all_products['standard-gloss'].selected_or_first_available_variant.id }}">
           <span>Standard Gloss</span>
-          <span class="overlaminate-price">{{ all_products['standard-gloss'].price | money }}</span>
+          <span class="media-price">{{ all_products['standard-gloss'].price | money }}</span>
         </button>
-        <button id="overlaminateChromeGloss" class="overlaminate-button " data-overlaminate-handle="chrome-gloss" data-id="{{ all_products['chrome-gloss'].selected_or_first_available_variant.id }}">
+        <button id="mediaChromeGloss" class="media-button " data-media-handle="chrome-gloss" data-id="{{ all_products['chrome-gloss'].selected_or_first_available_variant.id }}">
           <span>Chrome Gloss</span>
-          <span class="overlaminate-price">{{ all_products['chrome-gloss'].price | money }}</span>
+          <span class="media-price">{{ all_products['chrome-gloss'].price | money }}</span>
         </button>
-        <button id="overlaminateChromeMatte" class="overlaminate-button " data-overlaminate-handle="chrome-matte" data-id="{{ all_products['chrome-matte'].selected_or_first_available_variant.id }}">
+        <button id="mediaChromeMatte" class="media-button " data-media-handle="chrome-matte" data-id="{{ all_products['chrome-matte'].selected_or_first_available_variant.id }}">
           <span>Chrome Matte</span>
-          <span class="overlaminate-price">{{ all_products['chrome-matte'].price | money }}</span>
+          <span class="media-price">{{ all_products['chrome-matte'].price | money }}</span>
         </button>
-        <button id="overlaminateHolographicGloss" class="overlaminate-button " data-overlaminate-handle="holographic-gloss" data-id="{{ all_products['holographic-gloss'].selected_or_first_available_variant.id }}">
+        <button id="mediaHolographicGloss" class="media-button " data-media-handle="holographic-gloss" data-id="{{ all_products['holographic-gloss'].selected_or_first_available_variant.id }}">
           <span>Holographic Gloss</span>
-          <span class="overlaminate-price">{{ all_products['holographic-gloss'].price | money }}</span>
+          <span class="media-price">{{ all_products['holographic-gloss'].price | money }}</span>
         </button>
-        <button id="overlaminateHolographicMatte" class="overlaminate-button " data-overlaminate-handle="holographic-matte" data-id="{{ all_products['holographic-matte'].selected_or_first_available_variant.id }}">
+        <button id="mediaHolographicMatte" class="media-button " data-media-handle="holographic-matte" data-id="{{ all_products['holographic-matte'].selected_or_first_available_variant.id }}">
           <span>Holographic Matte</span>
-          <span class="overlaminate-price">{{ all_products['holographic-matte'].price | money }}</span>
+          <span class="media-price">{{ all_products['holographic-matte'].price | money }}</span>
         </button>
       </div>
     </div>
@@ -564,22 +564,22 @@
     {% endif %}
   };
 
-  // Add overlaminate product data
-  window.overlaminateProductData = {
+  // Add media product data
+  window.mediaProductData = {
     "metallic-silver": {
-      handle: "overlaminate-metallic-silver",
-      id: "{{ all_products['overlaminate-metallic-silver'].selected_or_first_available_variant.id }}",
-      price: "{{ all_products['overlaminate-metallic-silver'].price | money }}"
+      handle: "media-metallic-silver",
+      id: "{{ all_products['media-metallic-silver'].selected_or_first_available_variant.id }}",
+      price: "{{ all_products['media-metallic-silver'].price | money }}"
     },
     "metallic-gold": {
-      handle: "overlaminate-metallic-gold",
-      id: "{{ all_products['overlaminate-metallic-gold'].selected_or_first_available_variant.id }}",
-      price: "{{ all_products['overlaminate-metallic-gold'].price | money }}"
+      handle: "media-metallic-gold",
+      id: "{{ all_products['media-metallic-gold'].selected_or_first_available_variant.id }}",
+      price: "{{ all_products['media-metallic-gold'].price | money }}"
     },
     "matte": {
-      handle: "overlaminate-matte",
-      id: "{{ all_products['overlaminate-matte'].selected_or_first_available_variant.id }}",
-      price: "{{ all_products['overlaminate-matte'].price | money }}"
+      handle: "media-matte",
+      id: "{{ all_products['media-matte'].selected_or_first_available_variant.id }}",
+      price: "{{ all_products['media-matte'].price | money }}"
     },
     "standard-gloss": {
       handle: "standard-gloss",
