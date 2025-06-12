@@ -108,7 +108,7 @@
                  {% if collection.next_product %}</div>{% endif %}
               </div> 
                 
-                {{product.type}}
+                {% comment %} {{product.type}} {% endcomment %}
              
               {%- if settings.vendor_enable -%}
                 <div class="product-single__vendor">
@@ -124,17 +124,17 @@
               {%- endif -%}
 
               {%- if isModal -%}
-                <p class="h2 product-single__title">
+                {% comment %} <p class="h2 product-single__title">
                   {{ product.title }}
-                </p>
+                </p> {% endcomment %}
               {%- else -%}
-                <h1 class="h2 product-single__title">
+                {% comment %} <h1 class="h2 product-single__title">
                   {%- unless product.empty? -%}
                     {{ product.title }}
                   {%- else -%}
                     {{ 'home_page.onboarding.product_title' | t }}
                   {%- endunless -%}
-                </h1>
+                </h1> {% endcomment %}
               {%- endif -%}
 
               {%- if sku_enable -%}

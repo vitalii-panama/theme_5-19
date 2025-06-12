@@ -240,6 +240,16 @@ document.addEventListener("DOMContentLoaded", () => {
   let isApiReady = false;
   const statusMessage = document.getElementById("status-message");
 
+  // Define presets here to be accessible by updatePresetButtons and applyPreset
+  const presets = {
+    1: { C5: 55, C4: 34, C3: 72, C2: 91, C1: 12, BG: 93 },
+    2: { C5: 23, C4: 45, C3: 67, C2: 89, C1: 11, BG: 56 },
+    3: { C5: 78, C4: 32, C3: 17, C2: 42, C1: 99, BG: 33 },
+    4: { C5: 5, C4: 10, C3: 15, C2: 20, C1: 25, BG: 30 },
+    5: { C5: 50, C4: 52, C3: 54, C2: 56, C1: 58, BG: 60 },
+    6: { C5: 88, C4: 77, C3: 66, C2: 55, C1: 44, BG: 33 },
+  };
+
   // *** Define sliderConfigs here, before it's needed ***
   const sliderConfigs = [
     {
@@ -623,14 +633,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function applyPreset(api, presetNumber, forceEvent = false) {
-    const presets = {
-      1: { C5: 55, C4: 34, C3: 72, C2: 91, C1: 12, BG: 93 },
-      2: { C5: 23, C4: 45, C3: 67, C2: 89, C1: 11, BG: 56 },
-      3: { C5: 78, C4: 32, C3: 17, C2: 42, C1: 99, BG: 33 },
-      4: { C5: 5, C4: 10, C3: 15, C2: 20, C1: 25, BG: 30 },
-      5: { C5: 50, C4: 52, C3: 54, C2: 56, C1: 58, BG: 60 },
-      6: { C5: 88, C4: 77, C3: 66, C2: 55, C1: 44, BG: 33 },
-    };
+    // const presets = { ... }; // Presets object moved to outer DOMContentLoaded scope
 
     if (presets[presetNumber]) {
       let colorsApplied = false;
@@ -724,10 +727,30 @@ document.addEventListener("DOMContentLoaded", () => {
       if (isActive && !indicator) {
         indicator = document.createElement("span");
         indicator.className = "active-indicator";
-        indicator.textContent = "✓";
+        indicator.textContent = "✓"; // Checkmark for active preset
         button.appendChild(indicator);
       } else if (!isActive && indicator) {
         button.removeChild(indicator);
+      }
+
+      // Update color dots for each preset button
+      const presetColorConfig = presets[presetNumber]; // Access the moved presets object
+      if (presetColorConfig) {
+        const colorDotsContainer = button.querySelector(".preset-colors");
+        if (colorDotsContainer) {
+            const colorDots = colorDotsContainer.querySelectorAll(".preset-color-dot");
+            colorDots.forEach(dot => {
+              const colorKey = dot.dataset.colorKey; // e.g., C5, C4, from data-color-key attribute
+              const colorValueIndex = presetColorConfig[colorKey]; // e.g., 55 for preset 1, C5
+              if (colorValueIndex !== undefined) {
+                const hexColorKey = `B${colorValueIndex}`; // Key for color_swatches_data
+                const hexColor = color_swatches_data[hexColorKey] || "#FFFFFF"; // Fallback to white
+                dot.style.backgroundColor = hexColor;
+              } else {
+                dot.style.backgroundColor = "#FFFFFF"; // Fallback if colorKey is not in preset
+              }
+            });
+        }
       }
     });
   }
