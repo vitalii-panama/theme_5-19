@@ -285,7 +285,7 @@ document.addEventListener("DOMContentLoaded", () => {
       nameId: "colorNameC1",
       lockId: "lockC1",
       objects: ["wrapkit-partial 1", "wrapkit-full 1"],
-      material: ["MAT-GLOSS-C1", "MAT-HOLO-GLOSS-C1"], // <-- now an array
+      material: "MAT-GLOSS-C1",
     },
     {
       sliderId: "swatchSliderBG",
