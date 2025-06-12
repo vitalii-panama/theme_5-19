@@ -142,7 +142,7 @@ const state = {
     BG: 12,
   },
   activeLevels: new Set(), // Add a Set to track active levels
-  activeOverlaminates: new Set(), // Add a Set to track active overlaminates
+  activemedias: new Set(), // Add a Set to track active medias
 };
 
 // Make state accessible to other scripts
@@ -492,7 +492,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function setupEventListeners(api) {
     console.log("Setting up event listeners...");
     setupLevelButtons(api);
-    setupOverlaminateButtons(api);
+    setupmediaButtons(api);
     setupPresetButtons(api);
     document
       .getElementById("randomizeButton")
@@ -516,13 +516,13 @@ document.addEventListener("DOMContentLoaded", () => {
             .map((level) => window.globalProductData[level])
             .filter((id) => id); // Remove any undefined IDs
 
-          // Get all product IDs for the selected overlaminates
-          const overlaminateIds = Array.from(state.activeOverlaminates)
-            .map((type) => window.overlaminateProductData[type])
+          // Get all product IDs for the selected medias
+          const mediaIds = Array.from(state.activemedias)
+            .map((type) => window.mediaProductData[type])
             .filter((id) => id); // Remove any undefined IDs
 
           // Combine both arrays
-          const allProductIds = [...productIds, ...overlaminateIds];
+          const allProductIds = [...productIds, ...mediaIds];
 
           if (allProductIds.length > 0) {
             const colorProperties = getColorProperties();
@@ -804,36 +804,36 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function setupOverlaminateButtons(api) {
-    const overlaminateGrid = document.querySelector(".overlaminate-grid");
-    if (!overlaminateGrid) return;
+  function setupmediaButtons(api) {
+    const mediaGrid = document.querySelector(".media-grid");
+    if (!mediaGrid) return;
     
-    overlaminateGrid.addEventListener("click", (event) => {
-      const button = event.target.closest(".overlaminate-button");
+    mediaGrid.addEventListener("click", (event) => {
+      const button = event.target.closest(".media-button");
       if (button) {
-        const overlaminateHandle = button.getAttribute("data-overlaminate-handle");
-        if (overlaminateHandle) {
-          const isCurrentlyActive = state.activeOverlaminates.has(overlaminateHandle);
+        const mediaHandle = button.getAttribute("data-media-handle");
+        if (mediaHandle) {
+          const isCurrentlyActive = state.activemedias.has(mediaHandle);
           
           // Clear all active classes first
-          document.querySelectorAll(".overlaminate-button").forEach(btn => {
+          document.querySelectorAll(".media-button").forEach(btn => {
             btn.classList.remove("active");
           });
           
-          // Clear all active overlaminates
-          state.activeOverlaminates.clear();
+          // Clear all active medias
+          state.activemedias.clear();
           
           // Only add the new selection if it wasn't already active
           if (!isCurrentlyActive) {
             // Add active class to the clicked button
             button.classList.add("active");
             
-            // Add to activeOverlaminates in state
-            state.activeOverlaminates.add(overlaminateHandle);
+            // Add to activemedias in state
+            state.activemedias.add(mediaHandle);
             
             // Trigger Vectary event if API is ready
             if (isApiReady && api && typeof api.dispatchEvent === "function") {
-              const eventName = `overlaminate-${overlaminateHandle}`;
+              const eventName = `media-${mediaHandle}`;
               api.dispatchEvent(eventName);
             } else {
               console.warn(
@@ -851,13 +851,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Set initial active states
-    updateOverlaminateButtonsActiveState();
+    updatemediaButtonsActiveState();
   }
 
-  // Function to update the overlaminate buttons active state
-  function updateOverlaminateButtonsActiveState() {
-    // Update all overlaminate buttons to match state.activeOverlaminates
-    document.querySelector(".overlaminate-button").click()
+  // Function to update the media buttons active state
+  function updatemediaButtonsActiveState() {
+    // Update all media buttons to match state.activemedias
+    document.querySelector(".media-button").click()
   }
 
   function saveConfiguration() {
@@ -866,7 +866,7 @@ document.addEventListener("DOMContentLoaded", () => {
       colorValues: state.colorValues,
       lockedMaterials: state.lockedMaterials,
       activeLevels: Array.from(state.activeLevels), // Convert Set to Array for JSON serialization
-      activeOverlaminates: Array.from(state.activeOverlaminates), // Add overlaminates to saved config
+      activemedias: Array.from(state.activemedias), // Add medias to saved config
     };
     const configBlob = new Blob([JSON.stringify(configData, null, 2)], {
       type: "application/json",
@@ -1105,23 +1105,23 @@ document.addEventListener("DOMContentLoaded", function () {
       // Get color properties
       const colorProperties = getColorProperties();
 
-      // Check if we have active levels or overlaminates to add to cart
+      // Check if we have active levels or medias to add to cart
       if (
         window.state &&
-        (window.state.activeLevels.size > 0 || window.state.activeOverlaminates.size > 0)
+        (window.state.activeLevels.size > 0 || window.state.activemedias.size > 0)
       ) {
         // Get product IDs for all selected levels
         const productIds = Array.from(window.state.activeLevels)
           .map((level) => window.globalProductData[level])
           .filter((id) => id); // Remove any undefined IDs
 
-        // Get product IDs for all selected overlaminates
-        const overlaminateIds = Array.from(window.state.activeOverlaminates)
-          .map((type) => window.overlaminateProductData[type])
+        // Get product IDs for all selected medias
+        const mediaIds = Array.from(window.state.activemedias)
+          .map((type) => window.mediaProductData[type])
           .filter((id) => id); // Remove any undefined IDs
 
         // Combine both arrays
-        const allProductIds = [...productIds, ...overlaminateIds];
+        const allProductIds = [...productIds, ...mediaIds];
 
         if (allProductIds.length > 0) {
           console.log(
@@ -1173,11 +1173,11 @@ document.addEventListener("DOMContentLoaded", function () {
     // Add our click handler
     newButton.addEventListener("click", function (event) {
       const parentForm = this.closest("form");
-      // Check if we have active levels or overlaminates to add to cart
+      // Check if we have active levels or medias to add to cart
       if (
         !parentForm &&
         window.state &&
-        (window.state.activeLevels.size > 0 || window.state.activeOverlaminates.size > 0)
+        (window.state.activeLevels.size > 0 || window.state.activemedias.size > 0)
       ) {
         // This is for direct button clicks without forms
         event.preventDefault();
@@ -1190,13 +1190,13 @@ document.addEventListener("DOMContentLoaded", function () {
           .map((level) => window.globalProductData[level])
           .filter((id) => id); // Remove any undefined IDs
 
-        // Get product IDs for all selected overlaminates
-        const overlaminateIds = Array.from(window.state.activeOverlaminates)
-          .map((type) => window.overlaminateProductData[type])
+        // Get product IDs for all selected medias
+        const mediaIds = Array.from(window.state.activemedias)
+          .map((type) => window.mediaProductData[type])
           .filter((id) => id); // Remove any undefined IDs
 
         // Combine both arrays
-        const allProductIds = [...productIds, ...overlaminateIds];
+        const allProductIds = [...productIds, ...mediaIds];
 
         if (allProductIds.length > 0) {
           console.log(
@@ -1229,14 +1229,14 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // Set initial overlaminate button states
-  // Default to selecting the first overlaminate option
-  // const firstOverlaminateButton = document.querySelector(".overlaminate-button");
-  // if (firstOverlaminateButton) {
-  //   const handle = firstOverlaminateButton.getAttribute("data-overlaminate-handle");
+  // Set initial media button states
+  // Default to selecting the first media option
+  // const firstmediaButton = document.querySelector(".media-button");
+  // if (firstmediaButton) {
+  //   const handle = firstmediaButton.getAttribute("data-media-handle");
   //   if (handle && window.state) {
-  //     window.state.activeOverlaminates.add(handle);
-  //     firstOverlaminateButton.classList.add("active");
+  //     window.state.activemedias.add(handle);
+  //     firstmediaButton.classList.add("active");
   //   }
   // }
 
