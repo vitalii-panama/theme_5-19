@@ -253,7 +253,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "wrapkit-full 5",
         "wrapkit-premium 5",
       ],
-      material: ["MAT-GLOSS-C5", "MAT-HOLO-GLOSS-C5"], // <-- now an array
+      material: "MAT-GLOSS-C5",
     },
     {
       sliderId: "swatchSliderC4",
@@ -261,7 +261,7 @@ document.addEventListener("DOMContentLoaded", () => {
       nameId: "colorNameC4",
       lockId: "lockC4",
       objects: ["wrapkit-partial 4", "wrapkit-full 4"],
-      material: ["MAT-GLOSS-C4", "MAT-HOLO-GLOSS-C4"], // <-- now an array
+      material: "MAT-GLOSS-C4",
     },
     {
       sliderId: "swatchSliderC3",
@@ -269,7 +269,7 @@ document.addEventListener("DOMContentLoaded", () => {
       nameId: "colorNameC3",
       lockId: "lockC3",
       objects: ["wrapkit-partial 3", "wrapkit-full 3"],
-      material: ["MAT-GLOSS-C3", "MAT-HOLO-GLOSS-C3"], // <-- now an array
+      material: "MAT-GLOSS-C3",
     },
     {
       sliderId: "swatchSliderC2",
@@ -277,7 +277,7 @@ document.addEventListener("DOMContentLoaded", () => {
       nameId: "colorNameC2",
       lockId: "lockC2",
       objects: ["wrapkit-partial 2", "wrapkit-full 2"],
-      material: ["MAT-GLOSS-C2", "MAT-HOLO-GLOSS-C2"], // <-- now an array
+      material: "MAT-GLOSS-C2",
     },
     {
       sliderId: "swatchSliderC1",
