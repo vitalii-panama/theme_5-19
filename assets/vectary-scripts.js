@@ -253,7 +253,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "wrapkit-full 5",
         "wrapkit-premium 5",
       ],
-      material: "MAT-GLOSS-C5",
+      material: ["MAT-GLOSS-C5", "MAT-HOLO-GLOSS-C5"], // <-- now an array
     },
     {
       sliderId: "swatchSliderC4",
@@ -261,7 +261,7 @@ document.addEventListener("DOMContentLoaded", () => {
       nameId: "colorNameC4",
       lockId: "lockC4",
       objects: ["wrapkit-partial 4", "wrapkit-full 4"],
-      material: "MAT-GLOSS-C4",
+      material: ["MAT-GLOSS-C4", "MAT-HOLO-GLOSS-C4"], // <-- now an array
     },
     {
       sliderId: "swatchSliderC3",
@@ -269,7 +269,7 @@ document.addEventListener("DOMContentLoaded", () => {
       nameId: "colorNameC3",
       lockId: "lockC3",
       objects: ["wrapkit-partial 3", "wrapkit-full 3"],
-      material: "MAT-GLOSS-C3",
+      material: ["MAT-GLOSS-C3", "MAT-HOLO-GLOSS-C3"], // <-- now an array
     },
     {
       sliderId: "swatchSliderC2",
@@ -277,7 +277,7 @@ document.addEventListener("DOMContentLoaded", () => {
       nameId: "colorNameC2",
       lockId: "lockC2",
       objects: ["wrapkit-partial 2", "wrapkit-full 2"],
-      material: "MAT-GLOSS-C2",
+      material: ["MAT-GLOSS-C2", "MAT-HOLO-GLOSS-C2"], // <-- now an array
     },
     {
       sliderId: "swatchSliderC1",
@@ -285,7 +285,7 @@ document.addEventListener("DOMContentLoaded", () => {
       nameId: "colorNameC1",
       lockId: "lockC1",
       objects: ["wrapkit-partial 1", "wrapkit-full 1"],
-      material: "MAT-GLOSS-C1",
+      material: ["MAT-GLOSS-C1", "MAT-HOLO-GLOSS-C1"], // <-- now an array
     },
     {
       sliderId: "swatchSliderBG",
@@ -293,7 +293,7 @@ document.addEventListener("DOMContentLoaded", () => {
       nameId: "colorNameBG",
       lockId: "lockBG",
       objects: ["background_object"],
-      material: "MAT-GLOSS-BG",
+      material: ["MAT-GLOSS-BG", "MAT-HOLO-GLOSS-BG"], // <-- now an array
     },
   ];
 
@@ -316,7 +316,7 @@ document.addEventListener("DOMContentLoaded", () => {
     displayElement,
     nameElement,
     objectNames,
-    materialName
+    materialName // can be string or array
   ) {
     if (!sliderElement || !displayElement || !nameElement) {
       console.error(
@@ -347,19 +347,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
     displayElement.style.backgroundColor = hexColor;
     nameElement.textContent = colorName;
-    const materialId = materialName.replace("MAT-GLOSS-", "");
-    state.colorValues[materialId] = sliderValue;
-    const rgb = hexToRbg(hexColor);
 
-    objectNames.forEach((objectName) => {
-      api
-        .addOrEditMaterial(objectName, {
-          name: materialName,
-          baseColor: { color: { x: rgb[0], y: rgb[1], z: rgb[2] } },
-        })
-        .catch((error) => {
-          /* Avoid logging errors for hidden objects */
-        });
+    // Support both string and array for materialName
+    const materials = Array.isArray(materialName) ? materialName : [materialName];
+    materials.forEach((mat) => {
+      const materialId = mat.replace("MAT-GLOSS-", "").replace("MAT-HOLO-GLOSS-", "");
+      state.colorValues[materialId] = sliderValue;
+      const rgb = hexToRbg(hexColor);
+
+      objectNames.forEach((objectName) => {
+        api
+          .addOrEditMaterial(objectName, {
+            name: mat,
+            baseColor: { color: { x: rgb[0], y: rgb[1], z: rgb[2] } },
+          })
+          .catch((error) => {
+            /* Avoid logging errors for hidden objects */
+          });
+      });
     });
   }
 
@@ -1039,8 +1044,15 @@ document.addEventListener("DOMContentLoaded", () => {
   levelButtons.forEach((button, index) => {
     button.addEventListener("click", () => {
       // Don't automatically click coverageButtons to allow independent selection
-      // Just make sure the UI reflects the state correctly
-      // This is handled in setupLevelButtons now
+      // Instead, just toggle the active state of the level button
+      const level = parseInt(button.id.replace("triggerButtonLevel", ""));
+      if (!isNaN(level)) {
+        if (button.classList.contains("active")) {
+          window.state.activeLevels.delete(level);
+        } else {
+          window.state.activeLevels.add(level);
+        }
+      }
     });
   });
 
