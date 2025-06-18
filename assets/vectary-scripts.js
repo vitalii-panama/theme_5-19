@@ -1,4 +1,5 @@
-import { VctrModelApi } from "https://www.vectary.com/studio-lite/scripts/api.js";
+import { VctrModelApi } from "./api.js";
+
 // Helper function to get color properties from the UI
 function getColorProperties() {
   // Try to get color values from the DOM
@@ -373,15 +374,6 @@ document.addEventListener("DOMContentLoaded", () => {
         .catch((error) => {
           /* Avoid logging errors for hidden objects */
         });
-
-      setTimeout(() => {
-        console.log('p----');
-        
-        api.addOrEditMaterial('wrapkit-partial 1', {
-          name: 'MAT-GLOSS-C1',
-          baseColor: { color: {x: 0, y: 0, z: 0} },
-        })
-      }, 1000);
     });
   }
 
@@ -843,7 +835,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const overlaminateGrid = document.querySelector(".overlaminate-grid");
     if (!overlaminateGrid) return;
     
-    overlaminateGrid.addEventListener("click", (event) => {
+    overlaminateGrid.addEventListener("click", async (event) => {
       const button = event.target.closest(".overlaminate-button");
       if (button) {
         const overlaminateHandle = button.getAttribute("data-overlaminate-handle");
@@ -876,6 +868,13 @@ document.addEventListener("DOMContentLoaded", () => {
               );
             }
           }
+
+          await modelApi.setConfigurationState([
+            {
+                "variant": "Variants-Overlams",
+                "active_object": overlaminateHandle
+            }
+        ]);
 
           // Update selected options display if available
           if (typeof window.updateSelectedOptionsDisplay === "function") {
@@ -940,6 +939,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Setup Event Listeners
       setupEventListeners(modelApi);
+      window.modelApi = modelApi;
 
       // Initialize Selected Options Display
       if (typeof window.initSelectedOptionsDisplay === "function") {
@@ -1059,13 +1059,13 @@ const variantButtons = document.querySelectorAll(
 document.addEventListener("DOMContentLoaded", () => {
   presetButtons.forEach((button, index) => {
     button.addEventListener("click", () => {
-      variantButtons[index].click();
+      if (variantButtons[index]) variantButtons[index].click();
     });
   });
 
   variantButtons.forEach((button, index) => {
     button.addEventListener("click", () => {
-      presetButtons[index].click();
+      if (presetButtons[index]) presetButtons[index].click();
     });
   });
 
