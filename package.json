@@ -5,7 +5,7 @@
 	"author": "",
 	"license": "ISC",
 	"scripts": {
-		"dev": "shopify theme dev --store scsunltd",
+		"dev": "shopify theme dev --store scsunltd --port 9299",
 		"pull": "shopify theme pull --store scsunltd",
 		"push": "shopify theme push --store scsunltd",
 		"push:unpublished": "shopify theme push --store scsunltd --unpublished"

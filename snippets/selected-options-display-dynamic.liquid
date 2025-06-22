@@ -8,7 +8,6 @@
 {% endcomment %}
 
 <!-- Spacer div to prevent content from being hidden behind the sticky bar -->
-<div id="sticky-spacer"></div>
 
 <!-- Main sticky container -->
 <div class="sticky-options-container" id="sticky-options-container">
@@ -24,11 +23,7 @@
     <!-- Header bar -->
     <div class="sticky-options-header">
       <div class="header-left">
-        <svg class="cart-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="9" cy="21" r="1"></circle>
-          <circle cx="20" cy="21" r="1"></circle>
-          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-        </svg>
+        
         <h2>Selected Options</h2>
       </div>
       <div class="header-right">
@@ -46,13 +41,12 @@
       <!-- Selected levels section -->
       <div class="sticky-section">
         <div class="sticky-section-header">
-          <svg class="section-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="8" y1="6" x2="21" y2="6"></line>
-            <line x1="8" y1="12" x2="21" y2="12"></line>
-            <line x1="8" y1="18" x2="21" y2="18"></line>
-            <line x1="3" y1="6" x2="3.01" y2="6"></line>
-            <line x1="3" y1="12" x2="3.01" y2="12"></line>
-            <line x1="3" y1="18" x2="3.01" y2="18"></line>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path>
+            <path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path>
+            <path d="M7 21h10"></path>
+            <path d="M12 3v18"></path>
+            <path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"></path>
           </svg>
           <h3>Selected Levels</h3>
         </div>
@@ -64,7 +58,7 @@
       <!-- Selected colors section -->
       <div class="sticky-section">
         <div class="sticky-section-header">
-          <svg class="section-icon palette-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg class="section-icon palette-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="13.5" cy="6.5" r="2.5"></circle>
             <circle cx="19" cy="13" r="2.5"></circle>
             <circle cx="6" cy="12.5" r="2.5"></circle>
@@ -77,22 +71,35 @@
         </div>
       </div>
     </div>
-    
-    <!-- Footer with checkout button -->
-    <div class="sticky-options-footer">
-      <button id="selected-options-checkout-button" class="checkout-button">
-        <span>Proceed to Checkout</span>
-        <svg class="checkout-arrow" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-          <polyline points="12 5 19 12 12 19"></polyline>
-        </svg>
-      </button>
-      <p class="color-selection-notice">Your color selections will be saved with your order</p>
-    </div>
+
   </div>
 </div>
 
+
+
 <style>
+  html {
+    overflow-x: hidden;
+  }
+  .product-nav {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    .btn {
+      padding: 0;
+    }
+  }
+  .page-content--product {
+    padding-top: 0;
+  }
+  .addtocart_button {
+    display: none;
+  }
+  .page-content--product .grid {
+    margin: 0 !important;
+    width: 100%;
+  }
   /* Core variables for consistent styling */
   :root {
     --primary-color: #2563eb; /* Bright blue */
@@ -122,24 +129,28 @@
   }
 
   /* Main container */
-  .sticky-options-container {
+  .sticky-options-container-atc {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    z-index: 1000;
+    z-index: 1000000;
     font-family: var(--font-sans);
     color: var(--text-dark);
     transition: transform var(--transition-normal), opacity var(--transition-normal);
   }
-
+  .product-single__sticky {
+    z-index: 1000000;
+    padding-left: 0;
+    padding-right: 0;
+  }
   /* Mobile toggle button - pill-shaped indicator */
   .mobile-toggle-button {
     position: absolute;
     top: -22px;
     left: 50%;
     transform: translateX(-50%);
-    background-color: var(--primary-color);
+    background-color: var(--secondary);
     color: white;
     border-radius: var(--radius-full);
     padding: 6px 16px;
@@ -173,7 +184,7 @@
 
   /* Main content wrapper */
   .sticky-options-content {
-    background-color: var(--background-light);
+    background-color: #f9fafb;
     border-radius: var(--radius-lg) var(--radius-lg) 0 0;
     overflow: hidden;
     box-shadow: var(--shadow-lg);
@@ -182,6 +193,8 @@
     max-height: 85vh;
     border: 1px solid var(--border-light);
     border-bottom: none;
+    border-radius: .5rem;
+    box-shadow: 0 1px 3px #0000001a;
   }
 
   /* Header bar */
@@ -276,7 +289,7 @@
   }
 
   .sticky-section-header h3 {
-    font-size: 0.95rem;
+    font-size: 12px;
     font-weight: 600;
     margin: 0;
     color: var(--text-dark);
@@ -286,8 +299,8 @@
 
   /* Selected levels styling */
   .selected-levels {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
     gap: 8px;
   }
 
@@ -295,7 +308,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 14px;
+    padding: 0;
     background-color: var(--background-off);
     border-radius: var(--radius-md);
     transition: background-color var(--transition-fast);
@@ -304,14 +317,20 @@
   .level-item:hover {
     background-color: #f3f4f6;
   }
-
+  .level-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
   .level-item span {
-    font-size: 0.95rem;
+    font-size: 12px;
     font-weight: 500;
     color: var(--text-dark);
+    margin: 0;
   }
 
   .remove-button {
+    display: none!important;
     background: none;
     border: none;
     cursor: pointer;
@@ -337,7 +356,7 @@
   /* Selected colors styling */
   .selected-colors-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(6, 1fr);
     gap: 10px;
   }
 
@@ -345,7 +364,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 10px;
+    padding: 0;
     background-color: var(--background-off);
     border-radius: var(--radius-md);
     transition: transform var(--transition-fast), box-shadow var(--transition-fast);
@@ -366,7 +385,7 @@
   }
 
   .color-name {
-    font-size: 0.85rem;
+    font-size: 12px;  
     font-weight: 500;
     color: var(--text-dark);
     white-space: nowrap;
@@ -386,7 +405,7 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    background-color: var(--primary-color);
+    background-color: var(--secondary);
     color: white;
     border: none;
     border-radius: var(--radius-md);
@@ -424,6 +443,10 @@
 
   /* Responsive adjustments */
   @media (max-width: 768px) {
+    .product_desc_item, .product-single__meta {
+      padding-left: 0;
+      padding-right: 0;
+    }
     .sticky-options-content {
       max-height: 75vh;
     }
@@ -454,9 +477,6 @@
       grid-template-columns: 1fr 1fr;
     }
 
-    .color-item {
-      padding: 8px;
-    }
 
     .color-swatch {
       width: 20px;
@@ -488,7 +508,7 @@
     opacity: 0.9;
   }
   #sticky-options-container {
-  display: none!important;
+  {% comment %} display: none!important; {% endcomment %}
   }
 </style>
 

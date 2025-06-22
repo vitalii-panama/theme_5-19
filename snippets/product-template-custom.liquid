@@ -83,30 +83,19 @@
           </div>
         {%- endif -%}
 
-        <div class="grid__item {{ product_description_width }}">
+        <div class="grid__item product_desc_item {{ product_description_width }}">
        
           <div class="product-single__meta">
             <div class="product-block product-block--header">
-            
-            
-
-              
               {%- if settings.show_breadcrumbs and isModal != true -%}
-                {%- render 'breadcrumbs' -%}
+                <div class="hide-mobile">
+                  {%- render 'breadcrumbs' -%}
+                </div>
               {%- endif -%}
               {% render 'vectary-controls' %}
-				<div class="product-nav clearfix">
-                {% if collection.previous_product %}<div class="btn btn--secondary btn--small">{% endif %}
-                  <span style="float:left;">{% if collection.previous_product %}
-                    {{ '&larr; See Previous' | link_to: collection.previous_product }}
-                    {% endif %}</span>
-                {% if collection.previous_product %}</div>{% endif %}
-                 {% if collection.next_product %}<div class="btn btn--secondary btn--small">{% endif %}
-                  <span style="float:right;">{% if collection.next_product %}
-                    {{ 'See Next &rarr;' | link_to: collection.next_product }}
-                    {% endif %}</span>
-                 {% if collection.next_product %}</div>{% endif %}
-              </div> 
+            
+
+         
                 
                 {% comment %} {{product.type}} {% endcomment %}
              
@@ -183,7 +172,7 @@
                       {%- render 'product-description', id: id, product: product, is_tab: block.settings.is_tab -%}
                     </div>
                   {%- when 'price' -%}
-                    <div class="product-block product-block--price" {{ block.shopify_attributes }}>
+                    {% comment %} <div class="product-block product-block--price" {{ block.shopify_attributes }}>
                       {%- assign hide_sale_price = true -%}
                       {%- if product.compare_at_price_max > product.price -%}
                         {%- if current_variant.compare_at_price > current_variant.price -%}
@@ -256,7 +245,7 @@
                           {%- endif -%}
                         </div>
                       {%- endif -%}
-                    </div>
+                    </div> {% endcomment %}
                   {%- when 'quantity_selector' -%}
                     <div class="product-block" {{ block.shopify_attributes }}>
                       <div class="product__quantity">
@@ -417,3 +406,22 @@
   </div>
 </div>
 
+<div class="sticky-options-container-atc">
+  
+
+  <!-- Main content wrapper -->
+  <div class="sticky-options-content" id="sticky-options-content">
+    
+    
+    <!-- Footer with checkout button -->
+    <div class="sticky-options-footer">
+      <button id="selected-options-checkout-button" class="checkout-button">
+        <span>Proceed to Checkout</span>
+        <svg class="checkout-arrow" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>

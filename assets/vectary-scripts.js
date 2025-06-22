@@ -1,5 +1,61 @@
-import { VctrModelApi } from "./api.js";
-
+import { VctrModelApi } from "https://www.vectary.com/studio-lite/scripts/api.js";
+let selectedOverlaminateMaterial = "MAT-GLOSS"
+  // *** Define sliderConfigs here, before it's needed ***
+  const sliderConfigs = [
+    {
+      sliderId: "swatchSliderC5",
+      displayId: "colorDisplayC5",
+      nameId: "colorNameC5",
+      lockId: "lockC5",
+      objects: [
+        "color-less-5",
+        "wrapkit-partial 5",
+        "wrapkit-full 5",
+        "wrapkit-premium 5",
+      ],
+      material: "MAT-GLOSS-C5",
+    },
+    {
+      sliderId: "swatchSliderC4",
+      displayId: "colorDisplayC4",
+      nameId: "colorNameC4",
+      lockId: "lockC4",
+      objects: ["wrapkit-partial 4", "wrapkit-full 4"],
+      material: "MAT-GLOSS-C4",
+    },
+    {
+      sliderId: "swatchSliderC3",
+      displayId: "colorDisplayC3",
+      nameId: "colorNameC3",
+      lockId: "lockC3",
+      objects: ["wrapkit-partial 3", "wrapkit-full 3"],
+      material: "MAT-GLOSS-C3",
+    },
+    {
+      sliderId: "swatchSliderC2",
+      displayId: "colorDisplayC2",
+      nameId: "colorNameC2",
+      lockId: "lockC2",
+      objects: ["wrapkit-partial 2", "wrapkit-full 2"],
+      material: "MAT-GLOSS-C2",
+    },
+    {
+      sliderId: "swatchSliderC1",
+      displayId: "colorDisplayC1",
+      nameId: "colorNameC1",
+      lockId: "lockC1",
+      objects: ["wrapkit-partial 1", "wrapkit-full 1"],
+      material: "MAT-GLOSS-C1",
+    },
+    {
+      sliderId: "swatchSliderBG",
+      displayId: "colorDisplayBG",
+      nameId: "colorNameBG",
+      lockId: "lockBG",
+      objects: ["background_object"],
+      material: "MAT-GLOSS-BG",
+    },
+  ];
 // Helper function to get color properties from the UI
 function getColorProperties() {
   // Try to get color values from the DOM
@@ -251,62 +307,7 @@ document.addEventListener("DOMContentLoaded", () => {
     6: { C5: 88, C4: 77, C3: 66, C2: 55, C1: 44, BG: 33 },
   };
 
-  // *** Define sliderConfigs here, before it's needed ***
-  const sliderConfigs = [
-    {
-      sliderId: "swatchSliderC5",
-      displayId: "colorDisplayC5",
-      nameId: "colorNameC5",
-      lockId: "lockC5",
-      objects: [
-        "color-less-5",
-        "wrapkit-partial 5",
-        "wrapkit-full 5",
-        "wrapkit-premium 5",
-      ],
-      material: "MAT-GLOSS-C5",
-    },
-    {
-      sliderId: "swatchSliderC4",
-      displayId: "colorDisplayC4",
-      nameId: "colorNameC4",
-      lockId: "lockC4",
-      objects: ["wrapkit-partial 4", "wrapkit-full 4"],
-      material: "MAT-GLOSS-C4",
-    },
-    {
-      sliderId: "swatchSliderC3",
-      displayId: "colorDisplayC3",
-      nameId: "colorNameC3",
-      lockId: "lockC3",
-      objects: ["wrapkit-partial 3", "wrapkit-full 3"],
-      material: "MAT-GLOSS-C3",
-    },
-    {
-      sliderId: "swatchSliderC2",
-      displayId: "colorDisplayC2",
-      nameId: "colorNameC2",
-      lockId: "lockC2",
-      objects: ["wrapkit-partial 2", "wrapkit-full 2"],
-      material: "MAT-GLOSS-C2",
-    },
-    {
-      sliderId: "swatchSliderC1",
-      displayId: "colorDisplayC1",
-      nameId: "colorNameC1",
-      lockId: "lockC1",
-      objects: ["wrapkit-partial 1", "wrapkit-full 1"],
-      material: "MAT-GLOSS-C1",
-    },
-    {
-      sliderId: "swatchSliderBG",
-      displayId: "colorDisplayBG",
-      nameId: "colorNameBG",
-      lockId: "lockBG",
-      objects: ["background_object"],
-      material: "MAT-GLOSS-BG",
-    },
-  ];
+
 
   // --- Define ALL functions first ---
   const hexToRbg = (hex) => {
@@ -868,10 +869,14 @@ document.addEventListener("DOMContentLoaded", () => {
               );
             }
           }
-
+          const overlaminateMaterial = button.getAttribute("data-material");
+          sliderConfigs.forEach(config => {
+            config.material = config.material.replace(selectedOverlaminateMaterial, overlaminateMaterial);
+          });
+          selectedOverlaminateMaterial = overlaminateMaterial;
           await modelApi.setConfigurationState([
             {
-                "variant": "Variants-Overlams",
+                "variant": "Variants-Media",
                 "active_object": overlaminateHandle
             }
         ]);

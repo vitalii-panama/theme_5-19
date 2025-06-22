@@ -8,6 +8,22 @@
   --border-color: #e5e7eb;
 }
 
+@media (min-width: 768px) {
+  .hide-desktop {
+    display: none!important;
+  }
+}
+
+@media (max-width: 768px) {
+  .hide-mobile {
+    display: none!important;
+  }
+  .product-block .product__policies, .template-product .breadcrumb{
+    text-align: left!important;
+  }
+  
+}
+
 
 .page-full-width {
 
@@ -302,6 +318,7 @@ iframe {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 0.5rem;
+  
 }
 .preset-colors {
   display: flex;
@@ -445,6 +462,9 @@ iframe {
   grid-template-columns: repeat(4, 1fr);
   gap: 0.5rem;
   margin-bottom: 0.5rem;
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .overlaminate-button {
@@ -461,6 +481,11 @@ iframe {
   cursor: pointer;
   position: relative;
   transition: background-color 0.15s ease;
+  font-size: 16px;
+  min-height: 82px;
+  @media (max-width: 768px) {
+    min-height: 62px;
+  }
 }
 
 .overlaminate-button:hover {
