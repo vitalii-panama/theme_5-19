@@ -631,9 +631,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (presets[presetNumber]) {
       let colorsApplied = false;
+      
+      // Create a cache of the preset color values before applying them
+      // This will be used when changing materials to maintain color consistency
+      const presetColorValues = {};
+      Object.keys(presets[presetNumber]).forEach(materialId => {
+        presetColorValues[materialId] = presets[presetNumber][materialId];
+      });
+      
+      // Store the preset color values in a global cache for use with material changes
+      window.cachedPresetColors = presetColorValues;
+      
       if (!forceEvent || state.activePreset !== presetNumber) {
         sliderConfigs.forEach((config) => {
-          const materialId = config.material.replace("MAT-GLOSS-", "");
+          // Extract the material ID by removing the prefix and keeping the material part (C5, C4, etc.)
+          const materialId = config.material.replace(selectedOverlaminateMaterial + "-", "");
+          
           if (
             !state.lockedMaterials[materialId] &&
             presets[presetNumber][materialId] !== undefined
@@ -846,6 +859,19 @@ document.addEventListener("DOMContentLoaded", () => {
           
           // Only add the new selection if it wasn't already active
           if (!isCurrentlyActive) {
+            // Determine which color values to use based on active preset or current state
+            let colorValuesToUse;
+            
+            // If a preset is active, use the cached preset colors
+            if (state.activePreset && window.cachedPresetColors) {
+              colorValuesToUse = window.cachedPresetColors;
+              console.log('Using cached preset colors for material change:', colorValuesToUse);
+            } else {
+              // Otherwise use the current color values
+              colorValuesToUse = JSON.parse(JSON.stringify(state.colorValues));
+              console.log('Using current color values for material change:', colorValuesToUse);
+            }
+            
             // Clear UI state first
             document.querySelectorAll(".overlaminate-button").forEach(btn => {
               btn.classList.remove("active");
@@ -883,16 +909,46 @@ document.addEventListener("DOMContentLoaded", () => {
                   "active_object": overlaminateHandle
                 }
               ]);
+              
+              // Restore the color values to maintain color selections
+              state.colorValues = colorValuesToUse;
+              
+              // Apply the colors to the new material
+              for (const colorKey in colorValuesToUse) {
+                const colorValue = colorValuesToUse[colorKey];
+                const sliderConfig = sliderConfigs.find(config => config.sliderId === `swatchSlider${colorKey}`);
+                
+                if (sliderConfig) {
+                  // Update the material with the color
+                  const slider = document.getElementById(sliderConfig.sliderId);
+                  const display = document.getElementById(sliderConfig.displayId);
+                  const nameElement = document.getElementById(sliderConfig.nameId);
+                  
+                  if (slider && display && nameElement) {
+                    // Set the slider value to match the color
+                    slider.value = colorValue;
+                    
+                    // Update the material in Vectary with the color
+                    updateMaterialColor(
+                      api,
+                      slider,
+                      display,
+                      nameElement,
+                      sliderConfig.objects,
+                      sliderConfig.material
+                    );
+                  }
+                }
+              }
 
               // Clear and re-render the selected options display
-                // Force a complete refresh of the display
-                const selectedColorsGrid = document.getElementById('selected-colors-grid');
-                if (selectedColorsGrid) {
-                  selectedColorsGrid.innerHTML = '';
-                }
-                
-                // Update the display with fresh data
-                window.updateSelectedOptionsDisplay(color_swatches_data, state);
+              const selectedColorsGrid = document.getElementById('selected-colors-grid');
+              if (selectedColorsGrid) {
+                selectedColorsGrid.innerHTML = '';
+              }
+              
+              // Update the display with fresh data
+              window.updateSelectedOptionsDisplay(color_swatches_data, state);
             } else {
               console.warn(
                 `Vectary API not ready or dispatchEvent missing, cannot dispatch event ${eventName}.`
