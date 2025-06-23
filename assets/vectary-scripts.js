@@ -359,7 +359,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     displayElement.style.backgroundColor = hexColor;
     nameElement.textContent = colorName;
-    const materialId = materialName.replace("MAT-GLOSS-", "");
+    const materialId = materialName.replace(/^MAT-[A-Z]+-/, "");
     state.colorValues[materialId] = sliderValue;
     const rgb = hexToRbg(hexColor);
 
