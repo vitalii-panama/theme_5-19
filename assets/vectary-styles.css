@@ -8,6 +8,14 @@
   --border-color: #e5e7eb;
 }
 
+button.bold_clone {
+  display: none!important;
+}
+
+button.bold_hidden {
+  display: inline-flex!important;
+}
+
 @media (min-width: 768px) {
   .hide-desktop {
     display: none!important;

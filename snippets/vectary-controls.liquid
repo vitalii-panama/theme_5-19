@@ -656,7 +656,7 @@
      price: "{{ product.price | money }}"
    }
    window.globalProductData = {
-     {% if product.type == 'Sea-Doo Spark24' %}
+     {% if product.handle contains 'sea-doo-spark24' %}
        1: {
          handle: "sea-doo-spark24-level-1",
          id: "{{ all_products['sea-doo-spark24-level-1'].selected_or_first_available_variant.id }}",
@@ -682,7 +682,7 @@
          id: "{{ all_products['sea-doo-spark24-level-5'].selected_or_first_available_variant.id }}",
          price: "{{ all_products['sea-doo-spark24-level-5'].price | money }}"
        }
-     {% elsif product.type == 'Sea-Doo Switch' %}
+     {% elsif product.handle contains 'sea-doo-switch' %}
        1: {
          handle: "sea-doo-level-16",
          id: "{{ all_products['sea-doo-level-16'].selected_or_first_available_variant.id }}",

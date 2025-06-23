@@ -359,7 +359,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     displayElement.style.backgroundColor = hexColor;
     nameElement.textContent = colorName;
-    const materialId = materialName.replace(/^[^-]+-[^-]+-/, "");
+    const materialId = materialName.replace(/.*-/, "");
     console.log(11,materialId, state.colorValues);
     state.colorValues[materialId] = sliderValue;
     const rgb = hexToRbg(hexColor);
@@ -385,7 +385,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const displayElement = document.getElementById(config.displayId);
       const nameElement = document.getElementById(config.nameId);
       const lockElement = document.getElementById(config.lockId);
-      const materialId = config.material.replace("MAT-GLOSS-", "");
+      const materialId = config.material.replace(/^[^-]+-[^-]+-/, "");
 
       if (sliderElement && displayElement && nameElement && lockElement) {
         sliderElement.value = state.colorValues[materialId] || 50;
@@ -422,7 +422,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const displayElement = document.getElementById(config.displayId);
       const nameElement = document.getElementById(config.nameId);
       const lockElement = document.getElementById(config.lockId); // Needed for listener
-      const materialId = config.material.replace("MAT-GLOSS-", "");
+      const materialId = config.material.replace(/^[^-]+-[^-]+-/, "");
 
       if (sliderElement && displayElement && nameElement && lockElement) {
         // Add input listener that calls API
@@ -566,7 +566,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function randomizeColors(api) {
     let updated = false;
     sliderConfigs.forEach((config) => {
-      const materialId = config.material.replace("MAT-GLOSS-", "");
+      const materialId = config.material.replace(/^[^-]+-[^-]+-/, "");
       if (!state.lockedMaterials[materialId]) {
         const sliderElement = document.getElementById(config.sliderId);
         const displayElement = document.getElementById(config.displayId);
@@ -840,22 +840,20 @@ document.addEventListener("DOMContentLoaded", () => {
     overlaminateGrid.addEventListener("click", async (event) => {
       const button = event.target.closest(".overlaminate-button");
       if (button) {
-        // if (button.classList.contains("active")) return;
-          
         const overlaminateHandle = button.getAttribute("data-overlaminate-handle");
         if (overlaminateHandle) {
           const isCurrentlyActive = state.activeOverlaminates.has(overlaminateHandle);
           
-          
-    
-          
           // Only add the new selection if it wasn't already active
           if (!isCurrentlyActive) {
-          document.querySelectorAll(".overlaminate-button").forEach(btn => {
-            btn.classList.remove("active");
-          });
-                  // Clear all active overlaminates
+            // Clear UI state first
+            document.querySelectorAll(".overlaminate-button").forEach(btn => {
+              btn.classList.remove("active");
+            });
+            
+            // Clear all active overlaminates
             state.activeOverlaminates.clear();
+            
             // Add active class to the clicked button
             button.classList.add("active");
             
@@ -867,29 +865,40 @@ document.addEventListener("DOMContentLoaded", () => {
               const eventName = `overlaminate-${overlaminateHandle}`;
               api.dispatchEvent(eventName);
 
+              // Get the new material type from the button
               const overlaminateMaterial = button.getAttribute("data-material");
+              
+              // Update all slider configs with the new material type
               sliderConfigs.forEach(config => {
                 config.material = config.material.replace(selectedOverlaminateMaterial, overlaminateMaterial);
               });
+              
+              // Store the new selected material
               selectedOverlaminateMaterial = overlaminateMaterial;
+              
+              // Update the configuration state in Vectary
               await api.setConfigurationState([
                 {
-                    "variant": "Variants-Media",
-                    "active_object": overlaminateHandle
+                  "variant": "Variants-Media",
+                  "active_object": overlaminateHandle
                 }
-            ]);
+              ]);
 
-              // Update selected options display if available
-              if (typeof window.updateSelectedOptionsDisplay === "function") {
+              // Clear and re-render the selected options display
+                // Force a complete refresh of the display
+                const selectedColorsGrid = document.getElementById('selected-colors-grid');
+                if (selectedColorsGrid) {
+                  selectedColorsGrid.innerHTML = '';
+                }
+                
+                // Update the display with fresh data
                 window.updateSelectedOptionsDisplay(color_swatches_data, state);
-              }
             } else {
               console.warn(
                 `Vectary API not ready or dispatchEvent missing, cannot dispatch event ${eventName}.`
               );
             }
           }
-          
         }
       }
     });
@@ -1134,8 +1143,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // }
   });
 });
-// Wait for the page to load
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () {   
   // Access state from vectary embed context
   // This relies on the state variable being accessible in the page scope
 
@@ -1167,7 +1175,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Combine both arrays
         const allProductIds = [...productIds, ...overlaminateIds];
-
         if (allProductIds.length > 0) {
           console.log(
             "Adding selected products to cart from form submit:",
@@ -1204,28 +1211,29 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // Handle direct "Add to Cart" button clicks that might use AJAX
-  const addToCartButtons = document.querySelectorAll(
-    ".addtocart_button, [data-add-to-cart]"
-  );
-
+  const addToCartButtons = document.querySelectorAll("[data-add-to-cart]");
   addToCartButtons.forEach((button) => {
+    button.style.pointerEvents = "all";
     // Store original click handler by cloning the node
     const newButton = button.cloneNode(true);
 
     // Replace with our intercepted version
     button.parentNode.replaceChild(newButton, button);
+    newButton.removeAttribute("disabled");
 
     // Add our click handler
     newButton.addEventListener("click", function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
       const parentForm = this.closest("form");
       // Check if we have active levels or overlaminates to add to cart
       if (
-        !parentForm &&
+        parentForm &&
         window.state &&
         (window.state.activeLevels.size > 0 || window.state.activeOverlaminates.size > 0)
       ) {
         // This is for direct button clicks without forms
-        event.preventDefault();
 
         // Get color properties
         const colorProperties = getColorProperties();
@@ -1242,6 +1250,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Combine both arrays
         const allProductIds = [...productIds, ...overlaminateIds];
+        console.log(allProductIds);
 
         if (allProductIds.length > 0) {
           console.log(
