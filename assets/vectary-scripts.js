@@ -359,7 +359,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     displayElement.style.backgroundColor = hexColor;
     nameElement.textContent = colorName;
-    const materialId = materialName.replace(/^MAT-[A-Z]+-/, "");
+    const materialId = materialName.replace(/^[^-]+-[^-]+-/, "");
+    console.log(11,materialId, state.colorValues);
     state.colorValues[materialId] = sliderValue;
     const rgb = hexToRbg(hexColor);
 
@@ -839,20 +840,22 @@ document.addEventListener("DOMContentLoaded", () => {
     overlaminateGrid.addEventListener("click", async (event) => {
       const button = event.target.closest(".overlaminate-button");
       if (button) {
+        // if (button.classList.contains("active")) return;
+          
         const overlaminateHandle = button.getAttribute("data-overlaminate-handle");
         if (overlaminateHandle) {
           const isCurrentlyActive = state.activeOverlaminates.has(overlaminateHandle);
           
-          // Clear all active classes first
-          document.querySelectorAll(".overlaminate-button").forEach(btn => {
-            btn.classList.remove("active");
-          });
           
-          // Clear all active overlaminates
-          state.activeOverlaminates.clear();
+    
           
           // Only add the new selection if it wasn't already active
           if (!isCurrentlyActive) {
+          document.querySelectorAll(".overlaminate-button").forEach(btn => {
+            btn.classList.remove("active");
+          });
+                  // Clear all active overlaminates
+            state.activeOverlaminates.clear();
             // Add active class to the clicked button
             button.classList.add("active");
             
@@ -863,28 +866,30 @@ document.addEventListener("DOMContentLoaded", () => {
             if (isApiReady && api && typeof api.dispatchEvent === "function") {
               const eventName = `overlaminate-${overlaminateHandle}`;
               api.dispatchEvent(eventName);
+
+              const overlaminateMaterial = button.getAttribute("data-material");
+              sliderConfigs.forEach(config => {
+                config.material = config.material.replace(selectedOverlaminateMaterial, overlaminateMaterial);
+              });
+              selectedOverlaminateMaterial = overlaminateMaterial;
+              await api.setConfigurationState([
+                {
+                    "variant": "Variants-Media",
+                    "active_object": overlaminateHandle
+                }
+            ]);
+
+              // Update selected options display if available
+              if (typeof window.updateSelectedOptionsDisplay === "function") {
+                window.updateSelectedOptionsDisplay(color_swatches_data, state);
+              }
             } else {
               console.warn(
                 `Vectary API not ready or dispatchEvent missing, cannot dispatch event ${eventName}.`
               );
             }
           }
-          const overlaminateMaterial = button.getAttribute("data-material");
-          sliderConfigs.forEach(config => {
-            config.material = config.material.replace(selectedOverlaminateMaterial, overlaminateMaterial);
-          });
-          selectedOverlaminateMaterial = overlaminateMaterial;
-          await modelApi.setConfigurationState([
-            {
-                "variant": "Variants-Media",
-                "active_object": overlaminateHandle
-            }
-        ]);
-
-          // Update selected options display if available
-          if (typeof window.updateSelectedOptionsDisplay === "function") {
-            window.updateSelectedOptionsDisplay(color_swatches_data, state);
-          }
+          
         }
       }
     });
@@ -1268,17 +1273,6 @@ document.addEventListener("DOMContentLoaded", function () {
       // Form submission is handled by the form submit event handler
     });
   });
-
-  // Set initial overlaminate button states
-  // Default to selecting the first overlaminate option
-  // const firstOverlaminateButton = document.querySelector(".overlaminate-button");
-  // if (firstOverlaminateButton) {
-  //   const handle = firstOverlaminateButton.getAttribute("data-overlaminate-handle");
-  //   if (handle && window.state) {
-  //     window.state.activeOverlaminates.add(handle);
-  //     firstOverlaminateButton.classList.add("active");
-  //   }
-  // }
 
   // Intercept AJAX cart additions by monkeypatching fetch and XMLHttpRequest
   const originalFetch = window.fetch;

@@ -93,9 +93,7 @@
   .page-content--product {
     padding-top: 0;
   }
-  .addtocart_button {
-    display: none;
-  }
+
   .page-content--product .grid {
     margin: 0 !important;
     width: 100%;
@@ -321,6 +319,9 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    @media (max-width: 768px) {
+      flex-direction: column-reverse;
+    }
   }
   .level-item span {
     font-size: 12px;
@@ -418,7 +419,7 @@
   }
 
   .checkout-button:hover {
-    background-color: var(--primary-hover);
+    background-color: var(--primary);
     transform: translateY(-1px);
   }
 
@@ -635,7 +636,7 @@
           selectedLevelsContainer.appendChild(emptyMessage);
         } else {
           // Add all products to the display
-          products.forEach(product => {
+          products.forEach((product,i) => {
             const levelItem = document.createElement('div');
             levelItem.className = 'level-item';
             levelItem.setAttribute('data-level', product.level);
@@ -645,7 +646,7 @@
             
             const levelName = document.createElement('span');
             levelName.className = 'level-name';
-            levelName.textContent = product.name;
+            levelName.textContent = 'Level ' + (i + 1);
             
             // Add price if available
             if (product.price) {
