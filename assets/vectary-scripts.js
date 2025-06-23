@@ -178,6 +178,69 @@ const selectedColorIndex = selectedColor
     ).indexOf(selectedColor)
   : 0;
 
+// Functions to save and load color values from localStorage
+function saveColorValuesToStorage() {
+  try {
+    // Save color values
+    localStorage.setItem('vectaryColorValues', JSON.stringify(state.colorValues));
+    
+    // Save active preset if any
+    if (state.activePreset) {
+      localStorage.setItem('vectaryActivePreset', state.activePreset);
+    } else {
+      localStorage.removeItem('vectaryActivePreset');
+    }
+    
+    // Save selected overlaminate material
+    localStorage.setItem('vectaryOverlaminateMaterial', selectedOverlaminateMaterial);
+    
+    // Save active overlaminates
+    localStorage.setItem('vectaryActiveOverlaminates', JSON.stringify(Array.from(state.activeOverlaminates)));
+    
+    console.log('Saved color values to localStorage:', state.colorValues);
+  } catch (error) {
+    console.error('Error saving color values to localStorage:', error);
+  }
+}
+
+function loadColorValuesFromStorage() {
+  try {
+    // Load color values
+    const savedColorValues = localStorage.getItem('vectaryColorValues');
+    if (savedColorValues) {
+      state.colorValues = JSON.parse(savedColorValues);
+      console.log('Loaded color values from localStorage:', state.colorValues);
+    }
+    
+    // Load active preset
+    const savedActivePreset = localStorage.getItem('vectaryActivePreset');
+    if (savedActivePreset) {
+      state.activePreset = parseInt(savedActivePreset, 10);
+      console.log('Loaded active preset from localStorage:', state.activePreset);
+    }
+    
+    // Load selected overlaminate material
+    const savedOverlaminateMaterial = localStorage.getItem('vectaryOverlaminateMaterial');
+    if (savedOverlaminateMaterial) {
+      selectedOverlaminateMaterial = savedOverlaminateMaterial;
+      console.log('Loaded overlaminate material from localStorage:', selectedOverlaminateMaterial);
+    }
+    
+    // Load active overlaminates
+    const savedActiveOverlaminates = localStorage.getItem('vectaryActiveOverlaminates');
+    if (savedActiveOverlaminates) {
+      const overlaminates = JSON.parse(savedActiveOverlaminates);
+      state.activeOverlaminates = new Set(overlaminates);
+      console.log('Loaded active overlaminates from localStorage:', Array.from(state.activeOverlaminates));
+    }
+    
+    return true;
+  } catch (error) {
+    console.error('Error loading color values from localStorage:', error);
+    return false;
+  }
+}
+
 // State management
 const state = {
   // *** REMOVED selectedLevels ***
@@ -295,6 +358,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // *** Declare API instance variable in this scope ***
   let modelApi = null;
   let isApiReady = false;
+  
+  // Load saved color values from localStorage
+  const valuesLoaded = loadColorValuesFromStorage();
   const statusMessage = document.getElementById("status-message");
 
   // Define presets here to be accessible by updatePresetButtons and applyPreset
@@ -377,6 +443,9 @@ document.addEventListener("DOMContentLoaded", () => {
           /* Avoid logging errors for hidden objects */
         });
     });
+    
+    // Save the updated color values to localStorage
+    saveColorValuesToStorage();
   }
 
   function initializeSliderUI() {
@@ -706,6 +775,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (typeof window.updateSelectedOptionsDisplay === "function") {
           window.updateSelectedOptionsDisplay(color_swatches_data, state);
         }
+        
+        // Save the preset state to localStorage
+        saveColorValuesToStorage();
       }
     }
   }
@@ -949,6 +1021,9 @@ document.addEventListener("DOMContentLoaded", () => {
               
               // Update the display with fresh data
               window.updateSelectedOptionsDisplay(color_swatches_data, state);
+              
+              // Save the overlaminate state to localStorage
+              saveColorValuesToStorage();
             } else {
               console.warn(
                 `Vectary API not ready or dispatchEvent missing, cannot dispatch event ${eventName}.`
@@ -1008,9 +1083,79 @@ document.addEventListener("DOMContentLoaded", () => {
       await waitForApiMethod(modelApi, "dispatchEvent", 50, 100);
 
       isApiReady = true; // Set ready flag
+      
+      // Apply saved overlaminate material if available
+      const savedOverlaminateMaterial = localStorage.getItem('vectaryOverlaminateMaterial');
+      if (savedOverlaminateMaterial) {
+        // Update all slider configs with the saved material type
+        sliderConfigs.forEach(config => {
+          config.material = config.material.replace(selectedOverlaminateMaterial, savedOverlaminateMaterial);
+        });
+        selectedOverlaminateMaterial = savedOverlaminateMaterial;
+        
+        // Find and click the corresponding overlaminate button
+        const overlaminateButton = document.querySelector(`.overlaminate-button[data-material="${savedOverlaminateMaterial}"]`);
+        if (overlaminateButton) {
+          console.log('Applying saved overlaminate material:', savedOverlaminateMaterial);
+          // Just update the UI, don't trigger the click event to avoid double processing
+          overlaminateButton.classList.add('active');
+          
+          // Update active overlaminates in state
+          const overlaminateHandle = overlaminateButton.getAttribute("data-overlaminate-handle");
+          if (overlaminateHandle) {
+            state.activeOverlaminates.clear();
+            state.activeOverlaminates.add(overlaminateHandle);
+          }
+        }
+      }
 
       // Re-Initialize Sliders with API connection
       initializeSlidersWithAPI(modelApi); // Changed name for clarity
+      
+      // Apply saved preset if available
+      const savedActivePreset = localStorage.getItem('vectaryActivePreset');
+      if (savedActivePreset) {
+        const presetNumber = parseInt(savedActivePreset, 10);
+        console.log('Applying saved preset:', presetNumber);
+        applyPreset(modelApi, presetNumber, true);
+      } else {
+        // If no preset is saved, apply the saved color values directly
+        const savedColorValues = localStorage.getItem('vectaryColorValues');
+        if (savedColorValues) {
+          const colorValues = JSON.parse(savedColorValues);
+          console.log('Applying saved color values:', colorValues);
+          
+          // Apply each saved color value
+          for (const colorKey in colorValues) {
+            const colorValue = colorValues[colorKey];
+            const sliderConfig = sliderConfigs.find(config => 
+              config.material.endsWith(colorKey));
+            
+            if (sliderConfig) {
+              const slider = document.getElementById(sliderConfig.sliderId);
+              const display = document.getElementById(sliderConfig.displayId);
+              const nameElement = document.getElementById(sliderConfig.nameId);
+              
+              if (slider && display && nameElement) {
+                slider.value = colorValue;
+                updateMaterialColor(
+                  modelApi,
+                  slider,
+                  display,
+                  nameElement,
+                  sliderConfig.objects,
+                  sliderConfig.material
+                );
+              }
+            }
+          }
+          
+          // Update the selected options display with the loaded values
+          if (typeof window.updateSelectedOptionsDisplay === "function") {
+            window.updateSelectedOptionsDisplay(color_swatches_data, state);
+          }
+        }
+      }
 
       // Setup Event Listeners
       setupEventListeners(modelApi);
