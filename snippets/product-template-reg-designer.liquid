@@ -1,0 +1,786 @@
+{%- if product.metafields.inventory.ShappifyHidden == 'true' -%}{%- break -%}{%- endif -%}
+
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+
+  unless thumbnail_position
+    assign thumbnail_position = 'beside'
+  endunless
+
+  assign product_zoom_size = '1800x1800'
+  assign product_image_size = '620x'
+
+  case image_container_width
+    when 'small'
+      assign product_image_width = 'medium-up--two-fifths'
+      assign product_description_width = 'medium-up--three-fifths'
+      assign product_image_size = '480x'
+    when 'medium'
+      assign product_image_width = 'medium-up--one-half'
+      assign product_description_width = 'medium-up--one-half'
+      assign product_image_size = '620x'
+    when 'large'
+      assign product_image_width = 'medium-up--three-fifths'
+      assign product_description_width = 'medium-up--two-fifths'
+      assign product_image_size = '740x'
+  endcase
+
+  assign product_img_structure = product.featured_media | img_url: '1x1' | replace: '_1x1.', '_{width}x.'
+-%}
+
+<div id="ProductSection-{{ section_id }}-{{ product.id }}"
+  class="product-section"
+  data-section-id="{{ section_id }}"
+  data-product-id="{{ product.id }}"
+  data-section-type="product"
+  data-product-handle="{{ product.handle }}"
+  data-product-title="{{ product.title | escape }}"
+  data-product-url="{{ product.url | within: collection }}"
+  data-aspect-ratio="{{ 100 | divided_by: product.featured_media.aspect_ratio }}"
+  data-img-url="{{ product_img_structure }}"
+  {% unless isModal %}
+    data-history="true"
+  {% endunless %}
+  data-modal="{{ isModal }}">
+
+  {%- render 'product-template-variables', product: product, current_variant: current_variant -%}
+
+  <div class="page-content page-content--product">
+    
+    
+    
+    <div class="page-width">
+
+      
+      <div class="grid registration_section {% unless image_position == 'left' %} grid--product-images-right{% endunless %}{% if mobile_layout == 'partial' %} grid--product-images--partial{% endif %}">
+    
+          <div class="grid__item {{ product_image_width }} product-single__sticky">
+               <script type="text/javascript" src="//cdne2im.doogma.com/smartmobile-v2/loader.js"></script>
+                  <div class="doogmaplugin" data-uid="scs-number"></div>
+          </div>
+   
+
+        <div class="grid__item {{ product_description_width }}">
+       
+          <div class="product-single__meta">
+            <div class="product-block product-block--header">
+              {%- if settings.show_breadcrumbs and isModal != true -%}
+                {%- render 'breadcrumbs' -%}
+              {%- endif -%}
+{{product.type}}
+              {%- if settings.vendor_enable -%}
+                <div class="product-single__vendor">
+                  {%- assign vendor_handle = product.vendor | handleize -%}
+                  {%- if collections[vendor_handle] != empty -%}
+                    <a href="{{ routes.collections_url }}/{{ collections[vendor_handle].handle }}">
+                      {{ collections[vendor_handle].title }}
+                    </a>
+                  {%- else -%}
+                    {{ product.vendor | link_to_vendor }}
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+
+              {%- if isModal -%}
+                <p class="h2 product-single__title">
+                  {{ product.title }}
+                </p>
+              {%- else -%}
+                <h1 class="h2 product-single__title">
+                  {%- unless product.empty? -%}
+                    {{ product.title }}
+                  {%- else -%}
+                    {{ 'home_page.onboarding.product_title' | t }}
+                  {%- endunless -%}
+                </h1>
+              {%- endif -%}
+
+              {%- if sku_enable -%}
+                <p data-sku class="product-single__sku">
+                  {%- if current_variant.sku -%}
+                    {{ current_variant.sku }}
+                  {%- endif -%}
+                </p>
+              {%- endif -%}
+            </div>
+
+            <div data-product-blocks>
+              {%- capture form_id -%}AddToCartForm-{{ section_id }}-{{ product.id }}{%- endcapture -%}
+              
+              {%- form 'product', product, id: form_id, class: 'product-single__form', data-variant_id: product.selected_or_first_available_variant.id -%}
+
+              {%- for block in blocks -%}
+            
+              
+              
+              {%- case block.type -%}
+                  {%- when '@app' -%}
+                    {% render block %}
+                  {%- when 'reviews' -%}
+                    <div class="product-block product-block--small">
+                      <a href="#shopify-product-reviews-{{ product.id }}">
+                        <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
+                      </a>
+                    </div>
+                  {%- when 'separator' -%}
+                    <div class="product-block"><hr></div>
+                  {%- when 'text' -%}
+                    <div class="product-block" {{ block.shopify_attributes }}>
+                      {{ block.settings.text }}
+                    </div>
+                  {%- when 'tab' -%}
+                    <div class="product-block product-block--tab" {{ block.shopify_attributes }}>
+                      {% assign tab_id = block.id | append: product.id %}
+                      {% capture tab_content %}
+                        {{ block.settings.content }}
+                        {{ block.settings.page.content }}
+                      {% endcapture %}
+                      {%- render 'tab', id: tab_id, title: block.settings.title, content: tab_content -%}
+                    </div>
+                  {%- when 'contact' -%}
+                    <div class="product-block product-block--tab" {{ block.shopify_attributes }}>
+                      {%- render 'tab-contact', block: block -%}
+                    </div>
+                  {%- when 'description' -%}
+                    <div class="product-block{% if block.settings.is_tab %} product-block--tab{% endif %}" {{ block.shopify_attributes }}>
+                      {%- assign id = block.id | append: product.id -%}
+                      {%- render 'product-description', id: id, product: product, is_tab: block.settings.is_tab -%}
+                    </div>
+                  {%- when 'price' -%}
+                    <div class="product-block product-block--price" {{ block.shopify_attributes }}>
+                      {%- assign hide_sale_price = true -%}
+                      {%- if product.compare_at_price_max > product.price -%}
+                        {%- if current_variant.compare_at_price > current_variant.price -%}
+                          {%- assign hide_sale_price = false -%}
+                        {%- endif -%}
+                        <span
+                          data-a11y-price
+                          class="visually-hidden"
+                          aria-hidden="{{ hide_sale_price }}">
+                            {{ 'products.general.regular_price' | t }}
+                        </span>
+                        <span data-product-price-wrap class="{% if hide_sale_price %} hide{% endif %}">
+                          <span data-compare-price class="product__price product__price--compare">
+                            {%- if current_variant.compare_at_price > current_variant.price -%}
+                              {{ current_variant.compare_at_price | money_with_currency }}
+                            {%- endif -%}
+                          </span>
+                        </span>
+                        <span data-compare-price-a11y class="visually-hidden">{{ 'products.general.sale_price' | t }}</span>
+                      {%- else -%}
+                        <span data-a11y-price class="visually-hidden">{{ 'products.general.regular_price' | t }}</span>
+                      {%- endif -%}
+
+                      <span data-product-price
+                        class="product__price{% if current_variant.compare_at_price > current_variant.price %} on-sale{% endif %}">
+                        {%- unless product.empty? -%}
+                          {{ current_variant.price | money_with_currency }}
+                        {%- else -%}
+                          {{ 1999 | money_with_currency }}
+                        {%- endunless -%}
+                      </span>
+
+                      {%- if settings.product_save_amount -%}
+                        {%- if settings.product_save_type == 'dollar' -%}
+                          {%- capture saved_amount -%}{{ current_variant.compare_at_price | minus: current_variant.price | money_with_currency }}{%- endcapture -%}
+                        {%- else -%}
+                          {%- capture saved_amount -%}{{ current_variant.compare_at_price | minus: current_variant.price | times: 100.0 | divided_by: current_variant.compare_at_price | round }}%{%- endcapture -%}
+                        {%- endif -%}
+                        <span data-save-price class="product__price-savings{% if hide_sale_price %} hide{% endif %}">
+                          {%- unless hide_sale_price -%}
+                            {{ 'products.general.save_html' | t: saved_amount: saved_amount }}
+                          {%- endunless -%}
+                        </span>
+                      {%- endif -%}
+
+                      <div
+                        data-unit-price-wrapper
+                        class="product__unit-price product__unit-price--spacing {% unless current_variant.unit_price_measurement %} hide{% endunless %}">
+                        {%- capture unit_price_base_unit -%}
+                          <span data-unit-base>
+                            {%- if current_variant.unit_price_measurement -%}
+                              {%- if current_variant.unit_price_measurement.reference_value != 1 -%}
+                                {{ current_variant.unit_price_measurement.reference_value }}
+                              {%- endif -%}
+                              {{ current_variant.unit_price_measurement.reference_unit }}
+                            {%- endif -%}
+                          </span>
+                        {%- endcapture -%}
+
+                        <span data-unit-price>{{ current_variant.unit_price | money_with_currency }}</span>/{{ unit_price_base_unit }}
+                      </div>
+
+                      {%- if shop.taxes_included or shop.shipping_policy.body != blank -%}
+                        <div class="product__policies rte small--text-center">
+                          {%- if shop.taxes_included -%}
+                            {{ 'products.product.include_taxes' | t }}
+                          {%- endif -%}
+                          {%- if shop.shipping_policy.body != blank -%}
+                            {{ 'products.product.shipping_policy_html' | t: link: shop.shipping_policy.url }}
+                          {%- endif -%}
+                        </div>
+                      {%- endif -%}
+                    </div>
+              
+                            <style>
+                        .doogma-nav .input-group {
+                          display:block;
+                          margin: 20px 0;
+                          text-align:left;
+                        }
+
+                        .doogma-nav .input-group.outline.none {
+                          opacity: 0.4;
+                        }
+                          
+                        .doogma-number {
+                         	border-color: #2270b5;
+                         	height: 50px;
+                          	font-size: 20px;
+                        }
+                        .doogma-nav label {
+                          text-transform:uppercase;
+                          font-weight: 600;
+                        }
+                        .doogma-nav select,
+                        .doogma-nav input,
+                        .doogma-nav textarea {
+                          width: 100%;
+                        }
+                        .doogma-nav input[type=checkbox] {
+                          width:auto;
+                          height: auto;
+                          margin-right: 5px;
+                          display:inline-block;
+                        }
+                          
+                        .doogma-nav select {
+                      	  background-color: #575757;
+                          background-image: none;
+                          color: white;
+                          padding: 12px 30px 12px 12px;
+                          width: 100%;
+                          border: none;
+                          font-size: 20px;
+                          box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+                          -webkit-appearance: button;
+                          appearance: button;
+                          outline: none;
+                          border-radius:4px;
+                        }
+                          
+                        .doogma-swatches select {
+                          position:absolute;
+                          left: -999em;
+                        }
+                        .doogma-swatch-list {
+                          list-style:none;
+                          margin: 0;
+                          padding: 0;
+                        }
+                        .doogma-swatch-list li {
+                          width: 30px;
+                          height: 30px;
+                          display:inline-block;
+                          margin: 0 5px; 
+                          padding: 0;
+                          border-radius: 30px;
+                          border: 2px solid #999;
+                          cursor:pointer;
+                        }
+                        .doogma-swatch-list li.active {
+                          border-color: red;
+                        }
+                        input[type=range],
+                        input[type=text] {
+                          padding-top: 0;
+                        }
+                        .color-hint {
+                          text-transform:none;
+                          font-style:italic;
+                          font-weight:normal;
+                          margin-left: 1px;
+                        }
+                        .color-hint:before {
+                          content: ":";
+                          display:inline-block;
+                          margin-right: 5px;
+                          font-style:normal;
+                        }
+                      
+
+                        /* fonts */
+                      .Black-Ops-One {
+                        font-family: 'Black Ops One', cursive;
+                      }
+                      .Anton,
+                      .anton {
+                        font-family: 'Anton', sans-serif;
+                      }
+                      .Audiowide {
+                        font-family: 'Audiowide', cursive;
+                      }
+                      .Baumans {
+                        font-family: 'Baumans', cursive;
+                      }
+                      .Bowlby-One {
+                        font-family: 'Bowlby One',cursive;
+                      }
+                      .Bowlby-One-SC {
+                        font-family: 'Bowlby One SC',cursive;
+                      }
+                      .Bungee {
+                        font-family: 'Bungee',cursive;
+                      }
+                      .Ceviche-One {
+                        font-family: 'Ceviche One', cursive;
+                      }
+                      .Changa-One {
+                        font-family: 'Changa One', cursive;
+                      }
+                      .Creepster {
+                        font-family: 'Creepster', cursive;
+                      }
+                      .East-Sea-Dokdo {
+                        font-family: 'East Sea Dokdo', cursive;
+                      }
+                      .Graduate {
+                        font-family: 'Graduate', cursive;
+                      }
+                      .Fugaz-One{
+                        font-family: 'Fugaz One', cursive;
+                      }
+                      .Iceland {
+                        font-family: 'Iceland', cursive;
+                      }
+                      .Orbitron {
+                        font-family: 'Orbitron', sans-serif;
+                      }
+                      .Ruslan-Display {
+                        font-family: 'Ruslan Display', cursive;
+                      }
+                      .Russo-One {
+                        font-family: 'Russo One', sans-serif;
+                      }
+                      .Righteous {
+                        font-family: 'Righteous', cursive;
+                      }
+                      .Yellowtail {
+                      font-family: 'Yellowtail', cursive;
+                      }
+                      .Sarina {
+                        font-family: 'Sarina', cursive;
+                      }
+                      .Sarpanch {
+                        font-family: 'Sarpanch', sans-serif;
+                      }
+                      .SeaDog,
+                      .seadog {
+                        font-family: 'Sea-Dog';
+                        font-weight: normal;
+                        font-style: normal;
+                      }
+                      .Share-Tech-Mono {
+                        font-family: 'Share Tech Mono', monospace;
+                      }
+                      .Shojumaru {
+                        font-family: 'Shojumaru', cursive;
+                      }
+                      .Shrikhand {
+                        font-family: 'Shrikhand', cursive;
+                      }
+                      .Stalinist-One {
+                        font-family: 'Stalinist One', cursive;
+                      }
+                      .Timmana {
+                        font-family: 'Timmana', sans-serif;
+                      }
+                      .Viga {
+                        font-family: 'Viga', sans-serif;
+                      }
+                      .Yesteryear {
+                        font-family: 'Yesteryear', cursive;
+                      }
+
+</style>
+
+
+                        <div class="doogma-nav">
+                          	
+                          <div class="input-group"> 
+                            <label for="properties-number">Enter your number</label>
+                            <input type="text" value="MT 7279727" name="properties[Number]" id="properties-number" class="doogma-number" required>
+                          </div>
+                           <div class="input-group">         
+                            <label for="properties-model">Select your Background</label>
+                            <select name="properties[_Model]" id="properties-model" class="doogma-model">
+                              <option value="seadoo" data-doogma-value="seadoo">Light</option>
+                              <option value="gti" data-doogma-value="gti">Dark</option>
+                            </select>
+                          </div>  
+<!--
+                          <div class="input-group doogma-swatches"> 
+                            <label for="properties-model-color">Preview on your model color</label>
+                            <select name="ModelColor" id="properties-model-color" class="doogma-modelcolor">
+                              <option value="ffffff" data-doogma-value="ffffff">white</option>
+                              <option value="000000" data-doogma-value="000000">black</option>
+                            </select>
+                            <ul class="doogma-swatch-list" data-controls="properties-model-color">
+                              <li style="background-color: #ffffff;" data-bg="ffffff" class="active"></li>
+                              <li style="background-color: #000000;" data-bg="000000"></li>
+                            </ul>
+                          </div>
+ -->
+                          
+                          <div class="input-group"> 
+                            <label for="properties-font">Select font</label>
+                            <select name="properties[_Font]" id="properties-font" class="doogma-font Black-Ops-One">
+                              <option value="Black-Ops-One" class="Black-Ops-One" data-doogma-value="black-ops-one">Black Ops One</option>
+                              <option value="anton" class="Anton" data-doogma-value="anton">Anton</option>
+                              <option value="seadog" class="SeaDog" data-doogma-value="seadog">Seadog</option>
+                              <option value="Fugaz One" class="Fugaz-One" data-doogma-value="fugaz-one">Fugaz One</option>
+                              <option value = "Shrikhand" class="Shrikhand" data-doogma-value="shrikhand">Shrikhand</option>
+                              <option value = "Creepster" class="Creepster" data-doogma-value="creepster">Creepster</option>
+							                <option value = "Timmana" class="Timmana" data-doogma-value="timmana">Timmana</option>
+                              <option value = "Audiowide" class="Audiowide" data-doogma-value="audiowide">Audiowide</option>
+                              <option value = "Bowlby One" class="Bowlby-One" data-doogma-value="bowlby-one">Bowlby One</option>
+                              <option value = "Shojumaru" class="Shojumaru" data-doogma-value="shojumaru">Shojumaru</option>
+                              <option value = "Russo One" class="Russo-One" data-doogma-value="russo-one">Russo One</option>
+                              <option value = "Righteous" class="Righteous" data-doogma-value="righteous">Righteous</option>
+                              <option value = "Changa One" class="Changa-One" data-doogma-value="changa-one"> Changa One</option>
+                              <option value = "Sarina" class="Sarina" data-doogma-value="sarina">Sarina</option>
+                              <option value = "Bungee" class="Bungee" data-doogma-value="bungee">Bungee</option>
+                              <option value = "Orbitron" class="Orbitron" data-doogma-value="orbitron">Orbitron</option>
+                              <option value = "Bowlby One SC" class="Bowlby-One-SC" data-doogma-value="bowlby-one-sc">Bowlby One SC</option>
+                              <option value = "Viga" class="Viga" data-doogma-value="viga">Viga</option>
+                              <option value = "Ceviche One" class="Ceviche-One" data-doogma-value="ceviche-one">Ceviche One</option>
+                              <option value = "Ruslan Display" class="Ruslan-Display" data-doogma-value="ruslan-display">Ruslan Display</option>
+                              <option value = "Graduate" class="Graduate" data-doogma-value="graduate">Graduate</option>
+                              <option value = "Stalinist One" class="Stalinist-One" data-doogma-value="stalinist-one">Stalinist One</option>
+                            </select>
+                          </div>
+                          <div class="input-group doogma-swatches"> 
+                            <label for="properties-number-fill-color">Select number color <span class="color-hint">Black</span></label>
+                            <select name="properties[_NumberFillColor]" id="properties-number-fill-color" class="doogma-numberfillcolor">
+                              <option value="000000" data-doogma-value="000000" selected>Black</option>
+                              <option value="FFFFFF" data-doogma-value="FFFFFF">White</option>
+                              <option value="DDFC4A" data-doogma-value="DDFC4A">Day Glow Yellow</option>
+                              <option value="B8F63B" data-doogma-value="B8F63B">Kawi Green</option>
+                              <option value="FF0000" data-doogma-value="FF0000">Trixx Red</option>
+                              <option value="FF9D00" data-doogma-value="FF9D00">Orange Chrush</option>
+                              <option value="FCF73A" data-doogma-value="FCF73A">Sea-Doo Sunburst Yellow</option>
+                              <option value="0091DA" data-doogma-value="0091DA">Octane Blue</option>
+                              <option value="1A1E25" data-doogma-value="1A1E25">SCS W Blue Black</option>
+                              <option value="BBBAB9" data-doogma-value="BBBAB9">Maverick Silver</option>
+                              <option value="006298" data-doogma-value="006298">Belize Blue</option>
+                              <option value="CD2E0F" data-doogma-value="CD2E0F">Lava Red</option>
+                              <option value="CE0076" data-doogma-value="CE0076">Sea-Doo Spark Magenta</option>
+                              <option value="323232" data-doogma-value="323232">Dark Grey</option>
+                              <option value="FFC41D" data-doogma-value="FFC41D">Mellenium Yellow</option>
+                              <option value="073EFF" data-doogma-value="073EFF">Dazzling Blue</option>
+                            </select>
+
+                            <ul class="doogma-swatch-list" data-controls="properties-number-fill-color">
+                              <li style="background-color: #000000;" data-bg="000000" class="active"></li>
+                              <li style="background-color: #FFFFFF;" data-bg="FFFFFF"></li>
+                              <li style="background-color: #DDFC4A;" data-bg="DDFC4A"></li>
+                              <li style="background-color: #B8F63B;" data-bg="B8F63B"></li>
+                              <li style="background-color: #FF0000;" data-bg="FF0000"></li>
+                              <li style="background-color: #FF9D00;" data-bg="FF9D00"></li>
+                              <li style="background-color: #FCF73A;" data-bg="FCF73A"></li>
+                              <li style="background-color: #0091DA;" data-bg="0091DA"></li>
+                              <li style="background-color: #1A1E25;" data-bg="1A1E25"></li>
+                              <li style="background-color: #BBBAB9;" data-bg="BBBAB9"></li>
+                              <li style="background-color: #006298;" data-bg="006298"></li>
+                              <li style="background-color: #CD2E0F;" data-bg="CD2E0F"></li>
+                              <li style="background-color: #CE0076;" data-bg="CE0076"></li>
+                              <li style="background-color: #323232;" data-bg="323232"></li>
+                              <li style="background-color: #FFC41D;" data-bg="FFC41D"></li>
+                              <li style="background-color: #073EFF;" data-bg="073EFF"></li>
+                            </ul>
+                          </div>
+
+                          <div class="input-group doogma-swatches outline"> 
+                            <label for="properties-number-outline-color">Select number outline color <span class="color-hint">White</span></label>
+                            <select name="properties[_NumberOutlineColor]" id="properties-number-outline-color" class="doogma-numberoutlinecolor">
+                              <option value="FFFFFF" data-doogma-value="FFFFFF" selected>White</option>
+                              <option value="000000" data-doogma-value="000000">Black</option>
+                              <option value="DDFC4A" data-doogma-value="DDFC4A">Day Glow Yellow</option>
+                              <option value="B8F63B" data-doogma-value="B8F63B">Kawi Green</option>
+                              <option value="FF0000" data-doogma-value="FF0000">Trixx Red</option>
+                              <option value="FF9D00" data-doogma-value="FF9D00">Orange Chrush</option>
+                              <option value="FCF73A" data-doogma-value="FCF73A">Sea-Doo Sunburst Yellow</option>
+                              <option value="0091DA" data-doogma-value="0091DA">Octane Blue</option>
+                              <option value="1A1E25" data-doogma-value="1A1E25">SCS W Blue Black</option>
+                              <option value="BBBAB9" data-doogma-value="BBBAB9">Maverick Silver</option>
+                              <option value="006298" data-doogma-value="006298">Belize Blue</option>
+                              <option value="CD2E0F" data-doogma-value="CD2E0F">Lava Red</option>
+                              <option value="CE0076" data-doogma-value="CE0076">Sea-Doo Spark Magenta</option>
+                              <option value="323232" data-doogma-value="323232">Dark Grey</option>
+                              <option value="FFC41D" data-doogma-value="FFC41D">Millennium Yellow</option>
+                              <option value="073EFF" data-doogma-value="073EFF">Dazzling Blue</option>
+                            </select>
+                            <ul class="doogma-swatch-list" data-controls="properties-number-outline-color">
+                              <li style="background-color: #FFFFFF;" data-bg="FFFFFF" class="active"></li>
+                              <li style="background-color: #000000;" data-bg="000000"></li>
+                              <li style="background-color: #DDFC4A;" data-bg="DDFC4A"></li>
+                              <li style="background-color: #B8F63B;" data-bg="B8F63B"></li>
+                              <li style="background-color: #FF0000;" data-bg="FF0000"></li>
+                              <li style="background-color: #FF9D00;" data-bg="FF9D00"></li>
+                              <li style="background-color: #FCF73A;" data-bg="FCF73A"></li>
+                              <li style="background-color: #0091DA;" data-bg="0091DA"></li>
+                              <li style="background-color: #1A1E25;" data-bg="1A1E25"></li>
+                              <li style="background-color: #BBBAB9;" data-bg="BBBAB9"></li>
+                              <li style="background-color: #006298;" data-bg="006298"></li>
+                              <li style="background-color: #CD2E0F;" data-bg="CD2E0F"></li>
+                              <li style="background-color: #CE0076;" data-bg="CE0076"></li>
+                              <li style="background-color: #323232;" data-bg="323232"></li>
+                              <li style="background-color: #FFC41D;" data-bg="FFC41D"></li>
+                              <li style="background-color: #073EFF;" data-bg="073EFF"></li>
+                            </ul>
+                          </div>
+
+                          <div class="input-group"> 
+                            <label for="properties-disable-outline">
+                            <input type="checkbox" value="no outline" name="properties[_DisableOutline]" id="properties-disable-outline" class="doogma-disableoutline">
+                            Disable Text Outline</label>
+                            </div>
+                          
+                          <div class="input-group"> 
+                            <label for="properties-number-size">Adjust number size</label>
+                            <input type="range" min="10" max="200" default="50" name="properties[_NumberSize]" id="properties-number-size" class="doogma-numbersize">
+                          </div>
+
+                          <div class="input-group"> 
+                            <label for="properties-spacing">Adjust spacing between letters</label>
+                            <input type="range" min="-10" max="10" default="0" name="properties[_Spacing]" id="properties-spacing" class="doogma-spacing">
+                          </div>
+                          
+
+<!--
+                          <div class="input-group"> 
+                            <label for="properties-outline-size">Select outline size</label>
+                            <select name="properties[_OutlineSize]" id="properties-outline-size" class="doogma-outlinesize">
+                              <option value="small" data-doogma-value="small">Small</option>
+                              <option value="medium" data-doogma-value="medium">Medium</option>
+                              <option value="large" data-doogma-value="large">Large</option>
+                              <option value="none" data-doogma-value="none">None</option>
+                            </select>
+                          </div>
+-->
+
+
+                          
+<!--
+                          <div class="input-group"> 
+                            <label for="properties-finish">Select Overlaminate</label>
+                            <select name="properties[_Finish]" id="properties-finish" class="doogma-finish">
+                              <option value="gloss" data-doogma-value="gloss">Gloss</option>
+                              <option value="matte" data-doogma-value="matte">Matte</option>
+                            </select>
+                          </div>
+-->                          
+                          
+                          <div class="input-group"> 
+                            <label for="properties-comments">Comments</label>
+                            <textarea name="properties[Comments]" id="properties-comments" class="doogma-comments"></textarea>
+                          </div>
+
+
+                          <input name="properties[_ViewProduct]" class="doogma-viewproductpagewithyoursavedselections" type="hidden" value="na">
+                          <input name="properties[_Proof]" class="doogma-viewyourproof" type="hidden" value="na">
+                          <input name="properties[_PrintReady]" class="doogma-printoutput" type="hidden" value="na">
+                        </div>
+                        <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+                          <script>
+                          (function($){
+                            $(function(){
+                              $('.doogma-swatch-list').each(function() {
+                                var list = $(this);
+                                var selector = '#' + $(this).data('controls');
+                                list.find('li').click(function() {
+                                    list.find('li').removeClass('active');
+                                    $(this).addClass('active');
+                                    $(selector).val($(this).data('bg')).trigger('change');
+                                    console.log($(selector).val());
+                                });
+                          
+                              });
+                            });
+                            $('#properties-font').change(function() {
+                              $(this).removeClass().addClass('doogma-font ' + $(this).val().replace(' ','-'));
+                            });
+                            $('#properties-number-fill-color').change(function() {
+                              $('label[for=properties-number-fill-color] .color-hint').html($(this).find('option:selected').text());
+                            });
+                            $('#properties-number-outline-color').change(function() {
+                              $('label[for=properties-number-outline-color] .color-hint').html($(this).find('option:selected').text());
+                            });
+                            $('#properties-disable-outline').change(function() {
+                              if($(this).is(':checked')) {
+                                $('.outline').addClass('none');
+                              } else {
+                                $('.outline').removeClass('none');
+                              }
+                            });
+                          })(jQuery);
+                          </script>  
+                  {%- when 'quantity_selector' -%}
+                    <div class="product-block" {{ block.shopify_attributes }}>
+                      <div class="product__quantity">
+                        {% assign qty_id = section_id | append: product.id %}
+                        <label for="Quantity-{{ qty_id }}">{{ 'products.product.quantity' | t }}</label>
+                        {%- render 'quantity-input', form_id: form_id, id: qty_id, qty: 1, min: 1 -%}
+                      </div>
+                    </div>
+                  {%- when 'variant_picker' -%}
+                    <div class="product-block" {{ block.shopify_attributes }}>
+                      {%- unless product.has_only_default_variant -%}
+                        {%- for option in product.options_with_values -%}
+                          {%- liquid
+                            if block.settings.color_swatches
+                              assign is_color = false
+                              assign color_option_index = 0
+                              assign swatch_trigger = 'products.general.color_swatch_trigger' | t | downcase
+                              assign color_option_index = forloop.index0
+                              assign downcased_option = option.name | downcase
+                              if downcased_option contains swatch_trigger
+                                assign is_color = true
+                              elsif swatch_trigger == 'color' and downcased_option contains 'colour'
+                                assign is_color = true
+                              endif
+                            endif
+                          -%}
+
+                          {%- if block.settings.picker_type == 'button' -%}
+                            {%- render 'variant-button',
+                              product: product,
+                              form_id: form_id,
+                              section_id: section_id,
+                              option: option,
+                              forloop: forloop,
+                              variant_labels: block.settings.variant_labels,
+                              is_color: is_color,
+                              color_option_index: color_option_index
+                            -%}
+                          {%- else -%}
+                            {%- render 'variant-dropdown',
+                              product: product,
+                              form_id: form_id,
+                              section_id: section_id,
+                              option: option,
+                              forloop: forloop,
+                              variant_labels: block.settings.variant_labels
+                            -%}
+                          {%- endif -%}
+                        {%- endfor -%}
+                      {%- endunless -%}
+                    </div>
+
+                  {%- when 'buy_buttons' -%}
+                    <div class="product-block" {{ block.shopify_attributes }}>
+                      {%- unless product.empty? -%}
+                        <div class="product-block">
+                          {%- render 'form-reg',
+                            form_id: form_id,
+                            product: product,
+                            show_dynamic_checkout: block.settings.show_dynamic_checkout,
+                            current_variant: current_variant
+                          -%}
+                        </div>
+                      {%- endunless -%}
+                      {%- if block.settings.surface_pickup_enable -%}
+                        <div data-store-availability-holder
+                          data-product-name="{{ product.title | escape }}"
+                          data-base-url="{{ shop.url }}{{ routes.root_url }}"
+                          ></div>
+                      {%- endif -%}
+                    </div>
+                             
+
+                  {%- when 'sales_point' -%}
+                    {%- unless block.settings.text == blank -%}
+                      <div class="product-block product-block--sales-point" {{ block.shopify_attributes }}>
+                        <ul class="sales-points">
+                          <li class="sales-point">
+                            <span class="icon-and-text">
+                              {% case block.settings.icon %}
+                                {% when 'checkmark' %} <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-circle-checkmark" viewBox="0 0 64 64"><defs><style>.cls-1{fill:none;stroke:#000;stroke-width:2px}</style></defs><path class="cls-1" d="M52.68 24.48A22 22 0 1 1 47 15.93M21 32l8.5 8.5L57 13"/></svg>
+                                {% when 'globe' %} <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-globe" viewBox="0 0 64 64"><defs><style>.cls-1{fill:none;stroke:#000;stroke-width:2px}</style></defs><circle class="cls-1" cx="33" cy="32" r="22"/><path class="cls-1" d="M14 21h38M11 32h44M14 43h38M33 10c-12 8-12 37 0 44M33 10c12 8 12 37 0 44"/></svg>
+                                {% when 'leaf' %} <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-leaf" viewBox="0 0 64 64"><defs><style>.cls-1{fill:none;stroke:#000;stroke-miterlimit:10;stroke-width:2px}</style></defs><path class="cls-1" d="M51 12L13 50M35 13v15h16"/><path class="cls-1" d="M52 11c6 24-16.72 47.29-33 32C7 22 29 10 52 11z"/></svg>
+                                {% when 'package' %} <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-package" viewBox="0 0 64 64"><defs><style>.cls-1{fill:none;stroke:#000;stroke-width:2px}</style></defs><path class="cls-1" d="M32 56L9.05 42.88V22.12L32 9l22.95 13.12v20.76L32 56z"/><path class="cls-1" d="M32 56V35.23l22.95-13.11M32 35.23L9.05 22.12M42.13 14.79L20.52 28.67v8.75"/></svg>
+                                {% when 'lock' %} <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-lock" viewBox="0 0 64 64"><defs><style>.cls-1{fill:none;stroke:#000;stroke-width:2px}</style></defs><path id="svg_2" data-name="svg 2" class="cls-1" d="M20.48 24v-3c0-6.6 5.52-11 11.76-11C39 10 44 15.13 44 21v3"/><path id="svg_4" data-name="svg 4" class="cls-1" d="M11.62 24h41.25v29.77H11.62z"/><path class="cls-1" d="M32.24 37v7"/><circle class="cls-1" cx="32.24" cy="35.5" r="1.5"/></svg>
+                                {% when 'truck' %} <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-truck" viewBox="0 0 64 64"><defs><style>.cls-1{fill:none;stroke:#000;stroke-miterlimit:10;stroke-width:2px}</style></defs><path class="cls-1" d="M17 47.72H7.38V21h33.14v26.72H24.44M45.92 47.72h-5.4V34.9h17.1v12.82h-4.23M57.62 34.9l-6.41-8.56H40.52"/><circle class="cls-1" cx="20.74" cy="48.26" r="3.74"/><path class="cls-1" d="M45.92 47.73a3.82 3.82 0 1 1 0 .37v-.37"/></svg>
+                              {% endcase %}
+                              <span>{{ block.settings.text }}</span>
+                            </span>
+                          </li>
+                        </ul>
+                      </div>
+                    {%- endunless -%}
+                  {%- when 'inventory_status' -%}
+                    <div class="product-block product-block--sales-point" {{ block.shopify_attributes }}>
+                      {%- render 'product-inventory', product: product, current_variant: current_variant, block: block -%}
+                    </div>
+                  {%- when 'share' -%}
+                    <div class="product-block" {{ block.shopify_attributes }}>
+                      {%- render 'social-sharing', share_title: product.title, share_permalink: product.url, share_image: product -%}
+                    </div>
+                  {%- when 'trust_badge' -%}
+                    <div class="product-block" {{ block.shopify_attributes }}>
+                      <div class="aos-animate" style="max-width: {{ block.settings.trust_image.width }}px; margin: 0 auto;">
+                        <div class="image-wrap " style="height: 0; padding-bottom: {{ 100 | divided_by: block.settings.trust_image.aspect_ratio }}%;">
+                          {%- assign img_url = block.settings.trust_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+                          <img class="lazyload"
+                              data-src="{{ img_url }}"
+                              data-widths="[360, 540, 700, 1024]"
+                              data-aspectratio="{{ block.settings.trust_image.aspect_ratio }}"
+                              data-sizes="auto"
+                              alt="{{ block.settings.trust_image.alt }}">
+                          <noscript>
+                            <img class="lazyloaded" src="{{ block.settings.trust_image | img_url: '540x' }}" alt="{{ block.settings.trust_image.alt }}">
+                          </noscript>
+                        </div>
+                      </div>
+                    </div>
+                  {%- when 'custom' -%}
+                    <div class="product-block" {{ block.shopify_attributes }}>
+                      {{ block.settings.code }}
+                    </div>
+                {%- endcase -%}
+             
+              
+              {%- else -%}
+                <div data-blocks-holder
+                     data-url="{{ product.url | within: collection }}"
+                     data-template="{{ product.template_suffix }}">
+                  <div class="placeholder-content" style="min-height: 86px;"></div>
+                </div>
+              {%- endfor -%}
+               {%endform%}
+            </div>
+          </div>
+        </div>
+
+        {%- unless image_position == 'left' -%}
+          <div class="grid__item {{ product_image_width }} product-single__sticky">
+            {%- render 'product-images',
+              section_id: section_id,
+              product: product,
+              isModal: isModal,
+              image_position: image_position,
+              product_zoom_enable: product_zoom_enable,
+              product_zoom_size: product_zoom_size,
+              product_image_size: product_image_size,
+              thumbnail_arrows: thumbnail_arrows,
+              thumbnail_position: thumbnail_position,
+              video_looping: video_looping,
+              video_style: video_style
+            -%}
+          </div>
+        {%- endunless -%}
+
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,213 @@
+<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}" dir="{{ settings.text_direction }}">
+<head>
+
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-TZ93BWF');</script>
+<!-- End Google Tag Manager -->
+
+  
+  <!--  ClickCease.com tracking -->
+  <script type='text/javascript'>var script = document.createElement('script');
+  script.async = true; script.type = 'text/javascript';
+  var target = 'https://www.clickcease.com/monitor/stat.js';
+  script.src = target;var elem = document.head;elem.appendChild(script);
+  </script>
+  <noscript>
+  <a href='https://www.clickcease.com' rel='nofollow'><img src='https://monitor.clickcease.com' alt='ClickCease'/></a>
+  </noscript>
+  <!--  ClickCease.com tracking-->
+
+  
+{% include 'booster-seo' %}
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+ {% comment %} <meta name="viewport" content="width=device-width,initial-scale=1">{% endcomment %}
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=10.0, minimum-scale=.25, user-scalable=yes"/>
+  <meta name="theme-color" content="{{ settings.color_button }}">
+  <meta name="google-site-verification" content="bme-XPQ-G6fbkcJf5EfzUP0yDN_gnSOiShBIx7WgRGk" />
+  <link rel="canonical" href="{{ canonical_url }}">
+  <link rel="preconnect" href="https://cdn.shopify.com">
+  <link rel="preconnect" href="https://fonts.shopifycdn.com">
+  <link rel="dns-prefetch" href="https://productreviews.shopifycdn.com">
+  <link rel="dns-prefetch" href="https://ajax.googleapis.com">
+  <link rel="dns-prefetch" href="https://maps.googleapis.com">
+  <link rel="dns-prefetch" href="https://maps.gstatic.com">
+  <link rel="stylesheet" href="https://use.typekit.net/kke5dsk.css">
+  <link rel="prefetch" href="https://www.scsunlimited.com/cdn/shop/t/75/assets/main.js">
+  
+<!-- BEGIN PRIVY WIDGET CODE -->
+<script type='text/javascript'> var _d_site = _d_site || '921503387BD6F843CF0B1CCE'; </script>
+<script src='https://widget.privy.com/assets/widget.js'></script>
+<!-- END PRIVY WIDGET CODE -->
+
+  {%- if settings.favicon != blank -%}
+    <link rel="shortcut icon" href="{{ settings.favicon | img_url: '32x32' }}" type="image/png" />
+  {%- endif -%}
+
+  {% comment %}{%- render 'seo-title' -%}{% endcomment %}
+
+  {%- if page_description -%}
+  {% comment %}<meta name="description" content="{{ page_description | escape }}">{% endcomment %}
+  {%- endif -%}
+
+  {%- render 'social-meta-tags' -%}
+
+  {%- render 'font-face' -%}
+  {{ 'theme.css' | asset_url | stylesheet_tag }}
+  {%- render 'css-variables' -%}
+
+      {% comment %}==============================================================
+    ADDED BY BTOWNWEB - 03/14/19
+    - For registration number product
+    - Google fonts 
+    - Color picker Huebee JS and CSS
+    ==========================================================={% endcomment %}
+
+    {% if template contains 'product-registration' %}
+    <link href="https://fonts.googleapis.com/css?family=Black+Ops+One|Anton|Audiowide|Baumans|Bowlby+One|Bowlby+One+SC|Bungee|Ceviche+One|Changa+One|Creepster|East+Sea+Dokdo|Graduate|Fugaz+One|Iceland|Orbitron|Ruslan+Display|Russo+One|Righteous|Sarina|Sarpanch|Share+Tech+Mono|Shojumaru|Shrikhand|Stalinist+One|Timmana|Viga|Yesteryear|Yellowtail" rel="stylesheet">
+    {{ 'huebee.js' | asset_url | script_tag }} 
+    {{ 'huebee.css' | asset_url | stylesheet_tag  }} 
+    {{ 'seadog.css' | asset_url | stylesheet_tag  }} 
+    {% endif %}
+    
+{% comment %}Begin SB custom code{% endcomment %}
+  	<link href="//fonts.googleapis.com/css?family=Roboto Condensed:100italic,300italic,400italic,600italic,700italic,800italic,900italic,100,300,600,700,800,900,400&amp;subset=cyrillic-ext,greek-ext,latin,latin-ext,cyrillic,greek,vietnamese" rel="stylesheet" type="text/css">
+    {% comment %}{{ 'bootstrap.min.js' | asset_url | script_tag  }} {% endcomment %}
+    {% comment %}{{ 'bootstrap.min.css' | asset_url | stylesheet_tag  }} {% endcomment %}
+    {% comment %}{{ 'color-config.css' | asset_url | stylesheet_tag  }} {% endcomment %}
+{% comment %}End SB custom code{% endcomment %}
+  
+  <script>
+    document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+
+    window.theme = window.theme || {};
+    theme.routes = {
+      home: "{{ routes.root_url }}",
+      cart: "{{ routes.cart_url | append: '.js' }}",
+      cartPage: "{{ routes.cart_url }}",
+      cartAdd: "{{ routes.cart_add_url | append: '.js' }}",
+      cartChange: "{{ routes.cart_change_url | append: '.js' }}"
+    };
+    theme.strings = {
+      soldOut: {{ 'products.product.sold_out' | t | json }},
+      unavailable: {{ 'products.product.unavailable' | t | json }},
+      inStockLabel: {{ 'products.product.in_stock_label' | t | json }},
+      stockLabel: {{ 'products.product.stock_label' | t: count: '[count]' | json }},
+      willNotShipUntil: {{ 'products.product.will_not_ship_until' | t: date: '[date]' | json }},
+      willBeInStockAfter: {{ 'products.product.will_be_in_stock_after' | t: date: '[date]' | json }},
+      waitingForStock: {{ 'products.product.waiting_for_stock' | t | json }},
+      savePrice: {{ 'products.general.save_html' | t: saved_amount: '[saved_amount]' | json }},
+      cartEmpty: {{ 'cart.general.empty' | t | json }},
+      cartTermsConfirmation: {{ 'cart.general.terms_confirm' | t | json }},
+      searchCollections: {{ 'general.search.collections' | t | json }},
+      searchPages: {{ 'general.search.pages' | t | json }},
+      searchArticles: {{ 'general.search.articles' | t | json }}
+    };
+    theme.settings = {
+      dynamicVariantsEnable: true,
+      cartType: {{ settings.cart_type | json }},
+      isCustomerTemplate: {% if request.page_type contains 'customers/' %}true{% else %}false{% endif %},
+      moneyFormat: {{ shop.money_format | json }},
+      saveType: {{ settings.product_save_type | json }},
+      productImageSize: {{ settings.product_grid_image_size | json }},
+      productImageCover: {{ settings.product_grid_image_fill }},
+      predictiveSearch: {{ settings.predictive_search_enabled }},
+      predictiveSearchType: {{ settings.search_type | json }},
+      quickView: {{ settings.quick_shop_enable }},
+      themeName: 'Impulse',
+      themeVersion: "5.1.2"
+    };
+  </script>
+
+  <script>
+//     document.getElementById("text-input").addEventListener("click", function(event){
+//       event.preventDefault()
+//     });  
+  </script>
+  
+  {{ content_for_header }}
+  
+  <script src="{{ 'vendor-scripts-v10.js' | asset_url | split: '?' | first }}" defer="defer"></script>
+
+  {%- if shop.enabled_currencies.size > 1 -%}
+    <link rel="preload" as="style" href="{{ 'currency-flags.css' | asset_url | split: '?' | first }}" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="stylesheet" href="{{ 'currency-flags.css' | asset_url | split: '?' | first }}">
+  {%- endif -%}
+
+  <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+  
+  <script src="{{ 'theme.js' | asset_url }}" defer="defer"></script>
+  
+{% if product.tags.contains('switch') %}
+  
+{% endif %}
+
+
+  {%- if request.page_type contains 'customers/' -%}
+    <script src="{{ 'shopify_common.js' | shopify_asset_url }}" defer="defer"></script>
+  {%- endif -%}
+  
+ 
+{{ 'tr-custom.css' | asset_url | stylesheet_tag }}
+  
+<script type='text/javascript'>
+  window.smartlook||(function(d) {
+    var o=smartlook=function(){ o.api.push(arguments)},h=d.getElementsByTagName('head')[0];
+    var c=d.createElement('script');o.api=new Array();c.async=true;c.type='text/javascript';
+    c.charset='utf-8';c.src='https://web-sdk.smartlook.com/recorder.js';h.appendChild(c);
+    })(document);
+    smartlook('init', 'cc1be5a2ad03153f4d8cbd5e0d089e7f65f85985', { region: 'eu' });
+</script>
+  
+
+<!-- TR 8/22 -->
+{% render 'analyzify-product-datalayer.liquid' %}
+
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "8004ffce251048879e3c20121e488613"}'></script><!-- End Cloudflare Web Analytics -->
+
+</head>
+
+<body class="template-{{ template | replace: '.', ' ' | truncatewords: 1, '' | handle }} {% if template contains 'registration' %}product-registration{% endif %}{% if request.path == '/challenge' %} template-challange{% endif %}" data-center-text="{{ settings.type_body_align_text }}" data-button_style="{{ settings.button_style }}" data-type_header_capitalize="{{ settings.type_header_capitalize }}" data-type_headers_align_text="{{ settings.type_headers_align_text }}" data-type_product_capitalize="{{ settings.type_product_capitalize }}" data-swatch_style="{{ settings.swatch_style }}" {% if settings.disable_animations %}data-disable-animations="true"{% endif %}>
+
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TZ93BWF"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+  <a class="in-page-link visually-hidden skip-link" href="#MainContent">{{ 'general.accessibility.skip_to_content' | t }}</a>
+
+  <div id="PageContainer" class="page-container">
+    <div class="transition-body">
+
+    {%- section 'header' -%}
+
+      <main class="main-content" id="MainContent">
+        {{ content_for_layout }}
+      </main>
+
+      {%- section 'footer-promotions' -%}
+      {%- section 'footer' -%}
+
+    </div>
+  </div>
+
+  {%- section 'newsletter-popup' -%}
+
+  {%- liquid
+    render 'video-modal'
+    render 'photoswipe-template'
+  -%}
+{% include 'elspw_include' %}
+
+{% render 'special-offers' %}
+
+{% render 'special-offers-ajax-lib' %}
+{% include 'elspl_theme' %}
+</body>
+</html>

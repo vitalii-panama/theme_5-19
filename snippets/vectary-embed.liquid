@@ -1,0 +1,115 @@
+{%- assign current_variant = product.selected_or_first_available_variant -%}  
+{{ 'vectary-styles.css' | asset_url | stylesheet_tag }}
+<div class="hide-desktop">
+  {%- render 'breadcrumbs' -%}
+</div>
+<div class="product-nav hide-desktop clearfix">
+  {% if collection.previous_product %}<div class="btn btn--secondary btn--small">{% endif %}
+    <span style="float:left;">{% if collection.previous_product %}
+      {{ '&larr; See Previous' | link_to: collection.previous_product }}
+      {% endif %}</span>
+  {% if collection.previous_product %}</div>{% endif %}
+   {% if collection.next_product %}<div class="btn btn--secondary btn--small">{% endif %}
+    <span style="float:right;">{% if collection.next_product %}
+      {{ 'See Next &rarr;' | link_to: collection.next_product }}
+      {% endif %}</span>
+   {% if collection.next_product %}</div>{% endif %}
+</div> 
+<div class="controls-top-panel hide-desktop">
+  <p class="h2 product-single__title">
+    {{ product.title }}
+  </p> 
+  <div class="product-block product-block--price">
+   {%- assign hide_sale_price = true -%}
+   {%- if product.compare_at_price_max > product.price -%}
+     {%- if current_variant.compare_at_price > current_variant.price -%}
+       {%- assign hide_sale_price = false -%}
+     {%- endif -%}
+     <span
+       data-a11y-price
+       class="visually-hidden"
+       aria-hidden="{{ hide_sale_price }}">
+         {{ 'products.general.regular_price' | t }}
+     </span>
+     <span data-product-price-wrap class="{% if hide_sale_price %} hide{% endif %}">
+       <span data-compare-price class="product__price product__price--compare">
+         {%- if current_variant.compare_at_price > current_variant.price -%}
+           {{ current_variant.compare_at_price | money_with_currency }}
+         {%- endif -%}
+       </span>
+     </span>
+     <span data-compare-price-a11y class="visually-hidden">{{ 'products.general.sale_price' | t }}</span>
+   {%- else -%}
+     <span data-a11y-price class="visually-hidden">{{ 'products.general.regular_price' | t }}</span>
+   {%- endif -%}
+
+   <span data-product-price
+     class="product__price{% if current_variant.compare_at_price > current_variant.price %} on-sale{% endif %}">
+     {%- unless product.empty? -%}
+       {{ current_variant.price | money_with_currency }}
+     {%- else -%}
+       {{ 1999 | money_with_currency }}
+     {%- endunless -%}
+   </span>
+
+   {%- if settings.product_save_amount -%}
+     {%- if settings.product_save_type == 'dollar' -%}
+       {%- capture saved_amount -%}{{ current_variant.compare_at_price | minus: current_variant.price | money }}{%- endcapture -%}
+     {%- else -%}
+       {%- capture saved_amount -%}{{ current_variant.compare_at_price | minus: current_variant.price | times: 100.0 | divided_by: current_variant.compare_at_price | round }}%{%- endcapture -%}
+     {%- endif -%}
+     <span data-save-price class="product__price-savings{% if hide_sale_price %} hide{% endif %}">
+       {%- unless hide_sale_price -%}
+         {{ 'products.general.save_html' | t: saved_amount: saved_amount }}
+       {%- endunless -%}
+     </span>
+   {%- endif -%}
+
+   <div
+     data-unit-price-wrapper
+     class="product__unit-price product__unit-price--spacing {% unless current_variant.unit_price_measurement %} hide{% endunless %}">
+     {%- capture unit_price_base_unit -%}
+       <span data-unit-base>
+         {%- if current_variant.unit_price_measurement -%}
+           {%- if current_variant.unit_price_measurement.reference_value != 1 -%}
+             {{ current_variant.unit_price_measurement.reference_value }}
+           {%- endif -%}
+           {{ current_variant.unit_price_measurement.reference_unit }}
+         {%- endif -%}
+       </span>
+     {%- endcapture -%}
+
+     <span data-unit-price>{{ current_variant.unit_price | money_with_currency }}</span>/{{ unit_price_base_unit }}
+   </div>
+
+   {%- if shop.taxes_included or shop.shipping_policy.body != blank -%}
+     <div class="product__policies rte small--text-center">
+       {%- if shop.taxes_included -%}
+         {{ 'products.product.include_taxes' | t }}
+       {%- endif -%}
+       {%- if shop.shipping_policy.body != blank -%}
+         {{ 'products.product.shipping_policy_html' | t: link: shop.shipping_policy.url }}
+       {%- endif -%}
+     </div>
+   {%- endif -%}
+ </div>
+</div>
+<iframe
+  id="VECTARY_EMBED_ID"
+  src="https://app.vectary.com/p/{{ product.metafields.global.vectary_project_id | default: '4D6fSi02LObh3AD5quFrbA' }}"
+  frameborder="0"
+  allowfullscreen
+></iframe>
+
+{% comment %}
+  <iframe
+    id="VECTARY_EMBED_ID"
+    src="https://app.vectary.com/p/4D6fSi02LObh3AD5quFrbA"
+    frameborder="0"
+    allowfullscreen
+  ></iframe>
+{% endcomment %}
+
+{% render 'selected-options-display-dynamic' %}
+
+<script type="module" src="{{ 'vectary-scripts.js' | asset_url }}" defer></script>
