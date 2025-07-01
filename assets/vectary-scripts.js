@@ -597,15 +597,14 @@ document.addEventListener("DOMContentLoaded", () => {
       ?.addEventListener("click", () => {
         if (state.activeLevels.size > 0) {
           // Get all product IDs for the selected levels
-          const productIds = Array.from(state.activeLevels)
+          const productIds = Array.from(window.state.activeLevels)
             .map((level) => window.globalProductData[level])
             .filter((id) => id); // Remove any undefined IDs
 
           // Get all product IDs for the selected overlaminates
-          const overlaminateIds = Array.from(state.activeOverlaminates)
-            .map((type) => window.overlaminateProductData[type])
+          const overlaminateIds = Array.from(window.state.activeOverlaminates)
+            .map((type) => window.overlaminateProductData[type.toLowerCase().replace(" ", "-")])
             .filter((id) => id); // Remove any undefined IDs
-
           // Combine both arrays
           const allProductIds = [...productIds, ...overlaminateIds];
 
@@ -1371,7 +1370,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Get product IDs for all selected overlaminates
         const overlaminateIds = Array.from(window.state.activeOverlaminates)
-          .map((type) => window.overlaminateProductData[type])
+          .map((type) => window.overlaminateProductData[type.toLowerCase().replace(" ", "-")])
           .filter((id) => id); // Remove any undefined IDs
 
         // Combine both arrays
@@ -1446,12 +1445,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Get product IDs for all selected overlaminates
         const overlaminateIds = Array.from(window.state.activeOverlaminates)
-          .map((type) => window.overlaminateProductData[type])
+          .map((type) => window.overlaminateProductData[type.toLowerCase().replace(" ", "-")])
           .filter((id) => id); // Remove any undefined IDs
 
         // Combine both arrays
         const allProductIds = [...productIds, ...overlaminateIds];
-        console.log(allProductIds);
 
         if (allProductIds.length > 0) {
           console.log(
