@@ -1,5 +1,39 @@
 import { VctrModelApi } from "https://www.vectary.com/studio-lite/scripts/api.js";
 let selectedOverlaminateMaterial = "MAT-GLOSS"
+
+// Color palette organized by color groups from the CSV file
+const colorPalette = [
+  // Blacks & Grays
+  "#000000", "#1a1e25", "#2e2c26", "#323232", "#434244", "#4e4b48", 
+  "#716e6a", "#75726e", "#6a6c70", "#777677", "#75787b", "#797c81", 
+  "#88898c", "#b1b3b3", "#bbbab9", "#c8cacc", "#d9d9d6", "#ffffff",
+  
+  // Pinks & Reds
+  "#ed008c", "#e10098", "#ce0076", "#c2214d", "#772935", "#8e2631", 
+  "#c61f15", "#cc2229", "#de2d32", "#da0002", "#ff0000",
+  
+  // Oranges
+  "#d63205", "#dc4410", "#d75d18", "#d6692e", "#d8752d", "#ff6d00", "#ff9d00", "#fead77",
+  
+  // Yellows
+  "#e4a612", "#ffc41d", "#f5d230", "#c7c84d", "#f5d130", "#fdee00", "#fcf73a", 
+  "#dbe442", "#dae343", "#dee829", "#ddf84a", "#ddfc4a", "#c0df16", "#b8f63b",
+  
+  // Greens
+  "#5bc500", "#00b176", "#5b6236",
+  
+  // Blues & Teals
+  "#a5b0e3", "#a0d1ca", "#aee6ff", "#5ebdd4", "#00c7d1", "#2db1bd", "#3790b0", 
+  "#00778b", "#004f59", "#17a4cc", "#00acec", "#0091da", "#008bce", "#0082ba", 
+  "#007dba", "#0074c5", "#93a1aa", "#597a9b", "#006298", "#005297", "#043bff", 
+  "#0c15a9", "#003594", "#2d396b", "#183165", "#162667", "#2a385d",
+  
+  // Tans & Browns
+  "#7d725b", "#a49764", "#b4875e", "#b2945e", "#b5a588", "#a39d88", "#b3ae9b",
+  
+  // Purples
+  "#291844", "#69488e", "#440099"
+];
   // *** Define sliderConfigs here, before it's needed ***
   const sliderConfigs = [
     {
@@ -125,7 +159,7 @@ function getColorProperties() {
 // --- Color Swatches Data ---
 const color_swatches_data = {};
 const rawColorData =
-  "Apricot Crush#fead77Arctic Cat Green#b8f63bArctic Cat Orange / KTM / Polaris Burst#d75d18Arctic Cat Purple#69488eArctic Tan / Desert Tan#b5a588Army Green#5b6236Blaze Orange#dc4410Can-Am Dark Grey#323232Can-Am Gold#b2945eCan-Am Maverick Grey#797c81Can-Am Sea-Doo Blue#008bceCan-Am Silver#bbbab9Can-Am Yellow#e4a612Carribean Blue#0082baCatalyst Dark Grey#88898cCatalyst Grey#c8caccCatGrey#c8caccCharcoal Grey#434244Chile Peper Red#772935Coastal Grey#75787bCyan#00acecD.S Pink#ed008cDayglow#ddfc4aDazzaling Blue#043bffDefender Grey#777677Dusty Navy#1b365dEclipise Grey#4e4b48Gris Silex#b1b3b3Gris Silex#b1b3b3Gulfstream Blue#007dbaHonda Red / LYNX Red#cc2229Hybrid White#d9d9d6Iceberg Blue#00778bLabrador Blue#183165Lava Dark Red#c61f15Light Blue#aee6ffLiquid Titanium#7d725bLYNX Cyan#17a4ccLYNX Titanium#a39d88LYNX Titanium2#b3ae9bM.O.T Red#de2d32Manta Green#ddf84aMidnight Purple#291844Millennium Yellow#ffc41dNeo Mint#99ccccNeo Yellow#dbe442Nuclear Yellow#dee829Octane Blue#0091daOrange Crush#ff9d00Orange Phoenix#d8752dOrange Phoenix2#d6692eOxford Blue#005297Panama Turquoise#004f59Platinum Silver#75726ePolaris Glow#b4875ePolaris Lime Squeeze#dae343Quetzal Green#00b176R.B Motorsports Blue#2d396bR.B. Pink#c2214dRacing Green#004631RB Yellow#f5d230Red Orange#ff0000Reef Blue#2db1bdRhodamine#e10098Scandi Blue#567a9bSCS W Blue Black#1a1e25Sea-Doo Belize Blue#006298Sea-Doo Dark Blue#007dbaSea-Doo Magenta#ce0076Ski-doo#fdee00Ski-Doo Dark Blue#2a385dSki-Doo Dark Orange#ff6d00Ski-Doo Gold#a49764Spartan Red#8e2631Sport Grey#716e6aSteel Grey#6a6c70Sunburst Yellow - Ski-doo / Sea-Doo / Can-Am#fcf73aTeal M#0091b3Timeless Black#2e2c26True Black#000000True Red / Polaris Red#da0002Turquoise#00c7d1Unlimited Lava / Can-Am Red / Trixx Red#d63205Vapor Blue#a5b0e3vapor blue#a5b0e3Vintage Arctic Cat Green#5bc500Vintage Manta Green#c0df16Vintage Polaris Dark Blue#162667Vintage Ski-Doo Yellow#f5d130Violet#440099White#ffffffYahmaha BLue#0b0daeBlack#000000";
+  "True Black#000000SCS W Blue Black#1a1e25Timeless Black#2e2c26Can-Am Dark Grey#323232Charcoal Grey#434244Eclipise Grey#4e4b48Sport Grey#716e6aCoastal Grey#75787bSteel Grey#6a6c70Defender Grey#777677Can-Am Maverick Grey#75787bCan-Am Maverick Grey#797c81Liquid Titanium#7d725bSki-Doo Gold#a49764Polaris Glow#b2945eArctic Tan / Desert Tan#b5a588LYNX Titanium#a39d88LYNX Titanium2#b3ae9b#88898cGris Silex#b1b3b3Can-Am Silver#bbbab9Catalyst Grey#c8caccCatGrey#c8caccHybrid White#d9d9d6White#ffffffD.S Pink#ed008cRhodamine#e10098Sea-Doo Magenta#ce0076R.B. Pink#c2214dChile Peper Red#772935Spartan Red#8e2631Lava Dark Red#c61f15Honda Red / LYNX Red#cc2229M.O.T Red#de2d32True Red / Polaris Red#da0002Red Orange#ff0000Unlimited Lava / Can-Am Red / Trixx Red#d63205Blaze Orange#dc4410Arctic Cat Orange / KTM / Polaris Burst#d75d18Orange Phoenix2#d6692eOrange Phoenix#d8752dSki-Doo Dark Orange#ff6d00Orange Crush#ff9d00Apricot Crush#fead77Can-Am Yellow#e4a612Millennium Yellow#ffc41dRB Yellow#f5d230Neo Yellow#c7c84dVintage Ski-Doo Yellow#f5d130Ski-doo#fdee00Sunburst Yellow - Ski-doo / Sea-Doo / Can-Am#fcf73aNeo Yellow#dbe442Polaris Lime Squeeze#dae343Manta Green#dee829Manta Green#ddf84aDayglow#ddfc4aVintage Manta Green#c0df16Vintage Arctic Cat Green#b8f63bQuetzal Green#5bc500Army Green#00b176Army Green#5b6236Vapor Blue#a5b0e3vapor blue#a0d1caLight Blue#aee6ffScandi Blue#5ebdd4Turquoise#00c7d1Reef Blue#2db1bdTeal M#3790b0Iceberg Blue#00778bPanama Turquoise#004f59LYNX Cyan#17a4ccCyan#00acecDazzaling Blue#0091daCan-Am Sea-Doo Blue#008bceCarribean Blue#0082baGulfstream Blue#007dbaSea-Doo Dark Blue#0074c5Scandi Blue#93a1aaScandi Blue#597a9bSea-Doo Belize Blue#006298Oxford Blue#005297Dazzaling Blue#043bffYahmaha BLue#0c15a9Labrador Blue#003594R.B Motorsports Blue#2d396bCatalyst Dark Grey#2a385dDusty Navy#183165Vintage Polaris Dark Blue#162667Ski-Doo Dark BlueMidnight Purple#291844Arctic Cat Purple#69488eViolet#440099";
 
 function parseColorData(rawData) {
   const colorsArray = [];
@@ -424,6 +458,7 @@ document.addEventListener("DOMContentLoaded", () => {
       : "Unknown";
 
     displayElement.style.backgroundColor = hexColor;
+    displayElement.closest(".color-control").querySelector('.color-slider').style.setProperty('--color-value', hexColor);
     nameElement.textContent = colorName;
     const materialId = materialName.replace(/.*-/, "");
     console.log(11,materialId, state.colorValues);
@@ -448,6 +483,10 @@ document.addEventListener("DOMContentLoaded", () => {
     saveColorValuesToStorage();
   }
 
+  // Function to update slider background with SVG gradient
+  function updateSliderBackground(sliderElement, colors) {
+  }
+
   function initializeSliderUI() {
     sliderConfigs.forEach((config) => {
       const sliderElement = document.getElementById(config.sliderId);
@@ -457,6 +496,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const materialId = config.material.replace(/^[^-]+-[^-]+-/, "");
 
       if (sliderElement && displayElement && nameElement && lockElement) {
+        // Apply SVG gradient background to the slider
+        updateSliderBackground(sliderElement, colorPalette);
+        
         sliderElement.value = state.colorValues[materialId] || 50;
         const updateSliderDisplay = () => {
           const sliderValue = parseInt(sliderElement.value, 10);
