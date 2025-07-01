@@ -454,6 +454,7 @@ iframe {
   position: relative; /* For SVG positioning */
   z-index: 2; /* Ensure slider is above SVG */
   height: 18px;
+  --color-value: #fff;
   &:focus {
     outline: none;
     box-shadow: none;
@@ -478,7 +479,7 @@ iframe {
   border-radius: 50%;
   background-color: var(--color-value);
   cursor: pointer;
-  scale: 1.2;
+
   box-shadow: 0 0 0px 3px #fff, 0 0 1px 1px #000;
 }
 
