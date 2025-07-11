@@ -1,0 +1,34 @@
+hello images TK
+    <meta charset="UTF-8" />
+    <style>
+      .threekit-player {
+        height: 500px;
+        width: 987px;
+      }
+    </style>
+
+    <!-- *** EMBEDDING THE THREEKIT PLAYER INTO A WEBPAGE *** -->
+
+    <div class="threekit-player" id="threekit-root"></div>
+
+    <script src="https://preview.threekit.com/app/js/threekit-player.js"></script>
+    
+		<script>
+      const PUBLIC_TOKEN = '06a11732-6639-4241-85c8-33cb7cbf4e73';
+      const ASSET_ID = '9329adef-3fc8-41d9-ad70-8e093dea1624';
+			const ELEMENT_ID = 'threekit-root';
+
+      window
+        .threekitPlayer({
+          el: document.getElementById(ELEMENT_ID),
+          authToken: PUBLIC_TOKEN,
+          assetId: ASSET_ID,
+          publishStage: 'draft',
+        })
+        .then(async (player) => {
+          window.threekit = {
+            player,
+            configurator: await player.getConfigurator(),
+          };
+        });
+    </script>
