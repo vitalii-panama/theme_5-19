@@ -1,0 +1,419 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "promo-grid": {
+      "type": "promo-grid",
+      "blocks": {
+        "801d91fc-84e3-478f-94cc-f1984f6dfc6e": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/3-frame-Wolves.jpg",
+            "link": "shopify://collections/rev-gen5",
+            "width": "100"
+          }
+        },
+        "image_bRR6Cf": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/WinterIsHere_Wolves.jpg",
+            "link": "shopify://collections/rev-gen5",
+            "width": "100"
+          }
+        },
+        "image_dhDifB": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/4-frame-MultiCam_02_mobile.jpg",
+            "link": "shopify://collections/rev-gen5",
+            "width": "100"
+          }
+        },
+        "promo-1": {
+          "type": "advanced",
+          "disabled": true,
+          "settings": {
+            "subheading": "",
+            "heading": "",
+            "textarea": "",
+            "cta_text1": "SKi-Doo",
+            "cta_link1": "shopify://collections/rev-gen5",
+            "cta_text2": "Shop All",
+            "cta_link2": "",
+            "image": "shopify://shop_images/Artboard_1_copy_3-80.jpg",
+            "video_url": "",
+            "width": "50",
+            "height": 600,
+            "text_size": 100,
+            "text_align": "vertical-center horizontal-left",
+            "focal_point": "80% 50%",
+            "color_accent": "rgba(0,0,0,0)",
+            "boxed": false,
+            "framed": false
+          }
+        }
+      },
+      "block_order": [
+        "801d91fc-84e3-478f-94cc-f1984f6dfc6e",
+        "image_bRR6Cf",
+        "image_dhDifB",
+        "promo-1"
+      ],
+      "custom_css": [
+        "@media only screen and (min-width: 960px) {.flex-grid__item.flex-grid__item--100.flex-grid__item--image_bRR6Cf.type-image, .flex-grid__item.flex-grid__item--100.flex-grid__item--image_dhDifB.type-image {display: none; }}"
+      ],
+      "settings": {
+        "full_width": true,
+        "gutter_size": 20,
+        "space_above": false,
+        "space_below": false
+      }
+    },
+    "rich-text": {
+      "type": "rich-text",
+      "blocks": {
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "title": "Premium Graphics"
+          }
+        },
+        "text": {
+          "type": "text",
+          "settings": {
+            "enlarge_text": true,
+            "text": "<p>Designed, Built and Driven for the Aftermarket Powersports Lifestyle! <br/> Delivered by Obsession</p>"
+          }
+        },
+        "5a5b437f-be44-4b37-9620-d3a1dbf0bcee": {
+          "type": "button",
+          "disabled": true,
+          "settings": {
+            "link": "shopify://collections/rev-gen5",
+            "link_text": "Shop Gen5"
+          }
+        }
+      },
+      "block_order": [
+        "heading",
+        "text",
+        "5a5b437f-be44-4b37-9620-d3a1dbf0bcee"
+      ],
+      "custom_css": [
+        ".index-section {margin: 5px 0;}",
+        ".enlarge-text {font-size: 25px;}"
+      ],
+      "settings": {
+        "align_text": "center",
+        "narrow_column": true,
+        "divider": false
+      }
+    },
+    "1636854014df1ecefd": {
+      "type": "background-video-text",
+      "settings": {
+        "subtitle": "",
+        "title": "",
+        "text": "",
+        "button_label": "",
+        "button_link": "",
+        "video_url": "https://www.youtube.com/watch?v=va13YoEGkmM",
+        "color_border": "#f4f4f4",
+        "layout": "left",
+        "height": 550
+      }
+    },
+    "search_and_filter_RAkGpG": {
+      "type": "search-and-filter",
+      "custom_css": [],
+      "settings": {
+        "title": "Ski-Doo Search / Filter",
+        "breadcrumbs": false,
+        "content_url": "",
+        "search_filter_product": ""
+      }
+    },
+    "featured-collection": {
+      "type": "featured-collection",
+      "settings": {
+        "title": "Featured collection",
+        "home_featured_products": "rev-gen5",
+        "per_row": 5,
+        "rows": 1,
+        "mobile_scrollable": true,
+        "view_all": true,
+        "divider": false
+      }
+    },
+    "background-image-text": {
+      "type": "background-image-text",
+      "settings": {
+        "subtitle": "",
+        "title": "",
+        "text": "",
+        "button_label": "",
+        "button_link": "shopify://collections/rev-gen5",
+        "image": "shopify://shop_images/MultiCam3-Pannel-Story.jpg",
+        "focal_point": "center",
+        "layout": "right",
+        "height": 450,
+        "framed": true,
+        "parallax": true
+      }
+    },
+    "featured-collections": {
+      "type": "featured-collections",
+      "blocks": {
+        "featured-collections-0": {
+          "type": "collection",
+          "settings": {
+            "collection": "snow",
+            "title": "",
+            "focal_point": "center center"
+          }
+        },
+        "featured-collections-1": {
+          "type": "collection",
+          "settings": {
+            "collection": "dirt",
+            "title": "",
+            "focal_point": "center center"
+          }
+        },
+        "featured-collections-2": {
+          "type": "collection",
+          "settings": {
+            "collection": "water",
+            "title": "",
+            "focal_point": "center center"
+          }
+        },
+        "fd88c964-7489-4b0f-bcc4-f4a334964306": {
+          "type": "collection",
+          "settings": {
+            "collection": "accessories",
+            "title": "",
+            "focal_point": "center center"
+          }
+        }
+      },
+      "block_order": [
+        "featured-collections-0",
+        "featured-collections-1",
+        "featured-collections-2",
+        "fd88c964-7489-4b0f-bcc4-f4a334964306"
+      ],
+      "settings": {
+        "title": "Shop by category",
+        "divider": false,
+        "per_row": 2,
+        "enable_gutter": true
+      }
+    },
+    "background_image_text_nQCEnx": {
+      "type": "background-image-text",
+      "settings": {
+        "subtitle": "",
+        "title": "",
+        "text": "",
+        "button_label": "",
+        "button_link": "shopify://collections/rev-gen5",
+        "image": "shopify://shop_images/3-Pannel-Story.jpg",
+        "focal_point": "center",
+        "layout": "right",
+        "height": 450,
+        "framed": true,
+        "parallax": true
+      }
+    },
+    "60cb5679-0d7e-4aa0-a652-7c38e0780fc7": {
+      "type": "background-image-text",
+      "disabled": true,
+      "settings": {
+        "subtitle": "shop app",
+        "title": "Browse our app",
+        "text": "<p>Purchase with ease using the SCS ShopApp. Save Payment Securely and Convenient!</p>",
+        "button_label": "Download now",
+        "button_link": "https://shop.app/m/810ncr6u92?user_id=202261095&utm_source=shop_app",
+        "image": "shopify://shop_images/SCS-ShopPay.jpg",
+        "focal_point": "20% 50%",
+        "layout": "right",
+        "height": 450,
+        "framed": true,
+        "parallax": false
+      }
+    },
+    "blog-posts": {
+      "type": "blog-posts",
+      "settings": {
+        "title": "From the HQ",
+        "blog": "news",
+        "post_limit": 3,
+        "blog_show_tags": false,
+        "blog_show_date": true,
+        "blog_show_comments": false,
+        "blog_show_author": false,
+        "view_all": true,
+        "blog_image_size": "wide",
+        "divider": false
+      }
+    },
+    "16594694093d3682f5": {
+      "type": "hero-video",
+      "settings": {
+        "title": "",
+        "title_size": 80,
+        "subheading": "Custom Powersports Graphics",
+        "link_text": "Shop Now",
+        "link": "shopify://collections/ski-doo",
+        "color_accent": "rgba(0,0,0,0)",
+        "text_align": "vertical-center horizontal-center",
+        "video_url": "https://youtu.be/WH-KtqJf7mw",
+        "overlay_opacity": 0,
+        "section_height": "650px",
+        "mobile_height": "auto"
+      }
+    },
+    "map": {
+      "type": "map",
+      "disabled": true,
+      "settings": {
+        "map_title": "Our retail store",
+        "address": "<p>301 Front St W<br>Toronto, Canada</p><p>Mon - Fri, 8:30am - 10:30pm<br>Saturday, 8:30am - 10:30pm<br>Sunday, 8:30am - 10:30pm</p>",
+        "map_address": "301 Front St W, Toronto, ON M5V 2T6",
+        "api_key": "",
+        "show_button": true,
+        "background_image_position": "center center"
+      }
+    },
+    "promo-grid2": {
+      "type": "promo-grid",
+      "blocks": {
+        "promo2-0": {
+          "type": "advanced",
+          "settings": {
+            "subheading": "Limited time",
+            "heading": "Announce your promotion",
+            "textarea": "Include the smaller details of your promotion in text below the title.",
+            "cta_text1": "Shop This",
+            "cta_link1": "shopify://collections/all",
+            "cta_text2": "Shop All",
+            "cta_link2": "",
+            "video_url": "",
+            "width": "100",
+            "height": 720,
+            "text_size": 120,
+            "text_align": "vertical-center horizontal-center",
+            "focal_point": "80% 50%",
+            "color_accent": "rgba(0,0,0,0)",
+            "boxed": false,
+            "framed": false
+          }
+        },
+        "promo2-1": {
+          "type": "sale_collection",
+          "settings": {
+            "sale_collection": "",
+            "top_text": "Up to",
+            "middle_text": "50% off",
+            "bottom_text": "Select products",
+            "width": "50",
+            "color_tint": "#000000",
+            "color_tint_opacity": 0,
+            "boxed": false,
+            "framed": true
+          }
+        },
+        "promo2-2": {
+          "type": "sale_collection",
+          "settings": {
+            "sale_collection": "",
+            "top_text": "Up to",
+            "middle_text": "50% off",
+            "bottom_text": "Select products",
+            "width": "50",
+            "color_tint": "#000000",
+            "color_tint_opacity": 0,
+            "boxed": false,
+            "framed": true
+          }
+        }
+      },
+      "block_order": [
+        "promo2-0",
+        "promo2-1",
+        "promo2-2"
+      ],
+      "disabled": true,
+      "settings": {
+        "full_width": false,
+        "gutter_size": 20,
+        "space_above": false,
+        "space_below": false
+      }
+    },
+    "1670305730aac0ba2c": {
+      "type": "apps",
+      "blocks": {
+        "93742573-0f22-4ddf-bea7-7a6a2b9fd95f": {
+          "type": "shopify://apps/instafeed/blocks/app-block/c447db20-095d-4a10-9725-b5977662c9d5",
+          "settings": {
+            "title": "",
+            "title_color": "",
+            "alignment": "center",
+            "background_color": "",
+            "feed_id": "",
+            "html_area": ""
+          }
+        }
+      },
+      "block_order": [
+        "93742573-0f22-4ddf-bea7-7a6a2b9fd95f"
+      ],
+      "settings": {
+        "full_width": true,
+        "space_around": true
+      }
+    },
+    "0c57bb38-0078-4c14-b749-bc3835393f1e": {
+      "type": "text-and-image_shopapp",
+      "settings": {
+        "image": "shopify://shop_images/SCS-ShopPay.jpg",
+        "image_width": 700,
+        "subtitle": "Shop App",
+        "title": "BROWSE OUR APP",
+        "text": "<p>Purchase with ease using the SCS ShopApp. Fast, Secure and Convenient!</p>",
+        "button_label": "",
+        "button_link": "",
+        "button_style": "primary",
+        "align_text": "left",
+        "layout": "right",
+        "divider": false
+      }
+    }
+  },
+  "order": [
+    "promo-grid",
+    "rich-text",
+    "1636854014df1ecefd",
+    "search_and_filter_RAkGpG",
+    "featured-collection",
+    "background-image-text",
+    "featured-collections",
+    "background_image_text_nQCEnx",
+    "60cb5679-0d7e-4aa0-a652-7c38e0780fc7",
+    "blog-posts",
+    "16594694093d3682f5",
+    "map",
+    "promo-grid2",
+    "1670305730aac0ba2c",
+    "0c57bb38-0078-4c14-b749-bc3835393f1e"
+  ]
+}
