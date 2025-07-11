@@ -811,5 +811,63 @@
        price: "{{ all_products['holographic-matte'].price | money }}"
      }
    };
+
+   // Utility function to get the correct product levels for the current product
+function getCurrentProductLevels() {
+  const handle = window.mainProduct.handle || "";
+  if (handle.includes('sea-doo-spark24')) {
+    // Spark24 levels: 1-5
+    return [1, 2, 3, 4, 5].map(i => window.globalProductData[i]);
+  } else if (handle.includes('sea-doo-switch')) {
+    // Switch levels: 1-3
+    return [1, 2, 3].map(i => window.globalProductData[i]);
+  } else {
+    // Default: Ski-Doo Gen5 levels: 1-4
+    return [1, 2, 3, 4].map(i => window.globalProductData[i]);
+  }
+}
+
+// Example usage when adding levels to cart
+function addSelectedLevelsToCart(selectedLevelIndices, colorProperties) {
+  const productLevels = getCurrentProductLevels();
+  const items = selectedLevelIndices.map(idx => {
+    const level = productLevels[idx - 1]; // idx is 1-based
+    return {
+      id: parseInt(level.id),
+      quantity: 1,
+      properties: colorProperties || {}
+    };
+  });
+
+  // Optionally add main product
+  if (window.mainProduct) {
+    items.push({
+      id: parseInt(window.mainProduct.id),
+      quantity: 1,
+      properties: colorProperties || {}
+    });
+  }
+
+  let formData = { items };
+
+  fetch(window.Shopify.routes.root + 'cart/add.js', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(formData)
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log("All products added to cart", data);
+    window.location.href = "/cart";
+  })
+  .catch((error) => {
+    console.error("Error adding products to cart:", error);
+    alert("There was an error adding the products to your cart. Please try again.");
+  });
+}
+
+// Example: Add levels 1 and 2 to cart for current product
+// addSelectedLevelsToCart([1, 2], { color: 'red' });
  </script>
- 
