@@ -194,6 +194,7 @@ for (let i = 1; i <= 100; i++) {
   color_swatches_data[`B${i}`] = structuredColors[colorIndex].hex; // Assign hex to 'B' key
 }
 
+{Comment}
 // Product data (Not used for logic anymore, but kept for reference/prices)
 const products = [
   { level: 1, name: "Ski-Doo Gen5 Level 1", price: "$349.95", url: "#" },
@@ -201,6 +202,7 @@ const products = [
   { level: 3, name: "Ski-Doo Gen5 Level 3", price: "$75.00", url: "#" },
   { level: 4, name: "Ski-Doo Gen5 Level 4", price: "$75.00", url: "#" },
 ];
+{endcomment}
 
 const selectedColor = document.querySelector(
   '[data-handle="color"] [data-variant-input]:checked'
