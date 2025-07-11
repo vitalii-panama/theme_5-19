@@ -571,7 +571,7 @@
        </h3>
  
        <div class="level-grid">
-         {% if product.type == 'Sea-Doo Spark24' %}
+        
            <button id="triggerButtonLevel1" class="level-button active" data-level-handle="sea-doo-spark24-level-1" data-id="{{ all_products['sea-doo-spark24-level-1'].selected_or_first_available_variant.id }}">
              <span>Level 1</span>
              <span class="level-price">{{ all_products['sea-doo-spark24-level-1'].price | money }}</span>
@@ -592,37 +592,6 @@
              <span>Level 5</span>
              <span class="level-price">{{ all_products['sea-doo-spark24-level-5'].price | money }}</span>
            </button>
-         {% elsif product.type == 'Sea-Doo Switch' %}
-           <button id="triggerButtonLevel1" class="level-button active" data-level-handle="sea-doo-level-16" data-id="{{ all_products['sea-doo-level-16'].selected_or_first_available_variant.id }}">
-             <span>Level 1</span>
-             <span class="level-price">{{ all_products['sea-doo-level-16'].price | money }}</span>
-           </button>
-           <button id="triggerButtonLevel2" class="level-button active" data-level-handle="sea-doo-level-19" data-id="{{ all_products['sea-doo-level-19'].selected_or_first_available_variant.id }}">
-             <span>Level 2</span>
-             <span class="level-price">{{ all_products['sea-doo-level-19'].price | money }}</span>
-           </button>
-           <button id="triggerButtonLevel3" class="level-button active" data-level-handle="sea-doo-level-13" data-id="{{ all_products['sea-doo-level-13'].selected_or_first_available_variant.id }}">
-             <span>Level 3</span>
-             <span class="level-price">{{ all_products['sea-doo-level-13'].price | money }}</span>
-           </button>
-         {% else %}
-           <button id="triggerButtonLevel1" class="level-button active" data-level-handle="ski-doo-gen5-level-1" data-id="{{ all_products['ski-doo-gen5-level-1'].selected_or_first_available_variant.id }}">
-             <span>Level 1</span>
-             <span class="level-price">{{ all_products['ski-doo-gen5-level-1'].price | money }}</span>
-           </button>
-           <button id="triggerButtonLevel2" class="level-button active" data-level-handle="ski-doo-gen5-level-2" data-id="{{ all_products['ski-doo-gen5-level-2'].selected_or_first_available_variant.id }}">
-             <span>Level 2</span>
-             <span class="level-price">{{ all_products['ski-doo-gen5-level-2'].price | money }}</span>
-           </button>
-           <button id="triggerButtonLevel3" class="level-button active" data-level-handle="ski-doo-gen5-level-3" data-id="{{ all_products['ski-doo-gen5-level-3'].selected_or_first_available_variant.id }}">
-             <span>Level 3</span>
-             <span class="level-price">{{ all_products['ski-doo-gen5-level-3'].price | money }}</span>
-           </button>
-           <button id="triggerButtonLevel4" class="level-button active" data-level-handle="ski-doo-gen5-level-4" data-id="{{ all_products['ski-doo-gen5-level-4'].selected_or_first_available_variant.id }}">
-             <span>Level 4</span>
-             <span class="level-price">{{ all_products['ski-doo-gen5-level-4'].price | money }}</span>
-           </button>
-         {% endif %}
        </div>
      </div>
  
