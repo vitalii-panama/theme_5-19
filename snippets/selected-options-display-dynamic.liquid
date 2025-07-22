@@ -462,42 +462,6 @@
     outline: none;
   }
 
-  /* New color accordion styles */
-  .color-accordion {
-    border-radius: 8px;
-    overflow: hidden;
-    border: 1px solid #eee;
-  }
-  .accordion-item + .accordion-item {
-    border-top: 1px solid #eee;
-  }
-  .accordion-header {
-    width: 100%;
-    background: #f7f7f7;
-    border: none;
-    outline: none;
-    text-align: left;
-    padding: 1em;
-    font-size: 1.1em;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    transition: background 0.2s;
-  }
-  .accordion-header[aria-expanded="true"] {
-    background: #ffe0b2;
-  }
-  .accordion-panel {
-    padding: 1em;
-    background: #fff;
-    animation: fadeIn 0.2s;
-  }
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-
   /* Responsive adjustments */
   @media (max-width: 768px) {
     .product_desc_item, .product-single__meta {
