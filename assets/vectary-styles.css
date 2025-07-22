@@ -564,7 +564,6 @@ iframe {
   border-radius: 8px;
   overflow: hidden;
   border: 1px solid #eee;
-  margin-bottom: 2em;
 }
 .accordion-item + .accordion-item {
   border-top: 1px solid #eee;
