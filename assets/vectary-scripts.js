@@ -1587,21 +1587,3 @@ document.addEventListener("DOMContentLoaded", function () {
     return originalFetch.apply(this, arguments);
   };
 });
-
-//3. Add JavaScript for Accordion Behavior
-document.querySelectorAll('.accordion-header').forEach(header => {
-  header.addEventListener('click', function() {
-    const expanded = this.getAttribute('aria-expanded') === 'true';
-    // Collapse all
-    document.querySelectorAll('.accordion-header').forEach(h => h.setAttribute('aria-expanded', 'false'));
-    document.querySelectorAll('.accordion-panel').forEach(p => p.hidden = true);
-    // Expand this one if it was not already expanded
-    if (!expanded) {
-      this.setAttribute('aria-expanded', 'true');
-      document.getElementById(this.getAttribute('aria-controls')).hidden = false;
-    }
-  });
-});
-// Optionally, expand the first panel by default
-document.querySelector('.accordion-header')?.setAttribute('aria-expanded', 'true');
-document.querySelector('.accordion-panel')?.removeAttribute('hidden');
