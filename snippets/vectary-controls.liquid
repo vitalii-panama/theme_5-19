@@ -839,6 +839,15 @@
          if (config.activeLevels) state.activeLevels = new Set(config.activeLevels);
          if (config.activeOverlaminates) state.activeOverlaminates = new Set(config.activeOverlaminates);
 
+         // Update all sliders and color displays to match imported state
+         Object.entries(state.colorValues).forEach(([key, value]) => {
+           const slider = document.getElementById(`swatchSlider${key}`);
+           if (slider) {
+             slider.value = value;
+             slider.dispatchEvent(new Event('input', { bubbles: true }));
+           }
+         });
+
          // Optionally, update UI to reflect imported config
          if (typeof updateUIFromState === "function") updateUIFromState();
 
