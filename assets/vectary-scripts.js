@@ -1335,21 +1335,8 @@ document.addEventListener("DOMContentLoaded", () => {
   levelButtons.forEach((button, index) => {
     button.addEventListener("click", () => {
       // Don't automatically click coverageButtons to allow independent selection
-      // Instead, just toggle the active class on the button
-      button.classList.toggle("active");
-
-      // Update state.activeLevels
-      const level = parseInt(button.id.replace("triggerButtonLevel", ""));
-      if (!isNaN(level)) {
-        if (button.classList.contains("active")) {
-          window.state.activeLevels.add(level);
-        } else {
-          window.state.activeLevels.delete(level);
-        }
-      }
-
-      // Update selected levels counter
-      updateSelectedLevelsCounter();
+      // Just make sure the UI reflects the state correctly
+      // This is handled in setupLevelButtons now
     });
   });
 
@@ -1600,21 +1587,3 @@ document.addEventListener("DOMContentLoaded", function () {
     return originalFetch.apply(this, arguments);
   };
 });
-
-// Accordion functionality
-document.querySelectorAll('.accordion-header').forEach(header => {
-  header.addEventListener('click', function() {
-    const expanded = this.getAttribute('aria-expanded') === 'true';
-    // Collapse all
-    document.querySelectorAll('.accordion-header').forEach(h => h.setAttribute('aria-expanded', 'false'));
-    document.querySelectorAll('.accordion-panel').forEach(p => p.hidden = true);
-    // Expand this one if it was not already expanded
-    if (!expanded) {
-      this.setAttribute('aria-expanded', 'true');
-      document.getElementById(this.getAttribute('aria-controls')).hidden = false;
-    }
-  });
-});
-// Optionally, expand the first panel by default
-document.querySelector('.accordion-header')?.setAttribute('aria-expanded', 'true');
-document.querySelector('.accordion-panel')?.removeAttribute('hidden');
