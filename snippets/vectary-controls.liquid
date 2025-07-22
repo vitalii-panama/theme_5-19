@@ -198,6 +198,13 @@
              <polyline points="7 3 7 8 15 8"></polyline>
            </svg>
          </button>
+         <button id="importConfigButton" class="">
+           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px">
+             <path d="M12 3v12"></path>
+             <path d="m8 11 4 4 4-4"></path>
+             <path d="M8 5H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-4"></path>
+           </svg>
+         </button>
          </div>
        </h3>
  
@@ -811,5 +818,35 @@
        price: "{{ all_products['holographic-matte'].price | money }}"
      }
    };
+
+   document.getElementById("importConfigButton")?.addEventListener("click", function() {
+     document.getElementById("importConfigFile").click();
+   });
+
+   document.getElementById("importConfigFile")?.addEventListener("change", function(event) {
+     const file = event.target.files[0];
+     if (!file) return;
+     const reader = new FileReader();
+     reader.onload = function(e) {
+       try {
+         const config = JSON.parse(e.target.result);
+
+         // Restore state from config
+         if (config.activePreset !== undefined) state.activePreset = config.activePreset;
+         if (config.colorValues) state.colorValues = config.colorValues;
+         if (config.lockedMaterials) state.lockedMaterials = config.lockedMaterials;
+         if (config.activeLevels) state.activeLevels = new Set(config.activeLevels);
+         if (config.activeOverlaminates) state.activeOverlaminates = new Set(config.activeOverlaminates);
+
+         // Optionally, update UI to reflect imported config
+         if (typeof updateUIFromState === "function") updateUIFromState();
+
+         // Show a status message
+         if (typeof statusMessage !== "undefined") statusMessage.textContent = "Configuration imported successfully";
+       } catch (err) {
+         alert("Failed to import configuration: " + err.message);
+       }
+     };
+     reader.readAsText(file);
+   });
  </script>
- 
