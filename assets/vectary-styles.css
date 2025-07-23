@@ -455,7 +455,6 @@ iframe {
 }
 
 .color-slider {
-  top: 5px;
   width: 100%;
   appearance: none;
   background-color: transparent; /* Make transparent to show SVG */
