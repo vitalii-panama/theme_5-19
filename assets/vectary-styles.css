@@ -408,7 +408,8 @@ iframe {
 .color-label {
   font-size: 0.75rem;
   font-weight: 500;
-  display: block;
+  display: none;
+
 }
 
 .color-name {
@@ -575,7 +576,7 @@ iframe {
   outline: none;
   text-align: left;
   padding: 1em;
-  font-size: 1.1em;
+  font-size: .8em;
   font-weight: 600;
   cursor: pointer;
   display: flex;
@@ -583,11 +584,11 @@ iframe {
   transition: background 0.2s;
 }
 .accordion-header[aria-expanded="true"] {
-  background: #ffe0b2;
+  background: #a3a3a3;
 }
 .accordion-panel {
   padding: 1em;
-  background: #fff;
+  background: #dcdcdc;
   animation: fadeIn 0.2s;
 }
 @keyframes fadeIn {
