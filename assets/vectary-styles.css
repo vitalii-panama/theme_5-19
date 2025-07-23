@@ -601,11 +601,14 @@ iframe {
   to { opacity: 1; }
 }
 
-.btn-outline {
-  background-color: transparent;
-  border: 1px solid var(--border-color);
-  color: var(--text-muted);
-  padding: 0.5rem 1rem;
-  font-weight: 500;
-  transition: background-color 0.15s ease;
+/* Add to your CSS file */
+.expand-all-centered {
+  background-color: var(--primary);
+  color: #fff;
+  border: none;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: background 0.2s, color 0.2s;
 }
+.expand-all-centered:hover {
+  background-color: #005fa3; /* Slightly darker for hover */
