@@ -23,7 +23,7 @@ const colorPalette = [
   "#5bc500", "#00b176", "#5b6236",
   
   // Blues & Teals
-  "#a5b0e3", "#a0d1ca", "#aee6ff", "#5ebdd4", "#00c7d1", "#2db1bd", "#3790b0", 
+  "#a5b0e3", "#a0d1ca", "#a0d1ca", "#5ebdd4", "#00c7d1", "#2db1bd", "#3790b0", 
   "#00778b", "#004f59", "#17a4cc", "#00acec", "#0091da", "#008bce", "#0082ba", 
   "#007dba", "#0074c5", "#93a1aa", "#597a9b", "#006298", "#005297", "#043bff", 
   "#0c15a9", "#003594", "#2d396b", "#183165", "#162667", "#2a385d",
@@ -1607,3 +1607,11 @@ document.querySelectorAll('.accordion-header').forEach(header => {
 // Optionally, expand the first panel by default
 document.querySelector('.accordion-header')?.setAttribute('aria-expanded', 'true');
 document.querySelector('.accordion-panel')?.removeAttribute('hidden');
+document.getElementById("expandAllSliders")?.addEventListener("click", function() {
+  document.querySelectorAll('.accordion-header').forEach(header => {
+    header.setAttribute('aria-expanded', 'true');
+  });
+  document.querySelectorAll('.accordion-panel').forEach(panel => {
+    panel.hidden = false;
+  });
+});
