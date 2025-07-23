@@ -589,7 +589,7 @@ iframe {
   transition: background 0.2s, color 0.2s, box-shadow 0.2s;
 }
 .accordion-header[aria-expanded="true"] {
-  background: #d9d9d6;
+  background: #f4f4f4;
 }
 .accordion-panel {
   padding: 1em;
