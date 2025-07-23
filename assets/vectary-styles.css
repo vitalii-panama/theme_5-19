@@ -570,7 +570,7 @@ iframe {
 }
 .accordion-header {
   width: 100%;
-  background: #f7f7f7;
+  background: #c8cacc;
   border: none;
   outline: none;
   text-align: left;
@@ -583,7 +583,7 @@ iframe {
   transition: background 0.2s;
 }
 .accordion-header[aria-expanded="false"]:hover {
-  background: #ffffff;
+  background: #006fcf;
   color: var(--accent);
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
   transition: background 0.2s, color 0.2s, box-shadow 0.2s;
