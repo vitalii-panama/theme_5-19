@@ -600,3 +600,13 @@ iframe {
   from { opacity: 0; }
   to { opacity: 1; }
 }
+
+.btn btn-outline {
+
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  transition: background-color 0.15s ease;
+}
