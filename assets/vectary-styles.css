@@ -455,13 +455,14 @@ iframe {
 }
 
 .color-slider {
+  top: 5px;
   width: 100%;
   appearance: none;
   background-color: transparent; /* Make transparent to show SVG */
   border-radius: 0.25rem;
   position: relative; /* For SVG positioning */
   z-index: 2; /* Ensure slider is above SVG */
-  height: 18px;
+  height: 14px;
   --color-value: #fff;
   &:focus {
     outline: none;
