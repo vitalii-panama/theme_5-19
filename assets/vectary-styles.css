@@ -424,6 +424,8 @@ iframe {
   cursor: pointer;
   color: var(--text-muted);
 }
+// ...existing code...
+
 .lock-button {
   padding: 0.35rem;
   border-radius: 50%;
@@ -445,8 +447,6 @@ iframe {
   background-color: var(--accent);
   color: #fff;
   border-color: var(--primary);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  transition: background 0.2s, border 0.2s, color
 }
 
 .lock-button.locked svg {
@@ -461,7 +461,7 @@ iframe {
   border-radius: 0.25rem;
   position: relative; /* For SVG positioning */
   z-index: 2; /* Ensure slider is above SVG */
-  height: 14px;
+  height: 18px;
   --color-value: #fff;
   &:focus {
     outline: none;
