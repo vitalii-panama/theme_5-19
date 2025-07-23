@@ -409,7 +409,6 @@ iframe {
   font-size: 0.75rem;
   font-weight: 500;
   display: none;
-
 }
 
 .color-name {
@@ -576,23 +575,28 @@ iframe {
   outline: none;
   text-align: left;
   padding: 1em;
-  font-size: .8em;
+  font-size: 1.1em;
   font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
   transition: background 0.2s;
 }
+.accordion-header[aria-expanded="false"]:hover {
+  background: #fff3e0;
+  color: var(--accent);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
 .accordion-header[aria-expanded="true"] {
-  background: #a3a3a3;
+  background: #ffe0b2;
 }
 .accordion-panel {
   padding: 1em;
-  background: #dcdcdc;
+  background: #fff;
   animation: fadeIn 0.2s;
 }
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
-
