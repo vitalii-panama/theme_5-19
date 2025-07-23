@@ -570,7 +570,7 @@ iframe {
 }
 .accordion-header {
   width: 100%;
-  background: #f7f7f7;
+  background: #eeeeee;
   border: none;
   outline: none;
   text-align: left;
@@ -583,7 +583,7 @@ iframe {
   transition: background 0.2s;
 }
 .accordion-header[aria-expanded="true"] {
-  background: #c8c8c8; /* Darker blue when expanded */
+  background: #eeeeee; /* Darker blue when expanded */
   color: #fff; /* White text for better contrast */
   box-shadow: inset 0 -1px 0 rgba(0, 0,
 }
