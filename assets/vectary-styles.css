@@ -408,7 +408,7 @@ iframe {
 .color-label {
   font-size: 0.75rem;
   font-weight: 500;
-  display: block;
+  display: none;
 }
 
 .color-name {
