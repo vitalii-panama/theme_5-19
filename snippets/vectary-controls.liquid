@@ -299,34 +299,32 @@
           <span style="font-weight:600;"><div class="color-swatch" id="colorDisplayC5"></div></span>
           <span class="color-name" id="colorNameC5"></span>
         </button>
-        <button class="lock-button" id="lockC5">
-          <!-- lock SVG here -->
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
-            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-          </svg>
-        </button>
         <div class="accordion-panel" id="panelC5" role="region" aria-labelledby="headerC5">
           <!-- C5 color-control block -->
           <div class="color-control">
             <div class="color-control-header">
               <div class="color-swatch" id="colorDisplayC5"></div>
-              { comment }
               <div class="color-info">
                 <span class="color-label">C5 Color:</span>
                 <span class="color-name" id="colorNameC5"></span>
               </div>
-              { endcomment }
+              <button class="lock-button" id="lockC5">
+                <!-- lock SVG here -->
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+              </button>
             </div>
             <div class="slider-svg-wrapper">
               {{ color_palette }}
