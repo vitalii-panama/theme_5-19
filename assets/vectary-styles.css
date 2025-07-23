@@ -424,9 +424,6 @@ iframe {
   cursor: pointer;
   color: var(--text-muted);
 }
-
-// ...existing code...
-
 .lock-button {
   padding: 0.35rem;
   border-radius: 50%;
@@ -451,8 +448,8 @@ iframe {
 }
 
 .lock-button.locked svg {
-  color: #012169;
-  stroke: #012169;
+  color: #fff;
+  stroke: #fff;
 }
 
 .color-slider {
