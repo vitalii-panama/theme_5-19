@@ -583,7 +583,9 @@ iframe {
   transition: background 0.2s;
 }
 .accordion-header[aria-expanded="true"] {
-  background: #007dba;
+  background: #007dba; /* Darker blue when expanded */
+  color: #fff; /* White text for better contrast */
+  box-shadow: inset 0 -1px 0 rgba(0, 0,
 }
 .accordion-panel {
   padding: 1em;
