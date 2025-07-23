@@ -442,18 +442,20 @@ iframe {
   width: 24px;
   height: 24px;
   stroke-width: 2.5;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  border: 2px solid var(--primary); /* Primary color border */
+  border-radius: 50%;
+  transition: color 0.2s, stroke 0.2s;
 }
 
 .lock-button.locked {
   background-color: var(--accent);
   color: #6b7280; /* Muted text color */
-  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-  border: 2px solid var(--primary); /* Primary color border */
 }
 
 .lock-button.locked svg {
-  color: #012169;
-  stroke: #fff;
+  color: #fff;
+  stroke: #012169;
 }
 
 .color-slider {
