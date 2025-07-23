@@ -432,8 +432,8 @@ iframe {
 .slider-svg-wrapper {
   position: relative;
   width: 100%;
-  height: 18px; /* Match SVG and slider height */
-  margin: 0.5rem 0;
+  height: 14px; /* Match SVG and slider height */
+  margin: 0.3rem 0;
 }
 
 .color-slider-svg {
@@ -441,7 +441,7 @@ iframe {
   top: 0;
   left: 0;
   width: 100%;
-  height: 18px;
+  height: 14px;
   border-radius: 0.25rem;
   z-index: 1;
 }
@@ -583,7 +583,7 @@ iframe {
   transition: background 0.2s;
 }
 .accordion-header[aria-expanded="true"] {
-  background: #007dba; /* Darker blue when expanded */
+  background: #c8c8c8; /* Darker blue when expanded */
   color: #fff; /* White text for better contrast */
   box-shadow: inset 0 -1px 0 rgba(0, 0,
 }
