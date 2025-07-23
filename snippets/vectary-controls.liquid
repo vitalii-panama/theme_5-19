@@ -788,7 +788,7 @@
 <div class="placeholder-area">
   <h3>Future Actions Area</h3>
   <div class="placeholder-buttons">
-    <button class="btn btn-outline">Action 1</button>
+    <button class="btn btn-outline" id="btn-download-image">Action 1</button>
     <button class="btn btn-outline">Action 2</button>
     <button class="btn btn-outline">Action 3</button>
   </div>
@@ -950,4 +950,10 @@
      };
      reader.readAsText(file);
    });
+
+   document.getElementById("btn-download-image")?.addEventListener("click", function() {
+  // Your download image logic here
+  alert("Download image triggered!");
+});
+
 </script>
