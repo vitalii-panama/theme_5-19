@@ -446,7 +446,7 @@ iframe {
 
 .lock-button.locked {
   background-color: var(--accent);
-  color: #fff;
+  color: #fa0000;
   border-color: var(--primary);
 }
 
