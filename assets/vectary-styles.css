@@ -446,8 +446,9 @@ iframe {
 
 .lock-button.locked {
   background-color: var(--accent);
-  color: #012169;
-  border-color: var(--primary);
+  color: #6b7280; /* Muted text color */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  border: 2px solid var(--primary); /* Primary color border */
 }
 
 .lock-button.locked svg {
