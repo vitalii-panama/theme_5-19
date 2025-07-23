@@ -408,7 +408,7 @@ iframe {
 .color-label {
   font-size: 0.75rem;
   font-weight: 500;
-  display: none;
+  display: no;
 }
 
 .color-name {
@@ -424,34 +424,26 @@ iframe {
   cursor: pointer;
   color: var(--text-muted);
 }
-// ...existing code...
-
-.lock-button {
-  padding: 0.35rem;
-  border-radius: 50%;
-  background-color: #fffbe6; /* Light yellow background for visibility */
-  border: 2px solid var(--accent); /* Accent border */
-  cursor: pointer;
-  color: var(--accent); /* Accent color for icon */
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  transition: background 0.2s, border 0.2s, color 0.2s;
-}
-
-.lock-button svg {
-  width: 24px;
-  height: 24px;
-  stroke-width: 2.5;
-}
 
 .lock-button.locked {
-  background-color: var(--accent);
-  color: #fff;
-  border-color: var(--primary);
+  color: var(--accent);
 }
 
-.lock-button.locked svg {
-  color: #fff;
-  stroke: #fff;
+.slider-svg-wrapper {
+  position: relative;
+  width: 100%;
+  height: 18px; /* Match SVG and slider height */
+  margin: 0.5rem 0;
+}
+
+.color-slider-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 18px;
+  border-radius: 0.25rem;
+  z-index: 1;
 }
 
 .color-slider {
