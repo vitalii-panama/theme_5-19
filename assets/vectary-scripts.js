@@ -113,7 +113,7 @@ function getColorProperties() {
       C2: document.getElementById("colorDisplayC2"),
       C1: document.getElementById("colorDisplayC1"),
       BG: document.getElementById("colorDisplayBG"),
-      L1: document.getElementById("colorDisplayPolarisLogos"),
+      L1: document.getElementById("colorDisplayL1"),
     };
 
     const colorNames = {
