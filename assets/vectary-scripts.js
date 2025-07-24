@@ -95,7 +95,7 @@ const colorPalette = [
       displayId: "colorDisplayBG",
       nameId: "colorNameBG",
       lockId: "lockBG",
-      objects: ["background_object"],
+      objects: ["wrapkit-partial 1", "wrapkit-full 1"],
       material: "MAT-LOGO-L1",
     },
   ];
