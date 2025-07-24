@@ -91,7 +91,7 @@ const colorPalette = [
     },
 
     {
-      sliderId: "swatchSliderBG",
+      sliderId: "swatchSliderL1",
       displayId: "colorDisplayL1",
       nameId: "colorNameL1",
       lockId: "lockBG",
