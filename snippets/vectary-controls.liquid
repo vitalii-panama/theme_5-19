@@ -953,7 +953,7 @@
    });
 
   document.getElementById("btn-download-image")?.addEventListener("click", function() {
-  // Example: send a custom event to Vectary API
+  // Send a custom event to Vectary API
   if (window.api && typeof window.api.dispatchEvent === "function") {
     window.api.dispatchEvent("download-image");
   }
