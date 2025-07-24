@@ -596,6 +596,16 @@ iframe {
   background: #fff;
   animation: fadeIn 0.2s;
 }
+/* Hide the close X icon when collapsed */
+.accordion-header[aria-expanded="false"] .accordion-close-icon {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s, visibility 0.2s;
+}
+.accordion-header[aria-expanded="true"] .accordion-close-icon {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.2s, visibility 0.2s;
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
