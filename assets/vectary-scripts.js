@@ -91,7 +91,7 @@ const colorPalette = [
     },
      {
       sliderId: "swatchSliderPolarisLogos",
-      displayId: "colorDisplayLogos",
+      displayId: "colorDisplayPolarisLogos",
       nameId: "colorNameLogos",
       lockId: "lockBG",
       objects: ["background_object"],

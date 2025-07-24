@@ -966,16 +966,4 @@ document.getElementById("download-image")?.addEventListener("click", function() 
   }
 });
 
-// Add default value if not present
-if (!state.colorValues.PolarisLogos) state.colorValues.PolarisLogos = 50;
-
-// In your update loop:
-const slider = document.getElementById('swatchSliderPolarisLogos');
-if (slider) {
-  slider.value = state.colorValues.PolarisLogos;
-  slider.addEventListener('input', function() {
-    state.colorValues.PolarisLogos = this.value;
-    // Add your API call or update logic here
-  });
-}
 </script>
