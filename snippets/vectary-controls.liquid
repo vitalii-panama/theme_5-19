@@ -924,12 +924,11 @@
      reader.readAsText(file);
    });
 
- document.getElementById("download-image")?.addEventListener("click", function() {
-    // Trigger the Vectary API event for downloading the image
-    if (window.api && typeof window.api.dispatchEvent === "function") {
-      window.api.dispatchEvent("download-image");
-    } else {
-      alert("Image export is not available.");
-    }
-  });
+document.getElementById("download-image")?.addEventListener("click", function() {
+  if (window.api && typeof window.api.exportImage === "function") {
+    window.api.exportImage();
+  } else {
+    alert("Image export is not available.");
+  }
+});
 </script>
