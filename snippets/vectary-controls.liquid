@@ -760,7 +760,8 @@
   <h3>Future Actions Area</h3>
   <div class="placeholder-buttons">
     <!-- Example: attach to Action 1 -->
-    <button class="btn btn-outline" id="btn-download-image">Download Build</button>
+   <!-- Download Image Button -->
+    <button id="download-image" class="btn btn-outline">Download Image</button>
     <button class="btn btn-outline">Action 2</button>
     <button class="btn btn-outline">Action 3</button>
   </div>
@@ -923,12 +924,12 @@
      reader.readAsText(file);
    });
 
-   document.getElementById("btn-download-image")?.addEventListener("click", function() {
-  if (window.api && typeof window.api.exportImage === "function") {
-    window.api.exportImage(); // This should trigger the image export/download
-    if (typeof statusMessage !== "undefined") statusMessage.textContent = "Image download requested!";
-  } else {
-    alert("Image export is not available.");
-  }
-});
+ document.getElementById("download-image")?.addEventListener("click", function() {
+    // Trigger the Vectary API event for downloading the image
+    if (window.api && typeof window.api.dispatchEvent === "function") {
+      window.api.dispatchEvent("download-image");
+    } else {
+      alert("Image export is not available.");
+    }
+  });
 </script>
