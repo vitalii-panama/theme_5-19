@@ -788,7 +788,8 @@
 <div class="placeholder-area">
   <h3>Future Actions Area</h3>
   <div class="placeholder-buttons">
-    <button class="btn btn-outline" id="btn-download-image">Action 1</button>
+    <!-- Example: attach to Action 1 -->
+    <button class="btn btn-outline" id="btn-download-image">Download Build</button>
     <button class="btn btn-outline">Action 2</button>
     <button class="btn btn-outline">Action 3</button>
   </div>
@@ -951,9 +952,13 @@
      reader.readAsText(file);
    });
 
-   document.getElementById("btn-download-image")?.addEventListener("click", function() {
-  // Your download image logic here
-  alert("Download image triggered!");
+  document.getElementById("btn-download-image")?.addEventListener("click", function() {
+  // Example: send a custom event to Vectary API
+  if (window.api && typeof window.api.dispatchEvent === "function") {
+    window.api.dispatchEvent("download-image");
+  }
+  // Optionally, show feedback to the user
+  // statusMessage.textContent = "Download requested!";
 });
 
 </script>
