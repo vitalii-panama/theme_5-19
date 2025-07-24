@@ -94,6 +94,7 @@ const colorPalette = [
       displayId: "colorDisplayL1",
       nameId: "colorNameL1",
       lockId: "lockBG",
+      
       material: "MAT-Logos-C2", 
     },
   ];
