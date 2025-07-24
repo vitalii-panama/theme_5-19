@@ -92,7 +92,7 @@ const colorPalette = [
      {
       sliderId: "swatchSliderPolarisLogos",
       displayId: "colorDisplayPolarisLogos",
-      nameId: "colorNameLogos",
+      nameId: "colorNameL1",
       lockId: "lockBG",
       objects: ["background_object"],
       material: "Logos-MAT-C2",
@@ -113,6 +113,7 @@ function getColorProperties() {
       C2: document.getElementById("colorDisplayC2"),
       C1: document.getElementById("colorDisplayC1"),
       BG: document.getElementById("colorDisplayBG"),
+      L1: document.getElementById("colorDisplayPolarisLogos"),
     };
 
     const colorNames = {
@@ -122,6 +123,7 @@ function getColorProperties() {
       C2: document.getElementById("colorNameC2"),
       C1: document.getElementById("colorNameC1"),
       BG: document.getElementById("colorNameBG"),
+      L1: document.getElementById("colorNameL1"),
     };
 
     Object.keys(colorDisplays).forEach((key) => {
