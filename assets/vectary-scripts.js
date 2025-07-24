@@ -95,7 +95,7 @@ const colorPalette = [
       nameId: "colorNameL1",
       lockId: "lockBG",
       objects: ["wrapkit-partial 1", "wrapkit-full 1"],
-      material: "MAT-Logos-C2", 
+      material: "MAT-Logos-L1", 
     },
   ];
 // Helper function to get color properties from the UI
