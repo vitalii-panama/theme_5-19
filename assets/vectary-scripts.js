@@ -89,14 +89,13 @@ const colorPalette = [
       objects: ["background_object"],
       material: "MAT-GLOSS-BG",
     },
-
     {
       sliderId: "swatchSliderL1",
       displayId: "colorDisplayL1",
       nameId: "colorNameL1",
       lockId: "lockBG",
       objects: ["wrapkit-partial 1", "wrapkit-full 1"],
-      material: "MAT-Logos-C1",
+      material: ["MAT-Logos-C1", "MAT-Logos-C2", "MAT-Logos-C3"],
     },
   ];
 // Helper function to get color properties from the UI
