@@ -305,7 +305,7 @@ const state = {
     C2: 60,
     C1: 80,
     BG: 12,
-    L1: 49, // Default value for Polaris Logos
+    L1: 10, // Default value for Polaris Logos
   },
   activeLevels: new Set(), // Add a Set to track active levels
   activeOverlaminates: new Set(), // Add a Set to track active overlaminates
