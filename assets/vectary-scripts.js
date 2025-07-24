@@ -296,6 +296,7 @@ const state = {
     C2: false,
     C1: false,
     BG: false,
+    L1: false, // Added for Polaris Logos
   },
   colorValues: {
     C5: 1,
@@ -304,6 +305,7 @@ const state = {
     C2: 60,
     C1: 80,
     BG: 12,
+    L1: 50, // Default value for Polaris Logos
   },
   activeLevels: new Set(), // Add a Set to track active levels
   activeOverlaminates: new Set(), // Add a Set to track active overlaminates
