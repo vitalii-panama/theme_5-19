@@ -954,7 +954,7 @@
   document.getElementById("btn-download-image")?.addEventListener("click", function() {
   // Send a custom event to Vectary API
   if (window.api && typeof window.api.dispatchEvent === "function") {
-    window.api.dispatchEvent("btn-download-image");
+    window.api.dispatchEvent("download-image");
   }
   // Optionally, show feedback to the user
   if (typeof statusMessage !== "undefined") statusMessage.textContent = "Download
