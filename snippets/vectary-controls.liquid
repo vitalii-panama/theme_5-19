@@ -883,38 +883,43 @@
      }
    };
    
-document.getElementById("importConfigFile")?.addEventListener("change", function(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    try {
-      const config = JSON.parse(e.target.result);
+   document.getElementById("importConfigButton")?.addEventListener("click", function() {
+     document.getElementById("importConfigFile").click();
+   });
 
-      // Restore state from config
-      if (config.activePreset !== undefined) state.activePreset = config.activePreset;
-      if (config.colorValues) state.colorValues = config.colorValues;
-      if (config.lockedMaterials) state.lockedMaterials = config.lockedMaterials;
-      if (config.activeLevels) state.activeLevels = new Set(config.activeLevels);
-      if (config.activeOverlaminates) state.activeOverlaminates = new Set(config.activeOverlaminates);
+   document.getElementById("importConfigFile")?.addEventListener("change", function(event) {
+     const file = event.target.files[0];
+     if (!file) return;
+     const reader = new FileReader();
+     reader.onload = function(e) {
+       try {
+         const config = JSON.parse(e.target.result);
 
-      // Update all sliders and color displays to match imported state
-      Object.entries(state.colorValues).forEach(([key, value]) => {
-        const slider = document.getElementById(`swatchSlider${key}`);
-        if (slider) {
-          slider.value = value;
-          slider.dispatchEvent(new Event('input', { bubbles: true }));
-        }
-      });
+         // Restore state from config
+         if (config.activePreset !== undefined) state.activePreset = config.activePreset;
+         if (config.colorValues) state.colorValues = config.colorValues;
+         if (config.lockedMaterials) state.lockedMaterials = config.lockedMaterials;
+         if (config.activeLevels) state.activeLevels = new Set(config.activeLevels);
+         if (config.activeOverlaminates) state.activeOverlaminates = new Set(config.activeOverlaminates);
 
-      // Optionally, update UI to reflect imported config
-      if (typeof updateUIFromState === "function") updateUIFromState();
+         // Update all sliders and color displays to match imported state
+         Object.entries(state.colorValues).forEach(([key, value]) => {
+           const slider = document.getElementById(`swatchSlider${key}`);
+           if (slider) {
+             slider.value = value;
+             slider.dispatchEvent(new Event('input', { bubbles: true }));
+           }
+         });
 
-      // Show a status message
-      if (typeof statusMessage !== "undefined") statusMessage.textContent = "Configuration imported successfully";
-    } catch (err) {
-      alert("Failed to import configuration: " + err.message);
-    }
-  };
-  reader.readAsText(file);
-});
+         // Optionally, update UI to reflect imported config
+         if (typeof updateUIFromState === "function") updateUIFromState();
+
+         // Show a status message
+         if (typeof statusMessage !== "undefined") statusMessage.textContent = "Configuration imported successfully";
+       } catch (err) {
+         alert("Failed to import configuration: " + err.message);
+       }
+     };
+     reader.readAsText(file);
+   });
+</script>
