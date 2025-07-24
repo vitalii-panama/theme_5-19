@@ -89,14 +89,6 @@ const colorPalette = [
       objects: ["background_object"],
       material: "MAT-GLOSS-BG",
     },
-     {
-      sliderId: "swatchSliderPolarisLogos",
-      displayId: "colorDisplayPolarisLogos",
-      nameId: "colorNameL1",
-      lockId: "lockBG",
-      objects: ["background_object"],
-      material: "MAT-Logos-C2",
-    },
   ];
 // Helper function to get color properties from the UI
 function getColorProperties() {
