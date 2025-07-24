@@ -94,7 +94,7 @@ const colorPalette = [
       displayId: "colorDisplayL1",
       nameId: "colorNameL1",
       lockId: "lockBG",
-      material: "MAT-Logos-L2", 
+      material: "MAT-Logos-C2", 
     },
   ];
 // Helper function to get color properties from the UI
