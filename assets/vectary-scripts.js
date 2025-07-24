@@ -92,8 +92,8 @@ const colorPalette = [
 
     {
       sliderId: "swatchSliderBG",
-      displayId: "colorDisplayBG",
-      nameId: "colorNameBG",
+      displayId: "colorDisplayL1",
+      nameId: "colorNameL1",
       lockId: "lockBG",
       objects: ["wrapkit-partial 1", "wrapkit-full 1"],
       material: "MAT-LOGO-L1",
