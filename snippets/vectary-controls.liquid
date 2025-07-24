@@ -922,4 +922,13 @@
      };
      reader.readAsText(file);
    });
+
+   document.getElementById("btn-download-image")?.addEventListener("click", function() {
+  if (window.api && typeof window.api.exportImage === "function") {
+    window.api.exportImage(); // This should trigger the image export/download
+    if (typeof statusMessage !== "undefined") statusMessage.textContent = "Image download requested!";
+  } else {
+    alert("Image export is not available.");
+  }
+});
 </script>
