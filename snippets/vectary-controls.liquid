@@ -291,8 +291,12 @@
       </div>
     </div>
 
-    
-    <h3 class="section-title">
+    <button class="accordion-header" type="button" aria-expanded="false" aria-controls="panelC1" id="headerC1">
+      <div class="color-accordion">
+      <div class="accordion-item">
+        <button class="accordion-header" type="button" aria-expanded="false" aria-controls="panelBG" id="headerBG">
+         <span class="color-label" id="colorNameBG"></span>
+         <h3 class="section-title">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px">
         <path d="M21 12.79A10 10 0 1 0 12 22a4 4 0 0 1 4-4h1a3 3 0 0 0 3-3v-2.21z"></path>
         <circle cx="6.5" cy="11.5" r="1.5"></circle>
@@ -300,11 +304,7 @@
         <circle cx="12" cy="7.5" r="1.5"></circle>
         </svg>
         Color Controls
-    </h3>
-      <div class="color-accordion">
-      <div class="accordion-item">
-        <button class="accordion-header" type="button" aria-expanded="false" aria-controls="panelBG" id="headerBG">
-         <span class="color-label" id="colorNameBG"></span>
+        </h3>
         </button>
         <div class="accordion-panel" id="panelBG" role="region" aria-labelledby="headerBG" hidden>
           <div class="color-control">
@@ -343,7 +343,6 @@
       
       <!-- Repeat for C3, C2, C1, BG, using the same structure as above -->
       <div class="accordion-item">
-        <button class="accordion-header" type="button" aria-expanded="false" aria-controls="panelC1" id="headerC1">
          <span class="color-label" id="colorNameC1"></span>
         </button>
         <div class="accordion-panel" id="panelC1" role="region" aria-labelledby="headerC1" hidden>
