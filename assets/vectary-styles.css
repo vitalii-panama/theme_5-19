@@ -464,6 +464,7 @@ iframe {
   width: 100%;
   height: 18px; /* Match the slider height */
   margin: 0.5rem 0;
+  display: block; /* Ensure it's always displayed */
 }
 
 .color-slider-svg {
@@ -475,6 +476,7 @@ iframe {
   border-radius: 0.25rem;
   z-index: 1;
   pointer-events: none; /* Ensure SVG doesn't interfere with slider interaction */
+  display: block; /* Ensure it's always displayed */
 }
 
 .color-slider {
@@ -487,6 +489,7 @@ iframe {
   z-index: 2; /* Ensure slider is above SVG */
   height: 18px;
   --color-value: #fff;
+  display: block; /* Ensure it's always displayed */
   &:focus {
     outline: none;
     box-shadow: none;
@@ -715,6 +718,21 @@ iframe {
   padding: 1em;
   background: #fff;
   animation: fadeIn 0.2s;
+}
+
+/* Ensure sliders work in both expanded and collapsed states */
+.accordion-panel .slider-svg-wrapper,
+.accordion-panel .color-slider-svg,
+.accordion-panel .color-slider {
+  position: relative;
+  display: block;
+  height: 18px;
+}
+
+.accordion-panel .color-slider-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 /* Hide the close X icon when collapsed */
 .accordion-header[aria-expanded="false"] .accordion-close-icon {
