@@ -97,7 +97,8 @@ header p {
 }
 
 /* Mobile-specific iframe styling for sticky behavior */
-iframe {
+iframe,
+#VECTARY_EMBED_ID {
   grid-area: iframe; /* Assign grid area */
   width: 100%;
   height: 300px; /* Smaller height for mobile sticky view */
@@ -106,29 +107,39 @@ iframe {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-/* Mobile sticky layout */
+/* Mobile sticky layout - Target actual Shopify structure */
 @media (max-width: 767px) {
-  iframe {
+  /* Make the grid item containing vectary-embed sticky */
+  .grid__item.product-single__sticky,
+  .product-single__sticky {
     position: sticky;
     top: 0;
     z-index: 100;
     background: white;
     margin-bottom: 1rem;
     border-radius: 0.5rem 0.5rem 0 0;
+    padding-bottom: 1rem;
   }
   
-  .app-container {
-    gap: 0; /* Remove gap for mobile sticky layout */
-    min-height: 100vh;
+  iframe,
+  #VECTARY_EMBED_ID {
+    height: 300px; /* Mobile optimized height */
+    margin-bottom: 0;
   }
   
-  .controls-panel {
+  /* Ensure controls area is scrollable */
+  .grid__item.product_desc_item,
+  .product_desc_item {
     background: white;
     border-radius: 0 0 0.5rem 0.5rem;
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
     margin-top: -1rem; /* Connect visually with iframe */
     padding-top: 1rem;
     min-height: calc(100vh - 300px); /* Ensure scrollable area */
+  }
+  
+  .grid {
+    gap: 0; /* Remove gap for mobile sticky layout */
   }
 }
 
@@ -172,11 +183,33 @@ iframe {
     gap: 2rem; /* Restore gap for desktop */
   }
 
-  iframe {
+  iframe,
+  #VECTARY_EMBED_ID {
     height: 600px; /* Restore desktop height */
-    position: static; /* Reset sticky positioning on desktop */
+  }
+  
+  /* Reset mobile sticky positioning on desktop */
+  .grid__item.product-single__sticky,
+  .product-single__sticky {
+    position: static; /* Reset sticky positioning */
     margin-bottom: 0; /* Reset mobile margin */
-    border-radius: 0.5rem; /* Full border radius on desktop */
+    border-radius: 0; /* Reset mobile border radius */
+    padding-bottom: 0; /* Reset mobile padding */
+    background: transparent; /* Reset mobile background */
+  }
+  
+  .grid__item.product_desc_item,
+  .product_desc_item {
+    margin-top: 0; /* Reset mobile margin */
+    padding-top: 0; /* Reset mobile padding */
+    box-shadow: none; /* Reset mobile shadow */
+    border-radius: 0; /* Reset mobile border radius */
+    background: transparent; /* Reset mobile background */
+    min-height: auto; /* Reset mobile min-height */
+  }
+  
+  .grid {
+    gap: initial; /* Reset mobile gap removal */
   }
 
   .controls-panel {
