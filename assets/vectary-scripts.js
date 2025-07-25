@@ -1608,22 +1608,22 @@ document.querySelectorAll('.accordion-header').forEach(header => {
     const expanded = this.getAttribute('aria-expanded') === 'true';
     // Collapse all
     document.querySelectorAll('.accordion-header').forEach(h => h.setAttribute('aria-expanded', 'false'));
-    document.querySelectorAll('.accordion-panel').forEach(p => p.hidden = true);
+    document.querySelectorAll('.accordion-panel').forEach(p => p.classList.add('collapsed'));
     // Expand this one if it was not already expanded
     if (!expanded) {
       this.setAttribute('aria-expanded', 'true');
-      document.getElementById(this.getAttribute('aria-controls')).hidden = false;
+      document.getElementById(this.getAttribute('aria-controls')).classList.remove('collapsed');
     }
   });
 });
 // Optionally, expand the first panel by default
 document.querySelector('.accordion-header')?.setAttribute('aria-expanded', 'true');
-document.querySelector('.accordion-panel')?.removeAttribute('hidden');
+document.querySelector('.accordion-panel')?.classList.remove('collapsed');
 document.getElementById("expandAllSliders")?.addEventListener("click", function() {
   document.querySelectorAll('.accordion-header').forEach(header => {
     header.setAttribute('aria-expanded', 'true');
   });
   document.querySelectorAll('.accordion-panel').forEach(panel => {
-    panel.hidden = false;
+    panel.classList.remove('collapsed');
   });
 });

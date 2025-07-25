@@ -714,25 +714,63 @@ iframe {
 .accordion-header[aria-expanded="true"] {
   background: #f4f4f4;
 }
+/* Accordion panel visibility using CSS transforms instead of hidden attribute */
 .accordion-panel {
   padding: 1em;
   background: #fff;
   animation: fadeIn 0.2s;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+  overflow: hidden;
+  max-height: 1000px; /* Large enough for content */
+  opacity: 1;
 }
 
-/* Ensure sliders work in both expanded and collapsed states */
-.accordion-panel .slider-svg-wrapper,
-.accordion-panel .color-slider-svg,
-.accordion-panel .color-slider {
+.accordion-panel.collapsed {
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  opacity: 0;
+}
+
+/* Force sliders to render correctly in both expanded and collapsed states */
+.accordion-panel .slider-svg-wrapper {
   position: relative;
-  display: block;
-  height: 18px;
+  display: block !important;
+  height: 18px !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 .accordion-panel .color-slider-svg {
   position: absolute;
   top: 0;
   left: 0;
+  width: 100% !important;
+  height: 18px !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.accordion-panel .color-slider {
+  position: relative;
+  display: block !important;
+  height: 18px !important;
+  width: 100% !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Ensure sliders work even when accordion panel is hidden */
+.accordion-panel[hidden] .slider-svg-wrapper,
+.accordion-panel[hidden] .color-slider-svg,
+.accordion-panel[hidden] .color-slider {
+  position: relative !important;
+  display: block !important;
+  height: 18px !important;
+  width: 100% !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 /* Hide the close X icon when collapsed */
 .accordion-header[aria-expanded="false"] .accordion-close-icon {
