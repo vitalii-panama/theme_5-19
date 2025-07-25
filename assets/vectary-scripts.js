@@ -1606,48 +1606,24 @@ document.addEventListener("DOMContentLoaded", function () {
 document.querySelectorAll('.accordion-header').forEach(header => {
   header.addEventListener('click', function() {
     const expanded = this.getAttribute('aria-expanded') === 'true';
-    const panelId = this.getAttribute('aria-controls');
-    const panel = document.getElementById(panelId);
-    
     // Collapse all
     document.querySelectorAll('.accordion-header').forEach(h => h.setAttribute('aria-expanded', 'false'));
-    document.querySelectorAll('.accordion-panel').forEach(p => {
-      p.style.maxHeight = '0';
-      p.style.overflow = 'hidden';
-      p.style.paddingTop = '0';
-      p.style.paddingBottom = '0';
-    });
-    
+    document.querySelectorAll('.accordion-panel').forEach(p => p.hidden = true);
     // Expand this one if it was not already expanded
-    if (!expanded && panel) {
+    if (!expanded) {
       this.setAttribute('aria-expanded', 'true');
-      panel.style.maxHeight = '500px'; // Large enough for content
-      panel.style.overflow = 'visible';
-      panel.style.paddingTop = '1em';
-      panel.style.paddingBottom = '1em';
+      document.getElementById(this.getAttribute('aria-controls')).hidden = false;
     }
   });
 });
-
 // Optionally, expand the first panel by default
-const firstHeader = document.querySelector('.accordion-header');
-const firstPanel = document.querySelector('.accordion-panel');
-if (firstHeader && firstPanel) {
-  firstHeader.setAttribute('aria-expanded', 'true');
-  firstPanel.style.maxHeight = '500px';
-  firstPanel.style.overflow = 'visible';
-  firstPanel.style.paddingTop = '1em';
-  firstPanel.style.paddingBottom = '1em';
-}
-
+document.querySelector('.accordion-header')?.setAttribute('aria-expanded', 'true');
+document.querySelector('.accordion-panel')?.removeAttribute('hidden');
 document.getElementById("expandAllSliders")?.addEventListener("click", function() {
   document.querySelectorAll('.accordion-header').forEach(header => {
     header.setAttribute('aria-expanded', 'true');
   });
   document.querySelectorAll('.accordion-panel').forEach(panel => {
-    panel.style.maxHeight = '500px';
-    panel.style.overflow = 'visible';
-    panel.style.paddingTop = '1em';
-    panel.style.paddingBottom = '1em';
+    panel.hidden = false;
   });
 });
