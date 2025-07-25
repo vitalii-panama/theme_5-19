@@ -711,9 +711,110 @@ iframe,
   background-color: var(--primary);
 }
 
+/* Specific hover states for textured buttons to preserve their texture */
+.overlaminate-button[data-material="MAT-GLOSS"]:first-of-type:hover {
+  background: linear-gradient(45deg, #c0c0c0 25%, #e8e8e8 25%, #e8e8e8 50%, #c0c0c0 50%, #c0c0c0 75%, #e8e8e8 75%);
+  background-size: 8px 8px;
+  opacity: 0.8;
+}
+
+.overlaminate-button[data-material="MAT-GLOSS"]:nth-of-type(2):hover {
+  background: linear-gradient(45deg, #d4af37 25%, #ffd700 25%, #ffd700 50%, #d4af37 50%, #d4af37 75%, #ffd700 75%);
+  background-size: 8px 8px;
+  opacity: 0.8;
+}
+
+.overlaminate-button[data-material="MAT-MATTE"]:hover {
+  background: radial-gradient(circle at 2px 2px, rgba(0,0,0,0.15) 1px, transparent 0);
+  background-size: 12px 12px;
+  background-color: var(--primary);
+  opacity: 0.8;
+}
+
+.overlaminate-button[data-material="MAT-GLOSS"]:nth-of-type(4):hover {
+  background: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0.8) 100%);
+  background-color: #ffffff;
+  opacity: 0.8;
+}
+
+.overlaminate-button[data-material="MAT-CHROME-GLOSS"]:hover {
+  background: linear-gradient(90deg, #b8b8b8 0%, #f0f0f0 25%, #d0d0d0 50%, #f0f0f0 75%, #b8b8b8 100%);
+  background-size: 20px 100%;
+  opacity: 0.8;
+}
+
+.overlaminate-button[data-material="MAT-CHROME-MATTE"]:hover {
+  background: linear-gradient(90deg, #a0a0a0 0%, #d0d0d0 25%, #b0b0b0 50%, #d0d0d0 75%, #a0a0a0 100%);
+  background-size: 16px 100%;
+  opacity: 0.8;
+}
+
+.overlaminate-button[data-material="MAT-HOLO-GLOSS"]:hover {
+  background: linear-gradient(45deg, #ff0080 0%, #00ff80 25%, #8000ff 50%, #ff8000 75%, #ff0080 100%);
+  background-size: 16px 16px;
+  opacity: 0.8;
+}
+
+.overlaminate-button[data-material="MAT-HOLO-MATTE"]:hover {
+  background: linear-gradient(60deg, #ff0080 0%, #00ff80 25%, #8000ff 50%, #ff8000 75%, #ff0080 100%);
+  background-size: 12px 12px;
+  opacity: 0.8;
+}
+
 .overlaminate-button.active {
   background-color: var(--primary);
   position: relative;
+}
+
+/* Specific active states for textured buttons to preserve their texture */
+.overlaminate-button[data-material="MAT-GLOSS"]:first-of-type.active {
+  background: linear-gradient(45deg, #a0a0a0 25%, #c8c8c8 25%, #c8c8c8 50%, #a0a0a0 50%, #a0a0a0 75%, #c8c8c8 75%);
+  background-size: 8px 8px;
+  position: relative;
+}
+
+.overlaminate-button[data-material="MAT-GLOSS"]:nth-of-type(2).active {
+  background: linear-gradient(45deg, #b4932d 25%, #dfbf00 25%, #dfbf00 50%, #b4932d 50%, #b4932d 75%, #dfbf00 75%);
+  background-size: 8px 8px;
+  position: relative;
+}
+
+.overlaminate-button[data-material="MAT-MATTE"].active {
+  background: radial-gradient(circle at 2px 2px, rgba(0,0,0,0.25) 1px, transparent 0);
+  background-size: 12px 12px;
+  background-color: var(--primary);
+}
+
+.overlaminate-button[data-material="MAT-GLOSS"]:nth-of-type(4).active {
+  background: linear-gradient(135deg, rgba(200,200,200,0.8) 0%, rgba(200,200,200,0.3) 50%, rgba(200,200,200,0.8) 100%);
+  background-color: var(--primary);
+  position: relative;
+}
+
+.overlaminate-button[data-material="MAT-CHROME-GLOSS"].active {
+  background: linear-gradient(90deg, #989898 0%, #d0d0d0 25%, #b0b0b0 50%, #d0d0d0 75%, #989898 100%);
+  background-size: 20px 100%;
+  position: relative;
+}
+
+.overlaminate-button[data-material="MAT-CHROME-MATTE"].active {
+  background: linear-gradient(90deg, #606060 0%, #909090 25%, #707070 50%, #909090 75%, #606060 100%);
+  background-size: 16px 100%;
+  position: relative;
+}
+
+.overlaminate-button[data-material="MAT-HOLO-GLOSS"].active {
+  background: linear-gradient(45deg, #bf0060 0%, #00bf60 25%, #6000bf 50%, #bf6000 75%, #bf0060 100%);
+  background-size: 16px 16px;
+  position: relative;
+  filter: brightness(0.8);
+}
+
+.overlaminate-button[data-material="MAT-HOLO-MATTE"].active {
+  background: linear-gradient(60deg, #bf0060 0%, #00bf60 25%, #6000bf 50%, #bf6000 75%, #bf0060 100%);
+  background-size: 12px 12px;
+  position: relative;
+  filter: brightness(0.8);
 }
 
 .overlaminate-button.active::after {
@@ -748,7 +849,7 @@ iframe,
   border: none;
   outline: none;
   text-align: left;
-  padding: .7em;
+  padding: .3em;
   font-size: 1.1em;
   font-weight: 600;
   cursor: pointer;
