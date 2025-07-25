@@ -69,11 +69,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     - Color picker Huebee JS and CSS
     ==========================================================={% endcomment %}
 
-    {% if template contains 'product-registration' %}
+    {% if template contains 'product-registration' or template contains 'product-reg-designer' %}
     <link href="https://fonts.googleapis.com/css?family=Black+Ops+One|Anton|Audiowide|Baumans|Bowlby+One|Bowlby+One+SC|Bungee|Ceviche+One|Changa+One|Creepster|East+Sea+Dokdo|Graduate|Fugaz+One|Iceland|Orbitron|Ruslan+Display|Russo+One|Righteous|Sarina|Sarpanch|Share+Tech+Mono|Shojumaru|Shrikhand|Stalinist+One|Timmana|Viga|Yesteryear|Yellowtail" rel="stylesheet">
     {{ 'huebee.js' | asset_url | script_tag }} 
     {{ 'huebee.css' | asset_url | stylesheet_tag  }} 
-    {{ 'seadog.css' | asset_url | stylesheet_tag  }} 
+    {{ 'seadog.css' | asset_url | stylesheet_tag  }}
+    {{ 'vectary-styles.css' | asset_url | stylesheet_tag }}
     {% endif %}
     
 {% comment %}Begin SB custom code{% endcomment %}
