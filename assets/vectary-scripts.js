@@ -38,7 +38,6 @@ const colorPalette = [
   const sliderConfigs = [
     {
       sliderId: "swatchSliderC5",
-      key: "C5",
       displayId: "colorDisplayC5",
       nameId: "colorNameC5",
       lockId: "lockC5",
@@ -52,7 +51,6 @@ const colorPalette = [
     },
     {
       sliderId: "swatchSliderC4",
-      key: "C4",
       displayId: "colorDisplayC4",
       nameId: "colorNameC4",
       lockId: "lockC4",
@@ -61,7 +59,6 @@ const colorPalette = [
     },
     {
       sliderId: "swatchSliderC3",
-      key: "C3",
       displayId: "colorDisplayC3",
       nameId: "colorNameC3",
       lockId: "lockC3",
@@ -70,7 +67,6 @@ const colorPalette = [
     },
     {
       sliderId: "swatchSliderC2",
-      key: "C2",
       displayId: "colorDisplayC2",
       nameId: "colorNameC2",
       lockId: "lockC2",
@@ -79,7 +75,6 @@ const colorPalette = [
     },
     {
       sliderId: "swatchSliderC1",
-      key: "C1",
       displayId: "colorDisplayC1",
       nameId: "colorNameC1",
       lockId: "lockC1",
@@ -88,7 +83,6 @@ const colorPalette = [
     },
     {
       sliderId: "swatchSliderBG",
-      key: "BG",
       displayId: "colorDisplayBG",
       nameId: "colorNameBG",
       lockId: "lockBG",
@@ -97,13 +91,11 @@ const colorPalette = [
     },
     {
       sliderId: "swatchSliderL1",
-      key: "L1",
       displayId: "colorDisplayL1",
       nameId: "colorNameL1",
-      lockId: "lockL1",
-      // IMPORTANT: Please verify the correct object name(s) for the logos.
-      objects: ["logos"], 
-      material: ["MAT-Logos-C1", "MAT-Logos-C2", "MAT-Logos-C3"],
+      lockId: "lockBG",
+      objects: ["wrapkit-partial 1", "wrapkit-full 1"],
+      material: "MAT-Logos-L2", 
     },
   ];
 // Helper function to get color properties from the UI
@@ -448,17 +440,17 @@ document.addEventListener("DOMContentLoaded", () => {
     displayElement,
     nameElement,
     objectNames,
-    materialNames // Can be a string or an array
+    materialName
   ) {
     if (!sliderElement || !displayElement || !nameElement) {
       console.error(
-        `Slider, display, or name element not found for ${materialNames}.`
+        `Slider, display, or name element not found for ${materialName}.`
       );
       return;
     }
     if (!isApiReady || !api || typeof api.addOrEditMaterial !== "function") {
       console.warn(
-        `API not ready or addOrEditMaterial missing for ${materialNames}. Cannot update material color.`
+        `API not ready or addOrEditMaterial missing for ${materialName}. Cannot update material color.`
       );
       return;
     }
@@ -480,29 +472,23 @@ document.addEventListener("DOMContentLoaded", () => {
     displayElement.style.backgroundColor = hexColor;
     displayElement.closest(".color-control").querySelector('.color-slider').style.setProperty('--color-value', hexColor);
     nameElement.textContent = colorName;
-    
-    // Find the config to get the key for state update
-    const config = sliderConfigs.find(c => c.sliderId === sliderElement.id);
-    if (config) {
-      state.colorValues[config.key] = sliderValue;
-    }
-
+    const materialId = materialName.replace(/.*-/, "");
+    console.log(11,materialId, state.colorValues);
+    state.colorValues[materialId] = sliderValue;
     const rgb = hexToRbg(hexColor);
-    const color = { x: rgb[0], y: rgb[1], z: rgb[2] };
 
-    const materialsToUpdate = Array.isArray(materialNames) ? materialNames : [materialNames];
+    objectNames.forEach((objectName) => {
+      const color = { x: rgb[0], y: rgb[1], z: rgb[2] };
 
-    materialsToUpdate.forEach(materialName => {
-      objectNames.forEach((objectName) => {
-        api
-          .addOrEditMaterial(objectName, {
-            name: materialName,
-            baseColor: { color },
-          })
-          .catch((error) => {
-            /* Avoid logging errors for hidden objects */
-          });
-      });
+      console.log(objectName, materialName, color);
+      api
+        .addOrEditMaterial(objectName, {
+          name: materialName,
+          baseColor: { color },
+        })
+        .catch((error) => {
+          /* Avoid logging errors for hidden objects */
+        });
     });
     
     // Save the updated color values to localStorage
@@ -519,12 +505,13 @@ document.addEventListener("DOMContentLoaded", () => {
       const displayElement = document.getElementById(config.displayId);
       const nameElement = document.getElementById(config.nameId);
       const lockElement = document.getElementById(config.lockId);
-      
+      const materialId = config.material.replace(/^[^-]+-[^-]+-/, "");
+
       if (sliderElement && displayElement && nameElement && lockElement) {
         // Apply SVG gradient background to the slider
         updateSliderBackground(sliderElement, colorPalette);
         
-        sliderElement.value = state.colorValues[config.key] || 50;
+        sliderElement.value = state.colorValues[materialId] || 50;
         const updateSliderDisplay = () => {
           const sliderValue = parseInt(sliderElement.value, 10);
           const keyA = `A${sliderValue}`;
@@ -537,14 +524,14 @@ document.addEventListener("DOMContentLoaded", () => {
             : "Unknown";
           displayElement.style.backgroundColor = hexColor;
           nameElement.textContent = colorName;
-          state.colorValues[config.key] = sliderValue;
+          state.colorValues[materialId] = sliderValue;
         };
         updateSliderDisplay(); // Initial UI update
 
         lockElement.addEventListener("click", function () {
-          state.lockedMaterials[config.key] =
-            !state.lockedMaterials[config.key];
-          this.classList.toggle("locked", state.lockedMaterials[config.key]);
+          state.lockedMaterials[materialId] =
+            !state.lockedMaterials[materialId];
+          this.classList.toggle("locked", state.lockedMaterials[materialId]);
         });
       } else {
         console.warn(`HTML elements not found for slider config:`, config);
@@ -557,13 +544,15 @@ document.addEventListener("DOMContentLoaded", () => {
       const sliderElement = document.getElementById(config.sliderId);
       const displayElement = document.getElementById(config.displayId);
       const nameElement = document.getElementById(config.nameId);
-      const lockElement = document.getElementById(config.lockId); 
+      const lockElement = document.getElementById(config.lockId); // Needed for listener
+      const materialId = config.material.replace(/^[^-]+-[^-]+-/, "");
 
       if (sliderElement && displayElement && nameElement && lockElement) {
         // Add input listener that calls API
         sliderElement.addEventListener("input", function () {
-          if (!state.lockedMaterials[config.key]) {
-            // Update Vectary material
+          if (!state.lockedMaterials[materialId]) {
+            // Update UI first (already done by initializeSliderUI listener)
+            // Then update Vectary material
             updateMaterialColor(
               api,
               this,
@@ -699,7 +688,8 @@ document.addEventListener("DOMContentLoaded", () => {
   function randomizeColors(api) {
     let updated = false;
     sliderConfigs.forEach((config) => {
-      if (!state.lockedMaterials[config.key]) {
+      const materialId = config.material.replace(/^[^-]+-[^-]+-/, "");
+      if (!state.lockedMaterials[materialId]) {
         const sliderElement = document.getElementById(config.sliderId);
         const displayElement = document.getElementById(config.displayId);
         const nameElement = document.getElementById(config.nameId);
@@ -720,7 +710,7 @@ document.addEventListener("DOMContentLoaded", () => {
               : "Unknown";
             displayElement.style.backgroundColor = hexColor;
             nameElement.textContent = colorName;
-            state.colorValues[config.key] = sliderValue;
+            state.colorValues[materialId] = sliderValue;
           };
           updateSliderDisplay();
           // Update Vectary material
@@ -776,7 +766,8 @@ document.addEventListener("DOMContentLoaded", () => {
       
       if (!forceEvent || state.activePreset !== presetNumber) {
         sliderConfigs.forEach((config) => {
-          const materialId = config.key;
+          // Extract the material ID by removing the prefix and keeping the material part (C5, C4, etc.)
+          const materialId = config.material.replace(selectedOverlaminateMaterial + "-", "");
           
           if (
             !state.lockedMaterials[materialId] &&
