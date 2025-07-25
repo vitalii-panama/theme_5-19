@@ -519,21 +519,24 @@ iframe {
 
 /* Mobile slider fixes */
 @media (max-width: 768px) {
-  .color-slider, .slider-svg-wrapper, .color-slider-svg {
-    box-sizing: border-box;
+  .color-slider {
+    height: 18px !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
   }
   
-  .color-slider {
-    appearance: none;
-    -webkit-appearance: none;
-    box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    transform: translateZ(0); /* Force re-render */
+  .color-slider::-webkit-slider-runnable-track {
+    height: 18px !important;
+    background: transparent !important;
   }
   
   .slider-svg-wrapper {
-    display: flex;
-    align-items: center;
+    height: 18px !important;
+  }
+  
+  .color-slider-svg {
+    height: 18px !important;
+    background: linear-gradient(to right, red, blue) !important; /* Debug background */
   }
 }
 
