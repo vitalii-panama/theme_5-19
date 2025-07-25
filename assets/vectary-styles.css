@@ -545,11 +545,7 @@ iframe {
 
 .overlaminate-button {
   padding: 0.5rem 0.75rem;
-  background-color: var(--secondary); /* Gray by default */
-  background-image: url('https://cdn.shopify.com/s/files/1/1783/9041/files/evren-aluminium-metal-sandblasted-3d-texture-pbr-material-high-resolution-free-downlox-hd-4k.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  background-color: var(--secondary);
   color: var(--primary);
   font-weight: 500;
   border-radius: 0.375rem;
@@ -563,9 +559,95 @@ iframe {
   transition: background-color 0.15s ease;
   font-size: 16px;
   min-height: 82px;
+  overflow: hidden;
   @media (max-width: 768px) {
     min-height: 62px;
   }
+}
+
+/* Metallic Silver texture */
+.overlaminate-button[data-material="MAT-GLOSS"]:first-of-type {
+  background: linear-gradient(45deg, #c0c0c0 25%, #e8e8e8 25%, #e8e8e8 50%, #c0c0c0 50%, #c0c0c0 75%, #e8e8e8 75%);
+  background-size: 8px 8px;
+}
+
+/* Metallic Gold texture */
+.overlaminate-button[data-material="MAT-GLOSS"]:nth-of-type(2) {
+  background: linear-gradient(45deg, #d4af37 25%, #ffd700 25%, #ffd700 50%, #d4af37 50%, #d4af37 75%, #ffd700 75%);
+  background-size: 8px 8px;
+}
+
+/* Matte texture */
+.overlaminate-button[data-material="MAT-MATTE"] {
+  background: radial-gradient(circle at 2px 2px, rgba(0,0,0,0.15) 1px, transparent 0);
+  background-size: 12px 12px;
+  background-color: #f0f0f0;
+}
+
+/* Standard Gloss texture */
+.overlaminate-button[data-material="MAT-GLOSS"]:nth-of-type(4) {
+  background: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0.8) 100%);
+  background-color: #ffffff;
+}
+
+/* Chrome Gloss texture */
+.overlaminate-button[data-material="MAT-CHROME-GLOSS"] {
+  background: linear-gradient(90deg, #b8b8b8 0%, #f0f0f0 25%, #d0d0d0 50%, #f0f0f0 75%, #b8b8b8 100%);
+  background-size: 20px 100%;
+}
+
+/* Chrome Matte texture */
+.overlaminate-button[data-material="MAT-CHROME-MATTE"] {
+  background: linear-gradient(90deg, #a0a0a0 0%, #d0d0d0 25%, #b0b0b0 50%, #d0d0d0 75%, #a0a0a0 100%);
+  background-size: 16px 100%;
+  position: relative;
+}
+
+.overlaminate-button[data-material="MAT-CHROME-MATTE"]:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 3px 3px, rgba(0,0,0,0.1) 1px, transparent 0);
+  background-size: 8px 8px;
+}
+
+/* Holographic Gloss texture */
+.overlaminate-button[data-material="MAT-HOLO-GLOSS"] {
+  background: linear-gradient(45deg, #ff0080 0%, #00ff80 25%, #8000ff 50%, #ff8000 75%, #ff0080 100%);
+  background-size: 16px 16px;
+  animation: holo-shimmer 3s ease-in-out infinite;
+}
+
+@keyframes holo-shimmer {
+  0%, 100% { filter: hue-rotate(0deg) brightness(1); }
+  50% { filter: hue-rotate(60deg) brightness(1.2); }
+}
+
+/* Holographic Matte texture */
+.overlaminate-button[data-material="MAT-HOLO-MATTE"] {
+  background: linear-gradient(60deg, #ff0080 0%, #00ff80 25%, #8000ff 50%, #ff8000 75%, #ff0080 100%);
+  background-size: 12px 12px;
+  position: relative;
+  animation: holo-shimmer-matte 4s ease-in-out infinite;
+}
+
+.overlaminate-button[data-material="MAT-HOLO-MATTE"]:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 2px 2px, rgba(0,0,0,0.2) 1px, transparent 0);
+  background-size: 10px 10px;
+}
+
+@keyframes holo-shimmer-matte {
+  0%, 100% { filter: hue-rotate(0deg) brightness(0.8); }
+  50% { filter: hue-rotate(90deg) brightness(1); }
 }
 
 .overlaminate-button:hover {
@@ -573,7 +655,7 @@ iframe {
 }
 
 .overlaminate-button.active {
-  background-color: var(--primary); /* Teal when active */
+  background-color: var(--primary);
   position: relative;
 }
 
