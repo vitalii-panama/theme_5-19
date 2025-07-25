@@ -33,7 +33,8 @@ button.bold_hidden {
   /* Hide selected options pill on mobile */
   .selected-options-pill,
   .mobile-toggle-button,
-  #mobile-toggle-button {
+  #mobile-toggle-button,
+  .privy-inner-container {
     display: none !important;
     visibility: hidden !important;
   }
