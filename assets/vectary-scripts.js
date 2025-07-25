@@ -308,7 +308,7 @@ const state = {
     L1: 20, // Default value for Logos
   },
   activeLevels: new Set(), // Add a Set to track active levels
-  activeOverlaminates: new Set(["Gloss"]), // Initialize with Gloss as default active overlaminate
+  activeOverlaminates: new Set(), // Add a Set to track active overlaminates
 };
 
 // Make state accessible to other scripts
@@ -1106,20 +1106,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Function to update the overlaminate buttons active state
   function updateOverlaminateButtonsActiveState() {
     // Update all overlaminate buttons to match state.activeOverlaminates
-    document.querySelectorAll(".overlaminate-button").forEach((button) => {
-      const overlaminateHandle = button.getAttribute("data-overlaminate-handle");
-      const isActive = state.activeOverlaminates.has(overlaminateHandle);
-      button.classList.toggle("active", isActive);
-    });
-    
-    // If no button is active, set Gloss as default
-    if (state.activeOverlaminates.size === 0) {
-      const glossButton = document.getElementById("overlaminateStandardGloss");
-      if (glossButton) {
-        glossButton.classList.add("active");
-        state.activeOverlaminates.add("Gloss");
-      }
-    }
+    document.querySelector(".overlaminate-button").click()
   }
 
   function saveConfiguration() {
@@ -1164,46 +1151,27 @@ document.addEventListener("DOMContentLoaded", () => {
       
       // Apply saved overlaminate material if available
       const savedOverlaminateMaterial = localStorage.getItem('vectaryOverlaminateMaterial');
-      const savedActiveOverlaminates = localStorage.getItem('vectaryActiveOverlaminates');
-      
-      if (savedOverlaminateMaterial && savedActiveOverlaminates) {
-        try {
-          const overlaminates = JSON.parse(savedActiveOverlaminates);
-          if (overlaminates.length > 0) {
-            // Update all slider configs with the saved material type
-            sliderConfigs.forEach(config => {
-              config.material = config.material.replace(selectedOverlaminateMaterial, savedOverlaminateMaterial);
-            });
-            selectedOverlaminateMaterial = savedOverlaminateMaterial;
-            
-            // Find the button by the specific overlaminate handle, not just material
-            const savedOverlaminateHandle = overlaminates[0]; // Get the first (and should be only) overlaminate
-            const overlaminateButton = Array.from(document.querySelectorAll('.overlaminate-button'))
-              .find(btn => btn.getAttribute('data-overlaminate-handle') === savedOverlaminateHandle);
-            
-            if (overlaminateButton) {
-              console.log('Applying saved overlaminate:', savedOverlaminateHandle);
-              // Clear all buttons first
-              document.querySelectorAll(".overlaminate-button").forEach(btn => {
-                btn.classList.remove("active");
-              });
-              
-              // Set the correct button as active
-              overlaminateButton.classList.add('active');
-              
-              // Update state
-              state.activeOverlaminates.clear();
-              state.activeOverlaminates.add(savedOverlaminateHandle);
-            }
+      if (savedOverlaminateMaterial) {
+        // Update all slider configs with the saved material type
+        sliderConfigs.forEach(config => {
+          config.material = config.material.replace(selectedOverlaminateMaterial, savedOverlaminateMaterial);
+        });
+        selectedOverlaminateMaterial = savedOverlaminateMaterial;
+        
+        // Find and click the corresponding overlaminate button
+        const overlaminateButton = document.querySelector(`.overlaminate-button[data-material="${savedOverlaminateMaterial}"]`);
+        if (overlaminateButton) {
+          console.log('Applying saved overlaminate material:', savedOverlaminateMaterial);
+          // Just update the UI, don't trigger the click event to avoid double processing
+          overlaminateButton.classList.add('active');
+          
+          // Update active overlaminates in state
+          const overlaminateHandle = overlaminateButton.getAttribute("data-overlaminate-handle");
+          if (overlaminateHandle) {
+            state.activeOverlaminates.clear();
+            state.activeOverlaminates.add(overlaminateHandle);
           }
-        } catch (error) {
-          console.error('Error parsing saved overlaminate data:', error);
-          // Fall back to default initialization
-          updateOverlaminateButtonsActiveState();
         }
-      } else {
-        // No saved data, initialize with default (Gloss)
-        updateOverlaminateButtonsActiveState();
       }
 
       // Re-Initialize Sliders with API connection
