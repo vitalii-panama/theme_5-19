@@ -30,6 +30,13 @@ button.bold_hidden {
     text-align: left!important;
   }
   
+  /* Hide selected options pill on mobile */
+  .selected-options-pill,
+  .mobile-toggle-button,
+  #mobile-toggle-button {
+    display: none !important;
+    visibility: hidden !important;
+  }
 }
 
 
