@@ -767,47 +767,16 @@ iframe,
 }
 
 /* Specific active states for textured buttons to preserve their texture */
-.overlaminate-button[data-material="MAT-GLOSS"]:first-of-type.active {
-  background: linear-gradient(45deg, #a0a0a0 25%, #c8c8c8 25%, #c8c8c8 50%, #a0a0a0 50%, #a0a0a0 75%, #c8c8c8 75%);
-  background-size: 8px 8px;
-  position: relative;
-}
-
-.overlaminate-button[data-material="MAT-GLOSS"]:nth-of-type(2).active {
-  background: linear-gradient(45deg, #b4932d 25%, #dfbf00 25%, #dfbf00 50%, #b4932d 50%, #b4932d 75%, #dfbf00 75%);
-  background-size: 8px 8px;
-  position: relative;
-}
-
 .overlaminate-button[data-material="MAT-MATTE"].active {
   background: radial-gradient(circle at 2px 2px, rgba(0,0,0,0.25) 1px, transparent 0);
   background-size: 12px 12px;
   background-color: var(--primary);
 }
 
-.overlaminate-button[data-material="MAT-GLOSS"]:nth-of-type(4).active {
-  background: linear-gradient(135deg, rgba(200,200,200,0.8) 0%, rgba(200,200,200,0.3) 50%, rgba(200,200,200,0.8) 100%);
-  background-color: var(--primary);
-  position: relative;
-}
-
-.overlaminate-button[data-material="MAT-CHROME-GLOSS"].active {
-  background: linear-gradient(90deg, #989898 0%, #d0d0d0 25%, #b0b0b0 50%, #d0d0d0 75%, #989898 100%);
-  background-size: 20px 100%;
-  position: relative;
-}
-
 .overlaminate-button[data-material="MAT-CHROME-MATTE"].active {
   background: linear-gradient(90deg, #606060 0%, #909090 25%, #707070 50%, #909090 75%, #606060 100%);
   background-size: 16px 100%;
   position: relative;
-}
-
-.overlaminate-button[data-material="MAT-HOLO-GLOSS"].active {
-  background: linear-gradient(45deg, #bf0060 0%, #00bf60 25%, #6000bf 50%, #bf6000 75%, #bf0060 100%);
-  background-size: 16px 16px;
-  position: relative;
-  filter: brightness(0.8);
 }
 
 .overlaminate-button[data-material="MAT-HOLO-MATTE"].active {
