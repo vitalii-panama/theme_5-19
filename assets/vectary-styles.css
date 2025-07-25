@@ -84,30 +84,8 @@ header p {
   color: var(--text-muted);
 }
 
-/* --- Grid Layout for App Container --- */
-.app-container {
-  display: grid;
-  gap: 2rem;
-  /* Mobile layout: Single column */
-  grid-template-columns: 1fr;
-  grid-template-areas:
-    "iframe"
-    "controls"
-    "placeholder"; /* Placeholder below controls on mobile */
-}
-
-/* Mobile-specific iframe styling for sticky behavior */
-iframe,
-#VECTARY_EMBED_ID {
-  grid-area: iframe; /* Assign grid area */
-  width: 100%;
-  height: 300px; /* Smaller height for mobile sticky view */
-  border: 1px solid var(--border-color);
-  border-radius: 0.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-/* Mobile sticky layout - Target actual Shopify structure */
+/* --- Mobile Sticky Layout for 3D Player --- */
+/* Only apply sticky behavior on mobile screens */
 @media (max-width: 767px) {
   /* Make the grid item containing vectary-embed sticky */
   .grid__item.product-single__sticky,
@@ -119,15 +97,17 @@ iframe,
     margin-bottom: 1rem;
     border-radius: 0.5rem 0.5rem 0 0;
     padding-bottom: 1rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   }
   
+  /* Mobile optimized iframe size */
   iframe,
   #VECTARY_EMBED_ID {
-    height: 300px; /* Mobile optimized height */
+    height: 300px !important; /* Mobile optimized height */
     margin-bottom: 0;
   }
   
-  /* Ensure controls area is scrollable */
+  /* Ensure controls area is scrollable and visually connected */
   .grid__item.product_desc_item,
   .product_desc_item {
     background: white;
@@ -138,9 +118,33 @@ iframe,
     min-height: calc(100vh - 300px); /* Ensure scrollable area */
   }
   
+  /* Remove gap between sticky iframe and controls */
   .grid {
-    gap: 0; /* Remove gap for mobile sticky layout */
+    gap: 0 !important; /* Remove gap for mobile sticky layout */
   }
+}
+
+/* --- Grid Layout for App Container (legacy, may not be used) --- */
+.app-container {
+  display: grid;
+  gap: 2rem;
+  /* Mobile layout: Single column */
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "iframe"
+    "controls"
+    "placeholder"; /* Placeholder below controls on mobile */
+}
+
+/* Default iframe styling (for app-container structure if used) */
+iframe,
+#VECTARY_EMBED_ID {
+  grid-area: iframe; /* Assign grid area */
+  width: 100%;
+  height: 450px; /* Default height */
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .controls-panel {
@@ -171,7 +175,7 @@ iframe,
   border: 1px dashed var(--border-color);
 }
 
-/* Desktop layout (medium screens and up) */
+/* Desktop layout (medium screens and up) - Legacy app-container support */
 @media (min-width: 768px) {
   .app-container {
     /* Two columns: main area and controls */
@@ -187,30 +191,6 @@ iframe,
   #VECTARY_EMBED_ID {
     height: 600px; /* Restore desktop height */
   }
-  
-  /* Reset mobile sticky positioning on desktop */
-  .grid__item.product-single__sticky,
-  .product-single__sticky {
-    position: static; /* Reset sticky positioning */
-    margin-bottom: 0; /* Reset mobile margin */
-    border-radius: 0; /* Reset mobile border radius */
-    padding-bottom: 0; /* Reset mobile padding */
-    background: transparent; /* Reset mobile background */
-  }
-  
-  .grid__item.product_desc_item,
-  .product_desc_item {
-    margin-top: 0; /* Reset mobile margin */
-    padding-top: 0; /* Reset mobile padding */
-    box-shadow: none; /* Reset mobile shadow */
-    border-radius: 0; /* Reset mobile border radius */
-    background: transparent; /* Reset mobile background */
-    min-height: auto; /* Reset mobile min-height */
-  }
-  
-  .grid {
-    gap: initial; /* Reset mobile gap removal */
-  }
 
   .controls-panel {
     /* width: 350px;  */
@@ -219,8 +199,6 @@ iframe,
           );  */
     /* max-height: calc(100vh - 4rem);  */
     overflow-y: auto; /* Allow scrolling if content overflows */
-    margin-top: 0; /* Reset mobile margin */
-    padding-top: 0; /* Reset mobile padding */
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* Restore desktop shadow */
     border-radius: 0.75rem; /* Restore desktop border radius */
     background-color: white; /* Restore desktop background */
