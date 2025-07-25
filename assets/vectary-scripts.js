@@ -93,7 +93,7 @@ const colorPalette = [
       sliderId: "swatchSliderL1",
       displayId: "colorDisplayL1",
       nameId: "colorNameL1",
-      lockId: "lockBG",
+      lockId: "lockL1",
       objects: ["wrapkit-partial 1", "wrapkit-full 1"],
       material: "MAT-Logos-L2", 
     },
@@ -296,7 +296,7 @@ const state = {
     C2: false,
     C1: false,
     BG: false,
-    L1: false, // Added for Polaris Logos
+    L1: false, // Added for Logos
   },
   colorValues: {
     C5: 1,
@@ -305,7 +305,7 @@ const state = {
     C2: 60,
     C1: 80,
     BG: 12,
-    L1: 20, // Default value for Polaris Logos
+    L1: 20, // Default value for Logos
   },
   activeLevels: new Set(), // Add a Set to track active levels
   activeOverlaminates: new Set(), // Add a Set to track active overlaminates
