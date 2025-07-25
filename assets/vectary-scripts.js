@@ -644,6 +644,18 @@ document.addEventListener("DOMContentLoaded", () => {
     document
       .getElementById("saveConfigButton")
       ?.addEventListener("click", saveConfiguration);
+    
+    // Add event listener for the download image button
+    document
+      .getElementById("download-image")
+      ?.addEventListener("click", () => {
+        if (isApiReady && api && typeof api.dispatchEvent === "function") {
+          api.dispatchEvent("download-image");
+          console.log("Download image event dispatched.");
+        } else {
+          console.warn("Vectary API not ready or dispatchEvent missing, cannot dispatch download image event.");
+        }
+      });
 
     // Add event listener for the selected levels checkout button
     document
