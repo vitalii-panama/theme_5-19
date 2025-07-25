@@ -464,7 +464,6 @@ iframe {
   width: 100%;
   height: 18px; /* Match the slider height */
   margin: 0.5rem 0;
-  display: block; /* Ensure it's always displayed */
 }
 
 .color-slider-svg {
@@ -476,20 +475,17 @@ iframe {
   border-radius: 0.25rem;
   z-index: 1;
   pointer-events: none; /* Ensure SVG doesn't interfere with slider interaction */
-  display: block; /* Ensure it's always displayed */
 }
 
 .color-slider {
   width: 100%;
   appearance: none;
-  -webkit-appearance: none; /* Ensure consistent appearance on mobile Safari */
   background-color: transparent; /* Make transparent to show SVG */
   border-radius: 0.25rem;
   position: relative; /* For SVG positioning */
   z-index: 2; /* Ensure slider is above SVG */
   height: 18px;
   --color-value: #fff;
-  display: block; /* Ensure it's always displayed */
   &:focus {
     outline: none;
     box-shadow: none;
@@ -500,13 +496,11 @@ iframe {
 .color-slider::-webkit-slider-runnable-track {
   background: transparent;
   border-radius: 0.25rem;
-  height: 18px;
 }
 
 .color-slider::-moz-range-track {
   background: transparent;
   border-radius: 0.25rem;
-  height: 18px;
 }
 
 .color-slider::-webkit-slider-thumb { 
@@ -718,41 +712,6 @@ iframe {
   padding: 1em;
   background: #fff;
   animation: fadeIn 0.2s;
-  transition: max-height 0.3s ease, padding 0.3s ease;
-  overflow: hidden;
-}
-
-/* Ensure sliders maintain proper positioning */
-.accordion-panel .slider-svg-wrapper {
-  position: relative;
-  width: 100%;
-  height: 18px;
-  margin: 0.5rem 0;
-  display: block;
-}
-
-.accordion-panel .color-slider-svg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 18px;
-  border-radius: 0.25rem;
-  z-index: 1;
-  pointer-events: none;
-  display: block;
-}
-
-.accordion-panel .color-slider {
-  width: 100%;
-  height: 18px;
-  position: relative;
-  z-index: 2;
-  display: block;
-  appearance: none;
-  -webkit-appearance: none;
-  background-color: transparent;
-  border-radius: 0.25rem;
 }
 /* Hide the close X icon when collapsed */
 .accordion-header[aria-expanded="false"] .accordion-close-icon {
