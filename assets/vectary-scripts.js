@@ -308,7 +308,7 @@ const state = {
     L1: 20, // Default value for Logos
   },
   activeLevels: new Set(), // Add a Set to track active levels
-  activeOverlaminates: new Set(), // Add a Set to track active overlaminates
+  activeOverlaminates: new Set(["Gloss"]), // Initialize with Gloss as default active overlaminate
 };
 
 // Make state accessible to other scripts

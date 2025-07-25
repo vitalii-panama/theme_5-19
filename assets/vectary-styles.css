@@ -707,6 +707,20 @@ iframe,
   50% { filter: hue-rotate(90deg) brightness(1); }
 }
 
+/* Set default active state for Gloss button */
+#overlaminateStandardGloss {
+  background-color: var(--primary);
+  position: relative;
+}
+
+#overlaminateStandardGloss::after {
+  content: "✓";
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  font-size: 12px;
+}
+
 .overlaminate-button:hover {
   background-color: var(--primary);
 }
