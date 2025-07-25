@@ -718,15 +718,8 @@ iframe {
   padding: 1em;
   background: #fff;
   animation: fadeIn 0.2s;
-}
-
-/* Fix for slider positioning when accordion is collapsed */
-.accordion-panel[hidden] {
-  position: absolute;
-  left: -9999px;
-  opacity: 0;
-  pointer-events: none;
-  visibility: hidden;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+  overflow: hidden;
 }
 
 /* Ensure sliders maintain proper positioning */
