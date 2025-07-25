@@ -714,63 +714,52 @@ iframe {
 .accordion-header[aria-expanded="true"] {
   background: #f4f4f4;
 }
-/* Accordion panel visibility using CSS transforms instead of hidden attribute */
 .accordion-panel {
   padding: 1em;
   background: #fff;
   animation: fadeIn 0.2s;
-  transition: max-height 0.3s ease, opacity 0.3s ease;
-  overflow: hidden;
-  max-height: 1000px; /* Large enough for content */
-  opacity: 1;
 }
 
-.accordion-panel.collapsed {
-  max-height: 0;
-  padding-top: 0;
-  padding-bottom: 0;
+/* Fix for slider positioning when accordion is collapsed */
+.accordion-panel[hidden] {
+  position: absolute;
+  left: -9999px;
   opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
 }
 
-/* Force sliders to render correctly in both expanded and collapsed states */
+/* Ensure sliders maintain proper positioning */
 .accordion-panel .slider-svg-wrapper {
   position: relative;
-  display: block !important;
-  height: 18px !important;
-  visibility: visible !important;
-  opacity: 1 !important;
+  width: 100%;
+  height: 18px;
+  margin: 0.5rem 0;
+  display: block;
 }
 
 .accordion-panel .color-slider-svg {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100% !important;
-  height: 18px !important;
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
+  width: 100%;
+  height: 18px;
+  border-radius: 0.25rem;
+  z-index: 1;
+  pointer-events: none;
+  display: block;
 }
 
 .accordion-panel .color-slider {
+  width: 100%;
+  height: 18px;
   position: relative;
-  display: block !important;
-  height: 18px !important;
-  width: 100% !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-}
-
-/* Ensure sliders work even when accordion panel is hidden */
-.accordion-panel[hidden] .slider-svg-wrapper,
-.accordion-panel[hidden] .color-slider-svg,
-.accordion-panel[hidden] .color-slider {
-  position: relative !important;
-  display: block !important;
-  height: 18px !important;
-  width: 100% !important;
-  visibility: visible !important;
-  opacity: 1 !important;
+  z-index: 2;
+  display: block;
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: transparent;
+  border-radius: 0.25rem;
 }
 /* Hide the close X icon when collapsed */
 .accordion-header[aria-expanded="false"] .accordion-close-icon {
