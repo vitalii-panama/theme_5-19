@@ -1613,27 +1613,17 @@ document.querySelectorAll('.accordion-header').forEach(header => {
       if (h !== this) {
         h.setAttribute('aria-expanded', 'false');
         const p = document.getElementById(h.getAttribute('aria-controls'));
-        p.hidden = true;
+        p.classList.add('accordion-collapsed');
       }
     });
 
     // Toggle the current accordion
     if (expanded) {
       this.setAttribute('aria-expanded', 'false');
-      panel.hidden = true;
+      panel.classList.add('accordion-collapsed');
     } else {
       this.setAttribute('aria-expanded', 'true');
-      panel.hidden = false;
-      
-      // Force repaint for SVG gradients
-      setTimeout(() => {
-        const svg = panel.querySelector('.color-slider-svg');
-        if (svg) {
-          svg.style.display = 'none';
-          svg.offsetHeight; // Trigger reflow
-          svg.style.display = 'block';
-        }
-      }, 10);
+      panel.classList.remove('accordion-collapsed');
     }
   });
 });
@@ -1643,7 +1633,7 @@ const firstHeader = document.querySelector('.accordion-header');
 if (firstHeader) {
     firstHeader.setAttribute('aria-expanded', 'true');
     const firstPanel = document.getElementById(firstHeader.getAttribute('aria-controls'));
-    firstPanel.hidden = false;
+    firstPanel.classList.remove('accordion-collapsed');
 }
 
 document.getElementById("expandAllSliders")?.addEventListener("click", function() {
@@ -1651,15 +1641,6 @@ document.getElementById("expandAllSliders")?.addEventListener("click", function(
     header.setAttribute('aria-expanded', 'true');
   });
   document.querySelectorAll('.accordion-panel').forEach(panel => {
-    panel.hidden = false;
-    // Force repaint for SVG gradients
-    setTimeout(() => {
-      const svg = panel.querySelector('.color-slider-svg');
-      if (svg) {
-        svg.style.display = 'none';
-        svg.offsetHeight; // Trigger reflow
-        svg.style.display = 'block';
-      }
-    }, 10);
+    panel.classList.remove('accordion-collapsed');
   });
 });

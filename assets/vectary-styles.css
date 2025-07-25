@@ -712,20 +712,18 @@ iframe {
   padding: 1em;
   background: #fff;
   animation: fadeIn 0.2s;
-}
-.accordion-panel.is-hidden {
-  display: none;
-}
-
-/* Override browser default hidden behavior for accordion panels */
-.accordion-panel[hidden] {
-  display: none !important;
+  display: block;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+  max-height: 1000px;
+  opacity: 1;
 }
 
-/* Ensure slider backgrounds render even in collapsed panels */
-.accordion-panel .color-slider-svg {
-  display: block !important;
-  visibility: visible !important;
+.accordion-panel.accordion-collapsed {
+  max-height: 0 !important;
+  padding: 0 !important;
+  opacity: 0;
+  pointer-events: none;
 }
 /* Hide the close X icon when collapsed */
 .accordion-header[aria-expanded="false"] .accordion-close-icon {
