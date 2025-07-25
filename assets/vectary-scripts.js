@@ -276,9 +276,6 @@ function loadColorValuesFromStorage() {
       const overlaminates = JSON.parse(savedActiveOverlaminates);
       state.activeOverlaminates = new Set(overlaminates);
       console.log('Loaded active overlaminates from localStorage:', Array.from(state.activeOverlaminates));
-    } else {
-      // If no saved overlaminates, ensure default Gloss is active
-      console.log('No saved overlaminates, keeping default:', Array.from(state.activeOverlaminates));
     }
     
     return true;
@@ -1206,7 +1203,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       } else {
         // No saved data, initialize with default (Gloss)
-        console.log('No saved overlaminate data, initializing with default Gloss');
         updateOverlaminateButtonsActiveState();
       }
 
