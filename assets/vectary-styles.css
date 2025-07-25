@@ -517,6 +517,26 @@ iframe {
   box-shadow: 0 0 0px 3px #fff, 0 0 1px 1px #000;
 }
 
+/* Mobile slider fixes */
+@media (max-width: 768px) {
+  .color-slider, .slider-svg-wrapper, .color-slider-svg {
+    box-sizing: border-box;
+  }
+  
+  .color-slider {
+    appearance: none;
+    -webkit-appearance: none;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    transform: translateZ(0); /* Force re-render */
+  }
+  
+  .slider-svg-wrapper {
+    display: flex;
+    align-items: center;
+  }
+}
+
 .placeholder-area h3 {
   font-size: 1.125rem;
   font-weight: 600;
