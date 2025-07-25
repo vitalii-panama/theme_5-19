@@ -268,6 +268,11 @@
         "type": "shopify://apps/zendesk/blocks/zendesk_web_widget/c0b417b1-b90b-4754-baaf-f55627e6acd4",
         "disabled": true,
         "settings": {}
+      },
+      "6864468922717759293": {
+        "type": "shopify://apps/privy-pop-ups-email-sms/blocks/privy-convert-production/1d8599fa-4edf-4071-bda6-4d5d6d82de9c",
+        "disabled": true,
+        "settings": {}
       }
     }
   },
