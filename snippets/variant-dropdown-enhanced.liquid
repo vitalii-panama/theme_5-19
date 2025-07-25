@@ -1,0 +1,210 @@
+{%- comment -%}
+  Enhanced Variant Dropdown with Better Color Picker
+  Provides improved dropdown experience with color preview
+{%- endcomment -%}
+
+{%- liquid
+  assign option_name = option.name | handleize
+  assign option_index = forloop.index0
+  assign option_id = section_id | append: '-' | append: product.id | append: '-option-' | append: option_index
+-%}
+
+<div class="variant-input-wrap variant-input-wrap--dropdown{% if is_color %} variant-input-wrap--color-dropdown{% endif %}" 
+     data-option-name="{{ option.name | escape }}"
+     data-option-index="{{ option_index }}">
+  
+  {%- unless variant_labels == false -%}
+    <label for="{{ option_id }}" class="variant-input__label">
+      {{ option.name | escape }}
+      {%- if is_color -%}
+        <span class="variant-input__color-preview" data-color-preview></span>
+      {%- endif -%}
+    </label>
+  {%- endunless -%}
+
+  <div class="variant-dropdown-wrapper">
+    <select name="options[{{ option.name | escape }}]"
+            id="{{ option_id }}"
+            class="variant-input variant-input--dropdown{% if is_color %} variant-input--color-dropdown{% endif %}"
+            data-variant-input
+            data-option-index="{{ option_index }}">
+      
+      {%- for value in option.values -%}
+        {%- liquid
+          assign value_handle = value | handleize
+          assign is_available = true
+          assign variant_for_value = null
+          
+          comment
+            Find variant for this option value combination
+          endcomment
+          for variant in product.variants
+            assign match = true
+            for i in (0..2)
+              assign current_option_name = product.options[i]
+              if current_option_name == option.name
+                unless variant.options[i] == value
+                  assign match = false
+                  break
+                endunless
+              else
+                assign selected_value = product.selected_or_first_available_variant.options[i]
+                unless variant.options[i] == selected_value
+                  assign match = false
+                  break
+                endunless
+              endif
+            endfor
+            if match
+              assign variant_for_value = variant
+              break
+            endif
+          endfor
+          
+          if variant_for_value
+            assign is_available = variant_for_value.available
+          else
+            assign is_available = false
+          endif
+          
+          comment
+            Generate color from value for color options
+          endcomment
+          assign computed_color = '#000000'
+          if is_color
+            assign color_value = value | downcase | replace: ' ', ''
+            case color_value
+              when 'red' or 'rouge'
+                assign computed_color = '#e53e3e'
+              when 'blue' or 'bleu'
+                assign computed_color = '#3182ce'
+              when 'green' or 'vert'
+                assign computed_color = '#38a169'
+              when 'yellow' or 'jaune'
+                assign computed_color = '#d69e2e'
+              when 'black' or 'noir'
+                assign computed_color = '#1a202c'
+              when 'white' or 'blanc'
+                assign computed_color = '#ffffff'
+              when 'purple' or 'violet'
+                assign computed_color = '#805ad5'
+              when 'pink' or 'rose'
+                assign computed_color = '#d53f8c'
+              when 'orange'
+                assign computed_color = '#dd6b20'
+              when 'gray' or 'grey' or 'gris'
+                assign computed_color = '#718096'
+              when 'brown' or 'marron'
+                assign computed_color = '#8b4513'
+              else
+                comment
+                  Try to extract hex color if present
+                endcomment
+                if color_value contains '#'
+                  assign computed_color = color_value
+                else
+                  assign computed_color = '#' | append: color_value
+                endif
+            endcase
+          endif
+        -%}
+
+        <option value="{{ value | escape }}"
+                {% if option.selected_value == value %}selected{% endif %}
+                {% unless is_available %}disabled{% endunless %}
+                {% if is_color %}data-color="{{ computed_color }}"{% endif %}
+                data-option-value="{{ value | escape }}">
+          {{ value | escape }}{% unless is_available %} - {{ 'products.product.sold_out' | t }}{% endunless %}
+        </option>
+      {%- endfor -%}
+    </select>
+    
+    {%- if is_color -%}
+      <div class="variant-dropdown__arrow-wrapper">
+        <svg class="variant-dropdown__arrow" width="12" height="8" viewBox="0 0 12 8" fill="none">
+          <path d="M1 1L6 6L11 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{%- if is_color -%}
+<style>
+.variant-input-wrap--color-dropdown {
+  position: relative;
+}
+
+.variant-input__color-preview {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-left: 8px;
+  vertical-align: middle;
+  transition: all 0.2s ease;
+}
+
+.variant-dropdown-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.variant-input--color-dropdown {
+  padding-right: 40px;
+  background: linear-gradient(135deg, var(--bg-color, #f9fafb) 0%, #ffffff 100%);
+  border: 2px solid var(--border-color, #e5e7eb);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.variant-input--color-dropdown:focus {
+  border-color: var(--accent, #006fcf);
+  box-shadow: 0 0 0 3px rgba(0, 111, 207, 0.1);
+  outline: none;
+}
+
+.variant-dropdown__arrow-wrapper {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--text-muted, #6b7280);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const colorDropdown = document.querySelector('.variant-input--color-dropdown');
+  const colorPreview = document.querySelector('[data-color-preview]');
+  
+  if (colorDropdown && colorPreview) {
+    function updateColorPreview() {
+      const selectedOption = colorDropdown.options[colorDropdown.selectedIndex];
+      const color = selectedOption.getAttribute('data-color');
+      
+      if (color) {
+        colorPreview.style.backgroundColor = color;
+        colorPreview.style.opacity = '1';
+        
+        // Add a subtle animation
+        colorPreview.style.transform = 'scale(1.1)';
+        setTimeout(() => {
+          colorPreview.style.transform = 'scale(1)';
+        }, 200);
+      }
+    }
+    
+    // Update on change
+    colorDropdown.addEventListener('change', updateColorPreview);
+    
+    // Initialize with current selection
+    updateColorPreview();
+  }
+});
+</script>
+{%- endif -%}
