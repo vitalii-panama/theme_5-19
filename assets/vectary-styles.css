@@ -713,6 +713,17 @@ iframe {
   background: #fff;
   animation: fadeIn 0.2s;
 }
+
+/* Override browser default hidden behavior for accordion panels */
+.accordion-panel[hidden] {
+  display: none !important;
+}
+
+/* Ensure slider backgrounds render even in collapsed panels */
+.accordion-panel .color-slider-svg {
+  display: block !important;
+  visibility: visible !important;
+}
 /* Hide the close X icon when collapsed */
 .accordion-header[aria-expanded="false"] .accordion-close-icon {
   visibility: hidden;

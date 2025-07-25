@@ -1608,22 +1608,50 @@ document.querySelectorAll('.accordion-header').forEach(header => {
     const expanded = this.getAttribute('aria-expanded') === 'true';
     // Collapse all
     document.querySelectorAll('.accordion-header').forEach(h => h.setAttribute('aria-expanded', 'false'));
-    document.querySelectorAll('.accordion-panel').forEach(p => p.hidden = true);
+    document.querySelectorAll('.accordion-panel').forEach(p => {
+      p.style.display = 'none';
+      p.setAttribute('hidden', 'true');
+    });
     // Expand this one if it was not already expanded
     if (!expanded) {
       this.setAttribute('aria-expanded', 'true');
-      document.getElementById(this.getAttribute('aria-controls')).hidden = false;
+      const panel = document.getElementById(this.getAttribute('aria-controls'));
+      panel.style.display = 'block';
+      panel.removeAttribute('hidden');
+      // Force repaint for SVG gradients
+      setTimeout(() => {
+        const svg = panel.querySelector('.color-slider-svg');
+        if (svg) {
+          svg.style.display = 'none';
+          svg.offsetHeight; // Trigger reflow
+          svg.style.display = 'block';
+        }
+      }, 10);
     }
   });
 });
 // Optionally, expand the first panel by default
 document.querySelector('.accordion-header')?.setAttribute('aria-expanded', 'true');
-document.querySelector('.accordion-panel')?.removeAttribute('hidden');
+const firstPanel = document.querySelector('.accordion-panel');
+if (firstPanel) {
+  firstPanel.style.display = 'block';
+  firstPanel.removeAttribute('hidden');
+}
 document.getElementById("expandAllSliders")?.addEventListener("click", function() {
   document.querySelectorAll('.accordion-header').forEach(header => {
     header.setAttribute('aria-expanded', 'true');
   });
   document.querySelectorAll('.accordion-panel').forEach(panel => {
-    panel.hidden = false;
+    panel.style.display = 'block';
+    panel.removeAttribute('hidden');
+    // Force repaint for SVG gradients
+    setTimeout(() => {
+      const svg = panel.querySelector('.color-slider-svg');
+      if (svg) {
+        svg.style.display = 'none';
+        svg.offsetHeight; // Trigger reflow
+        svg.style.display = 'block';
+      }
+    }, 10);
   });
 });
