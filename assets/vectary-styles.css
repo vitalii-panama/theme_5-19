@@ -103,7 +103,7 @@ header p {
     background: white;
     margin-bottom: 1rem;
     border-radius: 0.5rem 0.5rem 0 0;
-    padding-bottom: 1rem;
+    padding-bottom: 0rem; /* Remove bottom padding for better connection with controls */
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   }
   
