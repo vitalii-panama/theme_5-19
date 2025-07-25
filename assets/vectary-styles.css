@@ -536,7 +536,6 @@ iframe {
   
   .color-slider-svg {
     height: 18px !important;
-    background: linear-gradient(to right, red, blue) !important; /* Debug background */
   }
 }
 
