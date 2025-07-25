@@ -45,22 +45,6 @@ button.bold_hidden {
 
 }
 
-/* Hide chat/messaging widget on Vectary pages */
-.sc-1w3tvxe-0.fqIkbm,
-button[aria-label="Open messaging window"],
-.StyledButton-sc-qe3ace-0.StyledIconButton-sc-1t0ughp-0.fobdBj,
-div[class*="sc-1w3tvxe"] {
-  display: none !important;
-  visibility: hidden !important;
-}
-
-/* Additional selectors for chat widgets */
-[data-garden-id="buttons.icon_button"],
-button[data-garden-id="buttons.icon_button"] {
-  display: none !important;
-  visibility: hidden !important;
-}
-
 .hidden {
   display: none;
 }
