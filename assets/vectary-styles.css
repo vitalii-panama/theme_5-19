@@ -712,18 +712,6 @@ iframe {
   padding: 1em;
   background: #fff;
   animation: fadeIn 0.2s;
-  transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
-  overflow: hidden;
-  max-height: 500px; /* Large enough for content */
-  opacity: 1;
-}
-
-.accordion-panel.accordion-collapsed {
-  max-height: 0;
-  opacity: 0;
-  padding-top: 0;
-  padding-bottom: 0;
-  overflow: hidden;
 }
 /* Hide the close X icon when collapsed */
 .accordion-header[aria-expanded="false"] .accordion-close-icon {

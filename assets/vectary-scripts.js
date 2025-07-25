@@ -1606,36 +1606,24 @@ document.addEventListener("DOMContentLoaded", function () {
 document.querySelectorAll('.accordion-header').forEach(header => {
   header.addEventListener('click', function() {
     const expanded = this.getAttribute('aria-expanded') === 'true';
-    const panelId = this.getAttribute('aria-controls');
-    const targetPanel = document.getElementById(panelId);
-    
-    // Collapse all panels using CSS instead of hidden attribute
+    // Collapse all
     document.querySelectorAll('.accordion-header').forEach(h => h.setAttribute('aria-expanded', 'false'));
-    document.querySelectorAll('.accordion-panel').forEach(p => {
-      p.classList.add('accordion-collapsed');
-    });
-    
+    document.querySelectorAll('.accordion-panel').forEach(p => p.hidden = true);
     // Expand this one if it was not already expanded
-    if (!expanded && targetPanel) {
+    if (!expanded) {
       this.setAttribute('aria-expanded', 'true');
-      targetPanel.classList.remove('accordion-collapsed');
+      document.getElementById(this.getAttribute('aria-controls')).hidden = false;
     }
   });
 });
-
 // Optionally, expand the first panel by default
-const firstHeader = document.querySelector('.accordion-header');
-const firstPanel = document.querySelector('.accordion-panel');
-if (firstHeader && firstPanel) {
-  firstHeader.setAttribute('aria-expanded', 'true');
-  firstPanel.classList.remove('accordion-collapsed');
-}
-
+document.querySelector('.accordion-header')?.setAttribute('aria-expanded', 'true');
+document.querySelector('.accordion-panel')?.removeAttribute('hidden');
 document.getElementById("expandAllSliders")?.addEventListener("click", function() {
   document.querySelectorAll('.accordion-header').forEach(header => {
     header.setAttribute('aria-expanded', 'true');
   });
   document.querySelectorAll('.accordion-panel').forEach(panel => {
-    panel.classList.remove('accordion-collapsed');
+    panel.hidden = false;
   });
 });
