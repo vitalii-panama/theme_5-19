@@ -1606,18 +1606,25 @@ document.addEventListener("DOMContentLoaded", function () {
 document.querySelectorAll('.accordion-header').forEach(header => {
   header.addEventListener('click', function() {
     const expanded = this.getAttribute('aria-expanded') === 'true';
-    // Collapse all
-    document.querySelectorAll('.accordion-header').forEach(h => h.setAttribute('aria-expanded', 'false'));
-    document.querySelectorAll('.accordion-panel').forEach(p => {
-      p.style.display = 'none';
-      p.setAttribute('hidden', 'true');
+    const panel = document.getElementById(this.getAttribute('aria-controls'));
+
+    // Collapse all other accordions
+    document.querySelectorAll('.accordion-header').forEach(h => {
+      if (h !== this) {
+        h.setAttribute('aria-expanded', 'false');
+        const p = document.getElementById(h.getAttribute('aria-controls'));
+        p.hidden = true;
+      }
     });
-    // Expand this one if it was not already expanded
-    if (!expanded) {
+
+    // Toggle the current accordion
+    if (expanded) {
+      this.setAttribute('aria-expanded', 'false');
+      panel.hidden = true;
+    } else {
       this.setAttribute('aria-expanded', 'true');
-      const panel = document.getElementById(this.getAttribute('aria-controls'));
-      panel.style.display = 'block';
-      panel.removeAttribute('hidden');
+      panel.hidden = false;
+      
       // Force repaint for SVG gradients
       setTimeout(() => {
         const svg = panel.querySelector('.color-slider-svg');
@@ -1630,20 +1637,21 @@ document.querySelectorAll('.accordion-header').forEach(header => {
     }
   });
 });
+
 // Optionally, expand the first panel by default
-document.querySelector('.accordion-header')?.setAttribute('aria-expanded', 'true');
-const firstPanel = document.querySelector('.accordion-panel');
-if (firstPanel) {
-  firstPanel.style.display = 'block';
-  firstPanel.removeAttribute('hidden');
+const firstHeader = document.querySelector('.accordion-header');
+if (firstHeader) {
+    firstHeader.setAttribute('aria-expanded', 'true');
+    const firstPanel = document.getElementById(firstHeader.getAttribute('aria-controls'));
+    firstPanel.hidden = false;
 }
+
 document.getElementById("expandAllSliders")?.addEventListener("click", function() {
   document.querySelectorAll('.accordion-header').forEach(header => {
     header.setAttribute('aria-expanded', 'true');
   });
   document.querySelectorAll('.accordion-panel').forEach(panel => {
-    panel.style.display = 'block';
-    panel.removeAttribute('hidden');
+    panel.hidden = false;
     // Force repaint for SVG gradients
     setTimeout(() => {
       const svg = panel.querySelector('.color-slider-svg');

@@ -713,6 +713,9 @@ iframe {
   background: #fff;
   animation: fadeIn 0.2s;
 }
+.accordion-panel.is-hidden {
+  display: none;
+}
 
 /* Override browser default hidden behavior for accordion panels */
 .accordion-panel[hidden] {
