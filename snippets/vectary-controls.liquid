@@ -27,7 +27,21 @@
 {%- endcapture -%}
 
 {%- assign current_variant = product.selected_or_first_available_variant -%}
-
+<script>
+  console.log('test123');
+  window.presets = {};
+  {% assign presets = product.metafields.custom.presets.value %}
+  {% for preset in presets %}
+    {% assign preset_number = forloop.index %}
+    {% assign preset_colors = preset.colors_json.value %}
+    console.log('asdasd', {{ preset_number | json }}, {{ preset_colors | json }});
+    window.presets[{{ preset_number }}] = {
+      {% for color in preset_colors %}
+        {{color.color_key}}: "{{color.background_color}}",
+      {% endfor %}
+    };
+  {% endfor %}
+</script>
 <div class="product-nav hide-mobile clearfix">
   {% if collection.previous_product %}<div class="btn btn--secondary btn--small">{% endif %}
   <span style="float:left;">
@@ -203,72 +217,21 @@
       </h3>
 
       <div class="preset-grid">
-        <button id="color-1-btn" class="preset-button">
-          <span>Preset 1</span>
-          <div class="preset-colors">
-            <div class="preset-color-dot" data-color-key="C5"></div>
-            <div class="preset-color-dot" data-color-key="C4"></div>
-            <div class="preset-color-dot" data-color-key="C3"></div>
-            <div class="preset-color-dot" data-color-key="C2"></div>
-            <div class="preset-color-dot" data-color-key="C1"></div>
-            <div class="preset-color-dot" data-color-key="BG"></div>
-          </div>
-        </button>
-        <button id="color-2-btn" class="preset-button">
-          <span>Preset 2</span>
-          <div class="preset-colors">
-            <div class="preset-color-dot" data-color-key="C5"></div>
-            <div class="preset-color-dot" data-color-key="C4"></div>
-            <div class="preset-color-dot" data-color-key="C3"></div>
-            <div class="preset-color-dot" data-color-key="C2"></div>
-            <div class="preset-color-dot" data-color-key="C1"></div>
-            <div class="preset-color-dot" data-color-key="BG"></div>
-          </div>
-        </button>
-        <button id="color-3-btn" class="preset-button">
-          <span>Preset 3</span>
-          <div class="preset-colors">
-            <div class="preset-color-dot" data-color-key="C5"></div>
-            <div class="preset-color-dot" data-color-key="C4"></div>
-            <div class="preset-color-dot" data-color-key="C3"></div>
-            <div class="preset-color-dot" data-color-key="C2"></div>
-            <div class="preset-color-dot" data-color-key="C1"></div>
-            <div class="preset-color-dot" data-color-key="BG"></div>
-          </div>
-        </button>
-        <button id="color-4-btn" class="preset-button">
-          <span>Preset 4</span>
-          <div class="preset-colors">
-            <div class="preset-color-dot" data-color-key="C5"></div>
-            <div class="preset-color-dot" data-color-key="C4"></div>
-            <div class="preset-color-dot" data-color-key="C3"></div>
-            <div class="preset-color-dot" data-color-key="C2"></div>
-            <div class="preset-color-dot" data-color-key="C1"></div>
-            <div class="preset-color-dot" data-color-key="BG"></div>
-          </div>
-        </button>
-        <button id="color-5-btn" class="preset-button">
-          <span>Preset 5</span>
-          <div class="preset-colors">
-            <div class="preset-color-dot" data-color-key="C5"></div>
-            <div class="preset-color-dot" data-color-key="C4"></div>
-            <div class="preset-color-dot" data-color-key="C3"></div>
-            <div class="preset-color-dot" data-color-key="C2"></div>
-            <div class="preset-color-dot" data-color-key="C1"></div>
-            <div class="preset-color-dot" data-color-key="BG"></div>
-          </div>
-        </button>
-        <button id="color-6-btn" class="preset-button">
-          <span>Preset 6</span>
-          <div class="preset-colors">
-            <div class="preset-color-dot" data-color-key="C5"></div>
-            <div class="preset-color-dot" data-color-key="C4"></div>
-            <div class="preset-color-dot" data-color-key="C3"></div>
-            <div class="preset-color-dot" data-color-key="C2"></div>
-            <div class="preset-color-dot" data-color-key="C1"></div>
-            <div class="preset-color-dot" data-color-key="BG"></div>
-          </div>
-        </button>
+        {% for color in product.metafields.custom.presets.value %}
+          {% assign preset_colors = color.colors_json.value %}
+          {% assign preset_number = forloop.index %}
+         
+          <button id="color-{{ preset_number }}-btn" class="preset-button">
+            <span>Preset {{ preset_number }}</span>
+            <div class="preset-colors">
+              {% for color in preset_colors %}
+              {% assign color_key = color.color_key %}
+              <div class="preset-color-dot" data-color-key="{{ color_key }}"></div>
+            {% endfor %}
+            </div>
+          </button>
+        {% endfor %}
+       
       </div>
     </div>
 
@@ -309,9 +272,11 @@
       Randomize
     </button>
   </div>
+
+   {% for color in product.metafields.custom.color_sliders.value %}
     <div class="accordion-item">
-        <button class="accordion-header" type="button" aria-expanded="true" aria-controls="panelL1" id="headerL1">
-          <span class="color-label">Logo Color: <span id="colorNameL1"></span></span>
+        <button class="accordion-header" type="button" aria-expanded="true" aria-controls="panel{{ color }}" id="header{{ color }}">
+          <span class="color-label">Color {{ color }}: <span id="colorName{{ color }}"></span></span>
           <span class="accordion-close-icon" aria-hidden="true" style="margin-left:auto;display:flex;align-items:center;">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -319,43 +284,43 @@
             </svg>
           </span>
         </button>
-        <div class="accordion-panel" id="panelL1" role="region" aria-labelledby="headerL1">
+        <div class="accordion-panel" id="panel{{ color }}" role="region" aria-labelledby="header{{ color }}">
           <div class="color-control">
             <div class="color-control-header">
-              <div class="color-swatch" id="colorDisplayL1"></div>
+              <div class="color-swatch" id="colorDisplay{{ color }}"></div>
               <div class="quick-color-swatches">
-                <button class="quick-swatch black-swatch" data-slider="swatchSliderL1" data-color="1" title="Set to Black">
+                <button class="quick-swatch black-swatch" data-slider="swatchSlider{{ color }}" data-color="1" title="Set to Black">
                   <div class="swatch-color" style="background-color: #000000;"></div>
                 </button>
-                <button class="quick-swatch gold-swatch" data-slider="swatchSliderL1" data-color="17" title="Set to Ski-Doo Gold">
+                <button class="quick-swatch gold-swatch" data-slider="swatchSlider{{ color }}" data-color="17" title="Set to Ski-Doo Gold">
                   <div class="swatch-color" style="background-color: #a49764;"></div>
                 </button>
-                <button class="quick-swatch grey-swatch" data-slider="swatchSliderL1" data-color="26" title="Set to Catalyst Grey">
+                <button class="quick-swatch grey-swatch" data-slider="swatchSlider{{ color }}" data-color="26" title="Set to Catalyst Grey">
                   <div class="swatch-color" style="background-color: #c8cacc;"></div>
                 </button>
-                <button class="quick-swatch white-swatch" data-slider="swatchSliderL1" data-color="28" title="Set to White">
+                <button class="quick-swatch white-swatch" data-slider="swatchSlider{{ color }}" data-color="28" title="Set to White">
                   <div class="swatch-color" style="background-color: #ffffff;"></div>
                 </button>
-                <button class="quick-swatch red-swatch" data-slider="swatchSliderL1" data-color="36" title="Set to True Red">
+                <button class="quick-swatch red-swatch" data-slider="swatchSlider{{ color }}" data-color="36" title="Set to True Red">
                   <div class="swatch-color" style="background-color: #da0002;"></div>
                 </button>
-                <button class="quick-swatch orange-swatch" data-slider="swatchSliderL1" data-color="44" title="Set to Blaze Orange">
+                <button class="quick-swatch orange-swatch" data-slider="swatchSlider{{ color }}" data-color="44" title="Set to Blaze Orange">
                   <div class="swatch-color" style="background-color: #dc4410;"></div>
                 </button>
-                <button class="quick-swatch yellow-swatch" data-slider="swatchSliderL1" data-color="52" title="Set to Sunburst Yellow">
+                <button class="quick-swatch yellow-swatch" data-slider="swatchSlider{{ color }}" data-color="52" title="Set to Sunburst Yellow">
                   <div class="swatch-color" style="background-color: #fcf73a;"></div>
                 </button>
-                <button class="quick-swatch blue-swatch" data-slider="swatchSliderL1" data-color="64" title="Set to SCS Wraps Blue">
+                <button class="quick-swatch blue-swatch" data-slider="swatchSlider{{ color }}" data-color="64" title="Set to SCS Wraps Blue">
                   <div class="swatch-color" style="background-color: #1a1e25;"></div>
                 </button>
-                <button class="quick-swatch navy-swatch" data-slider="swatchSliderL1" data-color="71" title="Set to Oxford Blue">
+                  <button class="quick-swatch navy-swatch" data-slider="swatchSlider{{ color }}" data-color="71" title="Set to Oxford Blue">
                   <div class="swatch-color" style="background-color: #005297;"></div>
                 </button>
-                <button class="quick-swatch bright-blue-swatch" data-slider="swatchSliderL1" data-color="86" title="Set to Dazzaling Blue">
+                <button class="quick-swatch bright-blue-swatch" data-slider="swatchSlider{{ color }}" data-color="86" title="Set to Dazzaling Blue">
                   <div class="swatch-color" style="background-color: #043bff;"></div>
                 </button>
               </div>
-              <button class="lock-button" id="lockL1">
+              <button class="lock-button" id="lock{{ color }}">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
                   <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
@@ -364,12 +329,14 @@
             </div>
             <div class="slider-svg-wrapper">
               {{ color_palette }}
-              <input type="range" id="swatchSliderL1" class="color-slider" min="1" max="93" value="12" step="1">
+              <input type="range" id="swatchSlider{{ color }}" class="color-slider" min="1" max="93" value="12" step="1">
             </div>
           </div>
         </div>
       </div>
-  <!-- BG Slider -->
+   {% endfor %}
+
+  {% comment %} <!-- BG Slider -->
   <div class="accordion-item">
     <button class="accordion-header" type="button" aria-expanded="false" aria-controls="panelBG" id="headerBG">
       <span class="color-label">BG Color: <span id="colorNameBG"></span></span>
@@ -739,7 +706,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> {% endcomment %}
 
   <!-- Logo Slider -->
   
