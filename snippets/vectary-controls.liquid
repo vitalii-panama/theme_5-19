@@ -773,118 +773,23 @@
       </h3>
 
       <div class="level-grid">
-        {% if product.type == 'Sea-Doo Spark24' %}
-          <button
-            id="triggerButtonLevel1"
-            class="level-button active"
-            data-level-handle="sea-doo-spark24-level-1"
-            data-id="{{ all_products['sea-doo-spark24-level-1'].selected_or_first_available_variant.id }}"
-          >
-            <span>Level 1</span>
-            <span class="level-price">{{ all_products['sea-doo-spark24-level-1'].price | money }}</span>
-          </button>
-          <button
-            id="triggerButtonLevel2"
-            class="level-button active"
-            data-level-handle="sea-doo-spark24-level-2"
-            data-id="{{ all_products['sea-doo-spark24-level-2'].selected_or_first_available_variant.id }}"
-          >
-            <span>Level 2</span>
-            <span class="level-price">{{ all_products['sea-doo-spark24-level-2'].price | money }}</span>
-          </button>
-          <button
-            id="triggerButtonLevel3"
-            class="level-button active"
-            data-level-handle="sea-doo-spark24-level-3"
-            data-id="{{ all_products['sea-doo-spark24-level-3'].selected_or_first_available_variant.id }}"
-          >
-            <span>Level 3</span>
-            <span class="level-price">{{ all_products['sea-doo-spark24-level-3'].price | money }}</span>
-          </button>
-          <button
-            id="triggerButtonLevel4"
-            class="level-button active"
-            data-level-handle="sea-doo-spark24-level-4"
-            data-id="{{ all_products['sea-doo-spark24-level-4'].selected_or_first_available_variant.id }}"
-          >
-            <span>Level 4</span>
-            <span class="level-price">{{ all_products['sea-doo-spark24-level-4'].price | money }}</span>
-          </button>
-          <button
-            id="triggerButtonLevel5"
-            class="level-button active"
-            data-level-handle="sea-doo-spark24-level-5"
-            data-id="{{ all_products['sea-doo-spark24-level-5'].selected_or_first_available_variant.id }}"
-          >
-            <span>Level 5</span>
-            <span class="level-price">{{ all_products['sea-doo-spark24-level-5'].price | money }}</span>
-          </button>
-        {% elsif product.type == 'Sea-Doo Switch' %}
-          <button
-            id="triggerButtonLevel1"
-            class="level-button active"
-            data-level-handle="sea-doo-level-16"
-            data-id="{{ all_products['sea-doo-level-16'].selected_or_first_available_variant.id }}"
-          >
-            <span>Level 1</span>
-            <span class="level-price">{{ all_products['sea-doo-level-16'].price | money }}</span>
-          </button>
-          <button
-            id="triggerButtonLevel2"
-            class="level-button active"
-            data-level-handle="sea-doo-level-19"
-            data-id="{{ all_products['sea-doo-level-19'].selected_or_first_available_variant.id }}"
-          >
-            <span>Level 2</span>
-            <span class="level-price">{{ all_products['sea-doo-level-19'].price | money }}</span>
-          </button>
-          <button
-            id="triggerButtonLevel3"
-            class="level-button active"
-            data-level-handle="sea-doo-level-13"
-            data-id="{{ all_products['sea-doo-level-13'].selected_or_first_available_variant.id }}"
-          >
-            <span>Level 3</span>
-            <span class="level-price">{{ all_products['sea-doo-level-13'].price | money }}</span>
-          </button>
-        {% else %}
-          <button
-            id="triggerButtonLevel1"
-            class="level-button active"
-            data-level-handle="ski-doo-gen5-level-1"
-            data-id="{{ all_products['ski-doo-gen5-level-1'].selected_or_first_available_variant.id }}"
-          >
-            <span>Level 1</span>
-            <span class="level-price">{{ all_products['ski-doo-gen5-level-1'].price | money }}</span>
-          </button>
-          <button
-            id="triggerButtonLevel2"
-            class="level-button active"
-            data-level-handle="ski-doo-gen5-level-2"
-            data-id="{{ all_products['ski-doo-gen5-level-2'].selected_or_first_available_variant.id }}"
-          >
-            <span>Level 2</span>
-            <span class="level-price">{{ all_products['ski-doo-gen5-level-2'].price | money }}</span>
-          </button>
-          <button
-            id="triggerButtonLevel3"
-            class="level-button active"
-            data-level-handle="ski-doo-gen5-level-3"
-            data-id="{{ all_products['ski-doo-gen5-level-3'].selected_or_first_available_variant.id }}"
-          >
-            <span>Level 3</span>
-            <span class="level-price">{{ all_products['ski-doo-gen5-level-3'].price | money }}</span>
-          </button>
-          <button
-            id="triggerButtonLevel4"
-            class="level-button active"
-            data-level-handle="ski-doo-gen5-level-4"
-            data-id="{{ all_products['ski-doo-gen5-level-4'].selected_or_first_available_variant.id }}"
-          >
-            <span>Level 4</span>
-            <span class="level-price">{{ all_products['ski-doo-gen5-level-4'].price | money }}</span>
-          </button>
-        {% endif %}
+        {%- if product.metafields.custom.materials -%}
+          {%- for material_item in product.metafields.custom.materials.value -%}
+            {%- if material_item -%}
+              <button
+                id="triggerButtonLevel{{ forloop.index }}"
+                class="level-button active"
+                data-level-handle="{{ material_item.title | downcase | replace: ' ', '-' }}"
+                data-id="{{ material_item.selected_or_first_available_variant.id }}"
+                data-material-title="{{ material_item.title }}"
+                style="--bg: {{ material_item.metafields.custom.material_display }};"
+              >
+                <span>{{ material_item.title }}</span>
+                <span class="level-price">{{ material_item.price | money }}</span>
+              </button>
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
       </div>
     </div>
 
@@ -949,85 +854,31 @@
      price: "{{ product.price | money }}"
    }
    window.globalProductData = {
-     {% if product.handle contains 'sea-doo-spark24' %}
-       1: {
-         handle: "sea-doo-spark24-level-1",
-         id: "{{ all_products['sea-doo-spark24-level-1'].selected_or_first_available_variant.id }}",
-         price: "{{ all_products['sea-doo-spark24-level-1'].price | money }}"
-       },
-       2: {
-         handle: "sea-doo-spark24-level-2",
-         id: "{{ all_products['sea-doo-spark24-level-2'].selected_or_first_available_variant.id }}",
-         price: "{{ all_products['sea-doo-spark24-level-2'].price | money }}"
-       },
-       3: {
-         handle: "sea-doo-spark24-level-3",
-         id: "{{ all_products['sea-doo-spark24-level-3'].selected_or_first_available_variant.id }}",
-         price: "{{ all_products['sea-doo-spark24-level-3'].price | money }}"
-       },
-       4: {
-         handle: "sea-doo-spark24-level-4",
-         id: "{{ all_products['sea-doo-spark24-level-4'].selected_or_first_available_variant.id }}",
-         price: "{{ all_products['sea-doo-spark24-level-4'].price | money }}"
-       },
-       5: {
-         handle: "sea-doo-spark24-level-5",
-         id: "{{ all_products['sea-doo-spark24-level-5'].selected_or_first_available_variant.id }}",
-         price: "{{ all_products['sea-doo-spark24-level-5'].price | money }}"
-       }
-     {% elsif product.handle contains 'sea-doo-switch' %}
-       1: {
-         handle: "sea-doo-level-16",
-         id: "{{ all_products['sea-doo-level-16'].selected_or_first_available_variant.id }}",
-         price: "{{ all_products['sea-doo-level-16'].price | money }}"
-       },
-       2: {
-         handle: "sea-doo-level-19",
-         id: "{{ all_products['sea-doo-level-19'].selected_or_first_available_variant.id }}",
-         price: "{{ all_products['sea-doo-level-19'].price | money }}"
-       },
-       3: {
-         handle: "sea-doo-level-13",
-         id: "{{ all_products['sea-doo-level-13'].selected_or_first_available_variant.id }}",
-         price: "{{ all_products['sea-doo-level-13'].price | money }}"
-       }
-     {% else %}
-       1: {
-         handle: "ski-doo-gen5-level-1",
-         id: "{{ all_products['ski-doo-gen5-level-1'].selected_or_first_available_variant.id }}",
-         price: "{{ all_products['ski-doo-gen5-level-1'].price | money }}"
-       },
-       2: {
-         handle: "ski-doo-gen5-level-2",
-         id: "{{ all_products['ski-doo-gen5-level-2'].selected_or_first_available_variant.id }}",
-         price: "{{ all_products['ski-doo-gen5-level-2'].price | money }}"
-       },
-       3: {
-         handle: "ski-doo-gen5-level-3",
-         id: "{{ all_products['ski-doo-gen5-level-3'].selected_or_first_available_variant.id }}",
-         price: "{{ all_products['ski-doo-gen5-level-3'].price | money }}"
-       },
-       4: {
-         handle: "ski-doo-gen5-level-4",
-         id: "{{ all_products['ski-doo-gen5-level-4'].selected_or_first_available_variant.id }}",
-         price: "{{ all_products['ski-doo-gen5-level-4'].price | money }}"
-       }
-     {% endif %}
+     {%- if product.metafields.custom.materials -%}
+       {%- for material_item in product.metafields.custom.materials.value -%}
+         {%- if material_item -%}
+           {{ forloop.index }}: {
+             handle: "{{ material_item.title | downcase | replace: ' ', '-' }}",
+             id: "{{ material_item.selected_or_first_available_variant.id }}",
+             price: "{{ material_item.price | money }}"
+           }{%- unless forloop.last -%},{%- endunless -%}
+         {%- endif -%}
+       {%- endfor -%}
+     {%- endif -%}
    };
  
    // Add overlaminate product data
    window.overlaminateProductData = {
      {%- if product.metafields.custom.overlaminate -%}
-       {%- assign overlaminate_products = '' -%}
        {%- for overlaminate_item in product.metafields.custom.overlaminate.value -%}
-         {%- assign overlaminate_product = all_products[overlaminate_item.product_handle] -%}
-         {%- if overlaminate_product -%}
-           {%- if overlaminate_products != '' -%}{%- assign overlaminate_products = overlaminate_products | append: ', ' -%}{%- endif -%}
-           {%- assign item_key = overlaminate_item.title | downcase | replace: ' ', '-' -%}
-           {%- assign overlaminate_products = overlaminate_products | append: '"' | append: item_key | append: '": {"handle": "' | append: overlaminate_item.product_handle | append: '", "id": "' | append: overlaminate_product.selected_or_first_available_variant.id | append: '", "price": "' | append: overlaminate_product.price | money | append: '"}' -%}
+         {%- if overlaminate_item -%}
+           "{{ overlaminate_item.title | downcase | replace: ' ', '-' }}": {
+             handle: "{{ overlaminate_item.title | downcase | replace: ' ', '-' }}",
+             id: "{{ overlaminate_item.selected_or_first_available_variant.id }}",
+             price: "{{ overlaminate_item.price | money }}"
+           }{%- unless forloop.last -%},{%- endunless -%}
          {%- endif -%}
        {%- endfor -%}
-       {{ overlaminate_products }}
      {%- endif -%}
    };
    
