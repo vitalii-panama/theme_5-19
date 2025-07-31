@@ -23,7 +23,7 @@ const colorPalette = [
   "#5bc500", "#00b176", "#5b6236",
   
   // Blues & Teals
-  "#a5b0e3", "#a0d1ca", "#aee6ff", "#5ebdd4", "#00c7d1", "#2db1bd", "#3790b0", 
+  "#a5b0e3", "#a0d1ca", "#a0d1ca", "#5ebdd4", "#00c7d1", "#2db1bd", "#3790b0", 
   "#00778b", "#004f59", "#17a4cc", "#00acec", "#0091da", "#008bce", "#0082ba", 
   "#007dba", "#0074c5", "#93a1aa", "#597a9b", "#006298", "#005297", "#043bff", 
   "#0c15a9", "#003594", "#2d396b", "#183165", "#162667", "#2a385d",
@@ -89,6 +89,14 @@ const colorPalette = [
       objects: ["background_object"],
       material: "MAT-GLOSS-BG",
     },
+    {
+      sliderId: "swatchSliderL1",
+      displayId: "colorDisplayL1",
+      nameId: "colorNameL1",
+      lockId: "lockL1",
+      objects: ["wrapkit-partial 1", "wrapkit-full 1"],
+      material: "MAT-Logos-L2", 
+    },
   ];
 // Helper function to get color properties from the UI
 function getColorProperties() {
@@ -105,6 +113,7 @@ function getColorProperties() {
       C2: document.getElementById("colorDisplayC2"),
       C1: document.getElementById("colorDisplayC1"),
       BG: document.getElementById("colorDisplayBG"),
+      L1: document.getElementById("colorDisplayL1"),
     };
 
     const colorNames = {
@@ -114,6 +123,7 @@ function getColorProperties() {
       C2: document.getElementById("colorNameC2"),
       C1: document.getElementById("colorNameC1"),
       BG: document.getElementById("colorNameBG"),
+      L1: document.getElementById("colorNameL1"),
     };
 
     Object.keys(colorDisplays).forEach((key) => {
@@ -159,7 +169,7 @@ function getColorProperties() {
 // --- Color Swatches Data ---
 const color_swatches_data = {};
 const rawColorData =
-  "True Black#000000SCS W Blue Black#1a1e25Timeless Black#2e2c26Can-Am Dark Grey#323232Charcoal Grey#434244Eclipise Grey#4e4b48Sport Grey#716e6aCoastal Grey#75787bSteel Grey#6a6c70Defender Grey#777677Can-Am Maverick Grey#75787bCan-Am Maverick Grey#797c81Liquid Titanium#7d725bSki-Doo Gold#a49764Polaris Glow#b2945eArctic Tan / Desert Tan#b5a588LYNX Titanium#a39d88LYNX Titanium2#b3ae9b#88898cGris Silex#b1b3b3Can-Am Silver#bbbab9Catalyst Grey#c8caccCatGrey#c8caccHybrid White#d9d9d6White#ffffffD.S Pink#ed008cRhodamine#e10098Sea-Doo Magenta#ce0076R.B. Pink#c2214dChile Peper Red#772935Spartan Red#8e2631Lava Dark Red#c61f15Honda Red / LYNX Red#cc2229M.O.T Red#de2d32True Red / Polaris Red#da0002Red Orange#ff0000Unlimited Lava / Can-Am Red / Trixx Red#d63205Blaze Orange#dc4410Arctic Cat Orange / KTM / Polaris Burst#d75d18Orange Phoenix2#d6692eOrange Phoenix#d8752dSki-Doo Dark Orange#ff6d00Orange Crush#ff9d00Apricot Crush#fead77Can-Am Yellow#e4a612Millennium Yellow#ffc41dRB Yellow#f5d230Neo Yellow#c7c84dVintage Ski-Doo Yellow#f5d130Ski-doo#fdee00Sunburst Yellow - Ski-doo / Sea-Doo / Can-Am#fcf73aNeo Yellow#dbe442Polaris Lime Squeeze#dae343Manta Green#dee829Manta Green#ddf84aDayglow#ddfc4aVintage Manta Green#c0df16Vintage Arctic Cat Green#b8f63bQuetzal Green#5bc500Army Green#00b176Army Green#5b6236Vapor Blue#a5b0e3vapor blue#a0d1caLight Blue#aee6ffScandi Blue#5ebdd4Turquoise#00c7d1Reef Blue#2db1bdTeal M#3790b0Iceberg Blue#00778bPanama Turquoise#004f59LYNX Cyan#17a4ccCyan#00acecDazzaling Blue#0091daCan-Am Sea-Doo Blue#008bceCarribean Blue#0082baGulfstream Blue#007dbaSea-Doo Dark Blue#0074c5Scandi Blue#93a1aaScandi Blue#597a9bSea-Doo Belize Blue#006298Oxford Blue#005297Dazzaling Blue#043bffYahmaha BLue#0c15a9Labrador Blue#003594R.B Motorsports Blue#2d396bCatalyst Dark Grey#2a385dDusty Navy#183165Vintage Polaris Dark Blue#162667Ski-Doo Dark BlueMidnight Purple#291844Arctic Cat Purple#69488eViolet#440099";
+"Black#000000True Black#000000Timeless Black#2e2c26Can-Am Dark Grey#323232Charcoal Grey#434244Eclipise Grey#4e4b48Army Green#5b6236Steel Grey#6a6c70Sport Grey#716e6aPlatinum Silver#75726eCoastal Grey#75787bDefender Grey#777677Can-Am Maverick Grey#797c81Liquid Titanium#7d725bCatalyst Dark Grey#88898cLYNX Titanium#a39d88Ski-Doo Gold#a49764Can-Am Gold#b2945ePolaris Glow#b4875eGris Silex#b1b3b3Gris Silex#b1b3b3LYNX Titanium2#b3ae9bArctic Tan / Desert Tan#b5a588Can-Am Silver#bbbab9CatGrey#c8caccCatalyst Grey#c8caccHybrid White#d9d9d6White#ffffffChile Peper Red#772935Spartan Red#8e2631R.B. Pink#c2214dLava Dark Red#c61f15Sea-Doo Magenta#ce0076Honda Red / LYNX Red#cc2229M.O.T Red#de2d32True Red / Polaris Red#da0002Rhodamine#e10098D.S Pink#ed008cRed Orange#ff0000Orange Phoenix2#d6692eArctic Cat Orange / KTM / Polaris Burst#d75d18Orange Phoenix#d8752dUnlimited Lava / Can-Am Red / Trixx Red#d63205Blaze Orange#dc4410Ski-Doo Dark Orange#ff6d00Orange Crush#ff9d00Can-Am Yellow#e4a612Vintage Ski-Doo Yellow#f5d130RB Yellow#f5d230Millennium Yellow#ffc41dSki-doo#fdee00Sunburst Yellow - Ski-doo / Sea-Doo / Can-Am#fcf73aNeo Yellow#dbe442Polaris Lime Squeeze#dae343Nuclear Yellow#dee829Dayglow#ddfc4aManta Green#ddf84aRacing Green#004631Quetzal Green#00b176Vintage Arctic Cat Green#5bc500Vintage Manta Green#c0df16Arctic Cat Green#b8f63bNeo Mint#99ccccSCS Wraps Blue#1a1e25Vintage Polaris Dark Blue#162667Labrador Blue#183165Dusty Navy#1b365dSki-Doo Dark Blue#2a385dR.B Motorsports Blue#2d396bPanama Turquoise#004f59Oxford Blue#005297Sea-Doo Belize Blue#006298Iceberg Blue#00778bGulfstream Blue#007dbaSea-Doo Dark Blue#007dbaCarribean Blue#0082baCan-Am Sea-Doo Blue#008bceOctane Blue#0091daTeal M#0091b3Cyan#00acecLYNX Cyan#17a4ccReef Blue#2db1bdTurquoise#00c7d1Scandi Blue#567a9bYahmaha Blue#0b0daeDazzaling Blue#043bffVapor Blue#a5b0e3vapor blue#a5b0e3Light Blue#aee6ffMidnight Purple#291844Violet#440099Arctic Cat Purple#69488e"
 
 function parseColorData(rawData) {
   const colorsArray = [];
@@ -286,6 +296,7 @@ const state = {
     C2: false,
     C1: false,
     BG: false,
+    L1: false, // Added for Logos
   },
   colorValues: {
     C5: 1,
@@ -294,6 +305,7 @@ const state = {
     C2: 60,
     C1: 80,
     BG: 12,
+    L1: 20, // Default value for Logos
   },
   activeLevels: new Set(), // Add a Set to track active levels
   activeOverlaminates: new Set(), // Add a Set to track active overlaminates
@@ -398,14 +410,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const statusMessage = document.getElementById("status-message");
 
   // Define presets here to be accessible by updatePresetButtons and applyPreset
-  // const presets = {
-  //   1: { C5: 55, C4: 34, C3: 72, C2: 91, C1: 12, BG: 93 },
-  //   2: { C5: 23, C4: 45, C3: 67, C2: 89, C1: 11, BG: 56 },
-  //   3: { C5: 78, C4: 32, C3: 17, C2: 42, C1: 99, BG: 33 },
-  //   4: { C5: 5, C4: 10, C3: 15, C2: 20, C1: 25, BG: 30 },
-  //   5: { C5: 50, C4: 52, C3: 54, C2: 56, C1: 58, BG: 60 },
-  //   6: { C5: 88, C4: 77, C3: 66, C2: 55, C1: 44, BG: 33 },
-  // };
+  const presets = {
+    1: { C5: 55, C4: 34, C3: 72, C2: 91, C1: 12, BG: 93 },
+    2: { C5: 23, C4: 45, C3: 67, C2: 89, C1: 11, BG: 56 },
+    3: { C5: 78, C4: 32, C3: 17, C2: 42, C1: 99, BG: 33 },
+    4: { C5: 5, C4: 10, C3: 15, C2: 20, C1: 25, BG: 30 },
+    5: { C5: 50, C4: 52, C3: 54, C2: 56, C1: 58, BG: 60 },
+    6: { C5: 88, C4: 77, C3: 66, C2: 55, C1: 44, BG: 33 },
+  };
 
 
 
@@ -632,6 +644,18 @@ document.addEventListener("DOMContentLoaded", () => {
     document
       .getElementById("saveConfigButton")
       ?.addEventListener("click", saveConfiguration);
+    
+    // Add event listener for the download image button
+    document
+      .getElementById("download-image")
+      ?.addEventListener("click", () => {
+        if (isApiReady && api && typeof api.dispatchEvent === "function") {
+          api.dispatchEvent("download-image");
+          console.log("Download image event dispatched.");
+        } else {
+          console.warn("Vectary API not ready or dispatchEvent missing, cannot dispatch download image event.");
+        }
+      });
 
     // Add event listener for the selected levels checkout button
     document
@@ -739,14 +763,14 @@ document.addEventListener("DOMContentLoaded", () => {
   function applyPreset(api, presetNumber, forceEvent = false) {
     // const presets = { ... }; // Presets object moved to outer DOMContentLoaded scope
 
-    if (window.presets[presetNumber]) {
+    if (presets[presetNumber]) {
       let colorsApplied = false;
       
       // Create a cache of the preset color values before applying them
       // This will be used when changing materials to maintain color consistency
       const presetColorValues = {};
-      Object.keys(window.presets[presetNumber]).forEach(materialId => {
-        presetColorValues[materialId] = window.presets[presetNumber][materialId];
+      Object.keys(presets[presetNumber]).forEach(materialId => {
+        presetColorValues[materialId] = presets[presetNumber][materialId];
       });
       
       // Store the preset color values in a global cache for use with material changes
@@ -759,13 +783,13 @@ document.addEventListener("DOMContentLoaded", () => {
           
           if (
             !state.lockedMaterials[materialId] &&
-            window.presets[presetNumber][materialId] !== undefined
+            presets[presetNumber][materialId] !== undefined
           ) {
             const sliderElement = document.getElementById(config.sliderId);
             const displayElement = document.getElementById(config.displayId);
             const nameElement = document.getElementById(config.nameId);
             if (sliderElement && displayElement && nameElement) {
-              const presetValue = window.presets[presetNumber][materialId];
+              const presetValue = presets[presetNumber][materialId];
               if (parseInt(sliderElement.value) !== presetValue) {
                 sliderElement.value = presetValue;
                 // Update UI via state change (handled by initializeSliderUI listener)
@@ -854,14 +878,14 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // Update color dots for each preset button
-      const presetColorConfig = window.presets[presetNumber]; // Access the moved presets object
+      const presetColorConfig = presets[presetNumber]; // Access the moved presets object
       if (presetColorConfig) {
         const colorDotsContainer = button.querySelector(".preset-colors");
         if (colorDotsContainer) {
             const colorDots = colorDotsContainer.querySelectorAll(".preset-color-dot");
             colorDots.forEach(dot => {
               const colorKey = dot.dataset.colorKey; // e.g., C5, C4, from data-color-key attribute
-              const colorValueIndex = presetColorConfig[colorKey]; // e.g., 55 for preset 1, C5 
+              const colorValueIndex = presetColorConfig[colorKey]; // e.g., 55 for preset 1, C5
               if (colorValueIndex !== undefined) {
                 const hexColorKey = `B${colorValueIndex}`; // Key for color_swatches_data
                 const hexColor = color_swatches_data[hexColorKey] || "#FFFFFF"; // Fallback to white
@@ -1586,4 +1610,49 @@ document.addEventListener("DOMContentLoaded", function () {
 
     return originalFetch.apply(this, arguments);
   };
+});
+
+
+
+// Accordion behavior for color sliders
+document.querySelectorAll('.accordion-header').forEach(header => {
+  header.addEventListener('click', function() {
+    const expanded = this.getAttribute('aria-expanded') === 'true';
+    const panel = document.getElementById(this.getAttribute('aria-controls'));
+
+    // Collapse all other accordions
+    document.querySelectorAll('.accordion-header').forEach(h => {
+      if (h !== this) {
+        h.setAttribute('aria-expanded', 'false');
+        const p = document.getElementById(h.getAttribute('aria-controls'));
+        p.classList.add('accordion-collapsed');
+      }
+    });
+
+    // Toggle the current accordion
+    if (expanded) {
+      this.setAttribute('aria-expanded', 'false');
+      panel.classList.add('accordion-collapsed');
+    } else {
+      this.setAttribute('aria-expanded', 'true');
+      panel.classList.remove('accordion-collapsed');
+    }
+  });
+});
+
+// Optionally, expand the first panel by default
+const firstHeader = document.querySelector('.accordion-header');
+if (firstHeader) {
+    firstHeader.setAttribute('aria-expanded', 'true');
+    const firstPanel = document.getElementById(firstHeader.getAttribute('aria-controls'));
+    firstPanel.classList.remove('accordion-collapsed');
+}
+
+document.getElementById("expandAllSliders")?.addEventListener("click", function() {
+  document.querySelectorAll('.accordion-header').forEach(header => {
+    header.setAttribute('aria-expanded', 'true');
+  });
+  document.querySelectorAll('.accordion-panel').forEach(panel => {
+    panel.classList.remove('accordion-collapsed');
+  });
 });

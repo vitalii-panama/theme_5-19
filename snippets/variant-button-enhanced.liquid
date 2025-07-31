@@ -1,0 +1,231 @@
+{%- comment -%}
+  Enhanced Variant Button with Better Color Picker
+  Provides improved UX for color selection with animations, tooltips, and accessibility
+{%- endcomment -%}
+
+{%- liquid
+  assign option_name = option.name | handleize
+  assign option_index = forloop.index0
+  assign option_id = section_id | append: '-' | append: product.id | append: '-option-' | append: option_index
+-%}
+
+<div class="variant-input-wrap variant-input-wrap--button{% if is_color %} variant-input-wrap--color{% endif %}" 
+     data-option-name="{{ option.name | escape }}"
+     data-option-index="{{ option_index }}">
+  
+  {%- unless variant_labels == false -%}
+    <legend class="variant-input__legend">
+      <span class="variant-input__legend-text">{{ option.name | escape }}</span>
+      {%- if is_color -%}
+        <span class="variant-input__selected-value" data-selected-value="{{ option.selected_value | escape }}">
+          {{ option.selected_value | escape }}
+        </span>
+      {%- endif -%}
+    </legend>
+  {%- endunless -%}
+
+  <div class="variant-input__buttons{% if is_color %} variant-input__buttons--color{% endif %}" 
+       role="radiogroup" 
+       aria-labelledby="{{ option_id }}-legend">
+    
+    {%- for value in option.values -%}
+      {%- liquid
+        assign value_handle = value | handleize
+        assign input_id = option_id | append: '-' | append: forloop.index0
+        assign is_available = true
+        assign variant_for_value = null
+        
+        comment
+          Find variant for this option value combination
+        endcomment
+        for variant in product.variants
+          assign match = true
+          for i in (0..2)
+            assign current_option_name = product.options[i]
+            if current_option_name == option.name
+              unless variant.options[i] == value
+                assign match = false
+                break
+              endunless
+            else
+              assign selected_value = product.selected_or_first_available_variant.options[i]
+              unless variant.options[i] == selected_value
+                assign match = false
+                break
+              endunless
+            endif
+          endfor
+          if match
+            assign variant_for_value = variant
+            break
+          endif
+        endfor
+        
+        if variant_for_value
+          assign is_available = variant_for_value.available
+        else
+          assign is_available = false
+        endif
+        
+        comment
+          Generate color from value for color options
+        endcomment
+        assign computed_color = '#000000'
+        if is_color
+          assign color_value = value | downcase | replace: ' ', ''
+          case color_value
+            when 'red' or 'rouge'
+              assign computed_color = '#e53e3e'
+            when 'blue' or 'bleu'
+              assign computed_color = '#3182ce'
+            when 'green' or 'vert'
+              assign computed_color = '#38a169'
+            when 'yellow' or 'jaune'
+              assign computed_color = '#d69e2e'
+            when 'black' or 'noir'
+              assign computed_color = '#1a202c'
+            when 'white' or 'blanc'
+              assign computed_color = '#ffffff'
+            when 'purple' or 'violet'
+              assign computed_color = '#805ad5'
+            when 'pink' or 'rose'
+              assign computed_color = '#d53f8c'
+            when 'orange'
+              assign computed_color = '#dd6b20'
+            when 'gray' or 'grey' or 'gris'
+              assign computed_color = '#718096'
+            when 'brown' or 'marron'
+              assign computed_color = '#8b4513'
+            else
+              comment
+                Try to extract hex color if present
+              endcomment
+              if color_value contains '#'
+                assign computed_color = color_value
+              else
+                assign computed_color = '#' | append: color_value
+              endif
+          endcase
+        endif
+      -%}
+
+      <div class="variant-button-wrapper">
+        <input type="radio"
+               name="options[{{ option.name | escape }}]"
+               id="{{ input_id }}"
+               value="{{ value | escape }}"
+               class="variant-input variant-input--button{% if is_color %} variant-input--color{% endif %}"
+               {% if option.selected_value == value %}checked{% endif %}
+               {% unless is_available %}disabled{% endunless %}
+               data-variant-input
+               data-option-index="{{ option_index }}"
+               data-option-value="{{ value | escape }}"
+               {% if is_color %}data-color="{{ computed_color }}"{% endif %}
+               aria-describedby="{{ input_id }}-status">
+
+        <label for="{{ input_id }}" 
+               class="variant-button variant-button--{{ option_name }}{% if is_color %} variant-button--color{% endif %}{% unless is_available %} variant-button--unavailable{% endunless %}"
+               {% if enable_tooltips %}title="{{ value | escape }}{% unless is_available %} - {{ 'products.product.sold_out' | t }}{% endunless %}"{% endif %}
+               {% if is_color %}style="--swatch-color: {{ computed_color }};"{% endif %}>
+          
+          {%- if is_color -%}
+            <span class="variant-button__color-swatch" 
+                  style="background-color: {{ computed_color }};"
+                  aria-hidden="true"></span>
+            <span class="variant-button__color-name">{{ value | escape }}</span>
+          {%- else -%}
+            <span class="variant-button__text">{{ value | escape }}</span>
+          {%- endif -%}
+          
+          {%- unless is_available -%}
+            <span class="variant-button__unavailable-overlay" aria-hidden="true">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1 1L11 11M11 1L1 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </span>
+          {%- endunless -%}
+        </label>
+
+        <div id="{{ input_id }}-status" class="variant-button__status visually-hidden" aria-live="polite">
+          {%- if is_available -%}
+            {{ 'products.product.available' | t }}
+          {%- else -%}
+            {{ 'products.product.sold_out' | t }}
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endfor -%}
+  </div>
+</div>
+
+{%- if enable_animations -%}
+<style>
+.variant-input-wrap--color .variant-button--color {
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.variant-input-wrap--color .variant-button--color:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.variant-input-wrap--color .variant-input--color:checked + .variant-button--color {
+  transform: scale(1.1);
+  box-shadow: 0 0 0 3px var(--accent, #006fcf);
+}
+
+.variant-button__color-swatch {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: block;
+  margin: 0 auto 8px;
+}
+
+.variant-button__color-name {
+  font-size: 0.75rem;
+  text-align: center;
+  font-weight: 500;
+}
+
+.variant-button--unavailable .variant-button__color-swatch {
+  opacity: 0.5;
+  position: relative;
+}
+
+.variant-button__unavailable-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #e53e3e;
+}
+</style>
+{%- endif -%}
+
+{%- if is_color -%}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const colorInputs = document.querySelectorAll('.variant-input--color');
+  const selectedValueDisplay = document.querySelector('[data-selected-value]');
+  
+  colorInputs.forEach(input => {
+    input.addEventListener('change', function() {
+      if (this.checked && selectedValueDisplay) {
+        selectedValueDisplay.textContent = this.getAttribute('data-option-value');
+        
+        // Animate the selection
+        const label = this.nextElementSibling;
+        label.style.transform = 'scale(1.15)';
+        setTimeout(() => {
+          label.style.transform = '';
+        }, 200);
+      }
+    });
+  });
+});
+</script>
+{%- endif -%}
