@@ -1005,3 +1005,11 @@ iframe,
 #overlaminateHolographicGloss span {
   color: #ffffff; /* Ensure spans inherit the color */
 }
+
+#overlaminateHolographicMatte {
+  color: #ffffff; /* White text for better contrast against the gradient */
+}
+
+#overlaminateHolographicMatte span {
+  color: #ffffff; /* Ensure spans inherit the color */
+}
