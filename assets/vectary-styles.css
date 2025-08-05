@@ -997,3 +997,11 @@ iframe,
 .expand-all-centered:hover {
 	background-color: #005fa3; /* Slightly darker for hover */
 }
+
+#overlaminateHolographicGloss {
+  color: #ffffff; /* White text for better contrast against the gradient */
+}
+
+#overlaminateHolographicGloss span {
+  color: #ffffff; /* Ensure spans inherit the color */
+}
