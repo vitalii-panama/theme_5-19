@@ -37,6 +37,14 @@ const colorPalette = [
   // *** Define sliderConfigs here, before it's needed ***
   const sliderConfigs = [
     {
+      sliderId: "swatchSliderC6",
+      displayId: "colorDisplayC6",
+      nameId: "colorNameC6",
+      lockId: "lockC6",
+      objects: ["wrapkit-partial 6", "wrapkit-full 6"],
+      material: "MAT-GLOSS-C6",
+    },
+    {
       sliderId: "swatchSliderC5",
       displayId: "colorDisplayC5",
       nameId: "colorNameC5",
@@ -107,6 +115,7 @@ function getColorProperties() {
 
     // Direct selectors for color swatches
     const colorDisplays = {
+      C6: document.getElementById("colorDisplayC6"),
       C5: document.getElementById("colorDisplayC5"),
       C4: document.getElementById("colorDisplayC4"),
       C3: document.getElementById("colorDisplayC3"),
@@ -117,6 +126,7 @@ function getColorProperties() {
     };
 
     const colorNames = {
+      C6: document.getElementById("colorNameC6"),
       C5: document.getElementById("colorNameC5"),
       C4: document.getElementById("colorNameC4"),
       C3: document.getElementById("colorNameC3"),
@@ -422,7 +432,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   // --- Define ALL functions first ---
-  const hexToRbg = (hex) => {
+  const hexToRgb = (hex) => {
     const cleanHex = hex.startsWith("#") ? hex.slice(1) : hex;
     if (cleanHex.length !== 6) {
       console.warn(`Invalid hex color: ${hex}. Using white.`);
@@ -434,13 +444,39 @@ document.addEventListener("DOMContentLoaded", () => {
     return [r, g, b];
   };
 
-  function updateMaterialColor(
+  function colorDistanceSq(hexA, hexB) {
+    const [ar, ag, ab] = hexToRgb(hexA);
+    const [br, bg, bb] = hexToRgb(hexB);
+    const dr = ar - br;
+    const dg = ag - bg;
+    const db = ab - bb;
+    return dr * dr + dg * dg + db * db;
+  }
+
+  function findNearestSwatchIndex(targetHex) {
+    let bestIndex = 1;
+    let bestDist = Infinity;
+    for (let i = 1; i <= (typeof numColors !== 'undefined' ? numColors : 100); i++) {
+      const key = `B${i}`;
+      const swatchHex = color_swatches_data[key];
+      if (!swatchHex) continue;
+      const dist = colorDistanceSq(targetHex, swatchHex);
+      if (dist < bestDist) {
+        bestDist = dist;
+        bestIndex = i;
+      }
+    }
+    return bestIndex;
+  }
+
+  async function updateMaterialColor(
     api,
     sliderElement,
     displayElement,
     nameElement,
     objectNames,
-    materialName
+    materialName,
+    hexOverride
   ) {
     if (!sliderElement || !displayElement || !nameElement) {
       console.error(
@@ -459,12 +495,21 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    // Ensure the underlying Vectary API method is fully ready before use
+    try {
+      await waitForApiMethod(api, "addOrEditMaterial", 100, 100);
+    } catch (_) {
+      console.warn("addOrEditMaterial did not become available in time; skipping material update.");
+      return;
+    }
+
     const sliderValue = parseInt(sliderElement.value, 10);
     const keyA = `A${sliderValue}`;
     const keyB = `B${sliderValue}`;
-    const hexColor = color_swatches_data.hasOwnProperty(keyB)
+    const computedHex = color_swatches_data.hasOwnProperty(keyB)
       ? color_swatches_data[keyB]
       : "#FFFFFF";
+    const hexColor = hexOverride || computedHex;
     const colorName = color_swatches_data.hasOwnProperty(keyA)
       ? color_swatches_data[keyA]
       : "Unknown";
@@ -475,21 +520,28 @@ document.addEventListener("DOMContentLoaded", () => {
     const materialId = materialName.replace(/.*-/, "");
     console.log(11,materialId, state.colorValues);
     state.colorValues[materialId] = sliderValue;
-    const rgb = hexToRbg(hexColor);
+    const [r255, g255, b255] = hexToRgb(hexColor);
+    const color = { x: r255, y: g255, z: b255 };
 
-    objectNames.forEach((objectName) => {
-      const color = { x: rgb[0], y: rgb[1], z: rgb[2] };
-
-      console.log(objectName, materialName, color);
-      api
-        .addOrEditMaterial(objectName, {
-          name: materialName,
-          baseColor: { color },
-        })
-        .catch((error) => {
-          /* Avoid logging errors for hidden objects */
-        });
-    });
+    if (!Array.isArray(objectNames) || objectNames.length === 0) {
+      return;
+    }
+    for (const objectName of objectNames) {
+      try {
+        console.log(objectName, materialName, color);
+        const result = api && typeof api.addOrEditMaterial === 'function'
+          ? api.addOrEditMaterial(objectName, {
+              name: materialName,
+              baseColor: { color },
+            })
+          : null;
+        if (result && typeof result.then === 'function') {
+          await result;
+        }
+      } catch (error) {
+        // Swallow material edit errors to avoid breaking UI on missing/hidden objects
+      }
+    }
     
     // Save the updated color values to localStorage
     saveColorValuesToStorage();
@@ -624,7 +676,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (state.activePreset) {
       const eventName = `color-${state.activePreset}-btn`;
       console.log(`Triggering initial preset event: ${eventName}`);
-      applyPreset(api, state.activePreset, true);
+      // Defer apply until API method is confirmed available
+      waitForApiMethod(api, "addOrEditMaterial", 100, 100)
+        .then(() => applyPreset(api, state.activePreset, true))
+        .catch(() => console.warn("Skipping initial preset apply: addOrEditMaterial not available"));
     }
   }
 
@@ -789,17 +844,27 @@ document.addEventListener("DOMContentLoaded", () => {
             const displayElement = document.getElementById(config.displayId);
             const nameElement = document.getElementById(config.nameId);
             if (sliderElement && displayElement && nameElement) {
-              const presetValue = presets[presetNumber][materialId];
-              if (parseInt(sliderElement.value) !== presetValue) {
-                sliderElement.value = presetValue;
+               const presetValue = presets[presetNumber][materialId];
+               const isHex = typeof presetValue === 'string' && /^#?[0-9a-fA-F]{6}$/.test(presetValue);
+               let targetHex = null;
+               let targetIndex = null;
+               if (isHex) {
+                 targetHex = presetValue.startsWith('#') ? presetValue : `#${presetValue}`;
+                 targetIndex = findNearestSwatchIndex(targetHex);
+               } else {
+                 targetIndex = parseInt(presetValue, 10);
+               }
+               if (parseInt(sliderElement.value) !== targetIndex) {
+                 sliderElement.value = targetIndex;
                 // Update UI via state change (handled by initializeSliderUI listener)
                 const updateSliderDisplay = () => {
-                  const sliderValue = parseInt(sliderElement.value, 10);
-                  const keyA = `A${sliderValue}`;
-                  const keyB = `B${sliderValue}`;
-                  const hexColor = color_swatches_data.hasOwnProperty(keyB)
-                    ? color_swatches_data[keyB]
-                    : "#FFFFFF";
+                   const sliderValue = parseInt(sliderElement.value, 10);
+                   const keyA = `A${sliderValue}`;
+                   const keyB = `B${sliderValue}`;
+                   const defaultHex = color_swatches_data.hasOwnProperty(keyB)
+                     ? color_swatches_data[keyB]
+                     : "#FFFFFF";
+                   const hexColor = targetHex || defaultHex;
                   const colorName = color_swatches_data.hasOwnProperty(keyA)
                     ? color_swatches_data[keyA]
                     : "Unknown";
@@ -815,7 +880,8 @@ document.addEventListener("DOMContentLoaded", () => {
                   displayElement,
                   nameElement,
                   config.objects,
-                  config.material
+                   config.material,
+                   targetHex
                 );
                 colorsApplied = true;
               }
@@ -1106,7 +1172,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // Function to update the overlaminate buttons active state
   function updateOverlaminateButtonsActiveState() {
     // Update all overlaminate buttons to match state.activeOverlaminates
-    document.querySelector(".overlaminate-button").click()
+    if (!isApiReady) return;
+    const firstBtn = document.querySelector(".overlaminate-button");
+    if (firstBtn && typeof firstBtn.click === 'function') {
+      firstBtn.click();
+    }
   }
 
   function saveConfiguration() {

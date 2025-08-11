@@ -27,7 +27,19 @@
 {%- endcapture -%}
 
 {%- assign current_variant = product.selected_or_first_available_variant -%}
-
+<script>
+  window.presets = {};
+  {% assign presets = product.metafields.custom.presets.value %}
+  {% for preset in presets %}
+    {% assign preset_number = forloop.index %}
+    {% assign preset_colors = preset.colors_json.value %}
+    window.presets[{{ preset_number }}] = {
+      {% for color in preset_colors %}
+        {{color.color_key}}: "{{color.background_color}}",
+      {% endfor %}
+    };
+  {% endfor %}
+</script>
 <div class="product-nav hide-mobile clearfix">
   {% if collection.previous_product %}<div class="btn btn--secondary btn--small">{% endif %}
   <span style="float:left;">
@@ -203,72 +215,21 @@
       </h3>
 
       <div class="preset-grid">
-        <button id="color-1-btn" class="preset-button">
-          <span>Preset 1</span>
-          <div class="preset-colors">
-            <div class="preset-color-dot" data-color-key="C5"></div>
-            <div class="preset-color-dot" data-color-key="C4"></div>
-            <div class="preset-color-dot" data-color-key="C3"></div>
-            <div class="preset-color-dot" data-color-key="C2"></div>
-            <div class="preset-color-dot" data-color-key="C1"></div>
-            <div class="preset-color-dot" data-color-key="BG"></div>
-          </div>
-        </button>
-        <button id="color-2-btn" class="preset-button">
-          <span>Preset 2</span>
-          <div class="preset-colors">
-            <div class="preset-color-dot" data-color-key="C5"></div>
-            <div class="preset-color-dot" data-color-key="C4"></div>
-            <div class="preset-color-dot" data-color-key="C3"></div>
-            <div class="preset-color-dot" data-color-key="C2"></div>
-            <div class="preset-color-dot" data-color-key="C1"></div>
-            <div class="preset-color-dot" data-color-key="BG"></div>
-          </div>
-        </button>
-        <button id="color-3-btn" class="preset-button">
-          <span>Preset 3</span>
-          <div class="preset-colors">
-            <div class="preset-color-dot" data-color-key="C5"></div>
-            <div class="preset-color-dot" data-color-key="C4"></div>
-            <div class="preset-color-dot" data-color-key="C3"></div>
-            <div class="preset-color-dot" data-color-key="C2"></div>
-            <div class="preset-color-dot" data-color-key="C1"></div>
-            <div class="preset-color-dot" data-color-key="BG"></div>
-          </div>
-        </button>
-        <button id="color-4-btn" class="preset-button">
-          <span>Preset 4</span>
-          <div class="preset-colors">
-            <div class="preset-color-dot" data-color-key="C5"></div>
-            <div class="preset-color-dot" data-color-key="C4"></div>
-            <div class="preset-color-dot" data-color-key="C3"></div>
-            <div class="preset-color-dot" data-color-key="C2"></div>
-            <div class="preset-color-dot" data-color-key="C1"></div>
-            <div class="preset-color-dot" data-color-key="BG"></div>
-          </div>
-        </button>
-        <button id="color-5-btn" class="preset-button">
-          <span>Preset 5</span>
-          <div class="preset-colors">
-            <div class="preset-color-dot" data-color-key="C5"></div>
-            <div class="preset-color-dot" data-color-key="C4"></div>
-            <div class="preset-color-dot" data-color-key="C3"></div>
-            <div class="preset-color-dot" data-color-key="C2"></div>
-            <div class="preset-color-dot" data-color-key="C1"></div>
-            <div class="preset-color-dot" data-color-key="BG"></div>
-          </div>
-        </button>
-        <button id="color-6-btn" class="preset-button">
-          <span>Preset 6</span>
-          <div class="preset-colors">
-            <div class="preset-color-dot" data-color-key="C5"></div>
-            <div class="preset-color-dot" data-color-key="C4"></div>
-            <div class="preset-color-dot" data-color-key="C3"></div>
-            <div class="preset-color-dot" data-color-key="C2"></div>
-            <div class="preset-color-dot" data-color-key="C1"></div>
-            <div class="preset-color-dot" data-color-key="BG"></div>
-          </div>
-        </button>
+        {% for color in product.metafields.custom.presets.value %}
+          {% assign preset_colors = color.colors_json.value %}
+          {% assign preset_number = forloop.index %}
+         
+          <button id="color-{{ preset_number }}-btn" class="preset-button">
+            Preset {{ preset_number }}
+            <div class="preset-colors">
+              {% for color in preset_colors %}
+              {% assign color_key = color.color_key %}
+              <div class="preset-color-dot" data-color-key="{{ color_key }}"></div>
+            {% endfor %}
+            </div>
+          </button>
+        {% endfor %}
+       
       </div>
     </div>
 
@@ -309,9 +270,11 @@
       Randomize
     </button>
   </div>
+
+   {% for color in product.metafields.custom.color_sliders.value %}
     <div class="accordion-item">
-        <button class="accordion-header" type="button" aria-expanded="true" aria-controls="panelL1" id="headerL1">
-          <span class="color-label">Logo Color: <span id="colorNameL1"></span></span>
+        <button class="accordion-header" type="button" aria-expanded="true" aria-controls="panel{{ color }}" id="header{{ color }}">
+          <span class="color-label">Color {{ color }}: <span id="colorName{{ color }}"></span></span>
           <span class="accordion-close-icon" aria-hidden="true" style="margin-left:auto;display:flex;align-items:center;">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -319,43 +282,43 @@
             </svg>
           </span>
         </button>
-        <div class="accordion-panel" id="panelL1" role="region" aria-labelledby="headerL1">
+        <div class="accordion-panel" id="panel{{ color }}" role="region" aria-labelledby="header{{ color }}">
           <div class="color-control">
             <div class="color-control-header">
-              <div class="color-swatch" id="colorDisplayL1"></div>
+              <div class="color-swatch" id="colorDisplay{{ color }}"></div>
               <div class="quick-color-swatches">
-                <button class="quick-swatch black-swatch" data-slider="swatchSliderL1" data-color="1" title="Set to Black">
+                <button class="quick-swatch black-swatch" data-slider="swatchSlider{{ color }}" data-color="1" title="Set to Black">
                   <div class="swatch-color" style="background-color: #000000;"></div>
                 </button>
-                <button class="quick-swatch gold-swatch" data-slider="swatchSliderL1" data-color="17" title="Set to Ski-Doo Gold">
+                <button class="quick-swatch gold-swatch" data-slider="swatchSlider{{ color }}" data-color="17" title="Set to Ski-Doo Gold">
                   <div class="swatch-color" style="background-color: #a49764;"></div>
                 </button>
-                <button class="quick-swatch grey-swatch" data-slider="swatchSliderL1" data-color="26" title="Set to Catalyst Grey">
+                <button class="quick-swatch grey-swatch" data-slider="swatchSlider{{ color }}" data-color="26" title="Set to Catalyst Grey">
                   <div class="swatch-color" style="background-color: #c8cacc;"></div>
                 </button>
-                <button class="quick-swatch white-swatch" data-slider="swatchSliderL1" data-color="28" title="Set to White">
+                <button class="quick-swatch white-swatch" data-slider="swatchSlider{{ color }}" data-color="28" title="Set to White">
                   <div class="swatch-color" style="background-color: #ffffff;"></div>
                 </button>
-                <button class="quick-swatch red-swatch" data-slider="swatchSliderL1" data-color="36" title="Set to True Red">
+                <button class="quick-swatch red-swatch" data-slider="swatchSlider{{ color }}" data-color="36" title="Set to True Red">
                   <div class="swatch-color" style="background-color: #da0002;"></div>
                 </button>
-                <button class="quick-swatch orange-swatch" data-slider="swatchSliderL1" data-color="44" title="Set to Blaze Orange">
+                <button class="quick-swatch orange-swatch" data-slider="swatchSlider{{ color }}" data-color="44" title="Set to Blaze Orange">
                   <div class="swatch-color" style="background-color: #dc4410;"></div>
                 </button>
-                <button class="quick-swatch yellow-swatch" data-slider="swatchSliderL1" data-color="52" title="Set to Sunburst Yellow">
+                <button class="quick-swatch yellow-swatch" data-slider="swatchSlider{{ color }}" data-color="52" title="Set to Sunburst Yellow">
                   <div class="swatch-color" style="background-color: #fcf73a;"></div>
                 </button>
-                <button class="quick-swatch blue-swatch" data-slider="swatchSliderL1" data-color="64" title="Set to SCS Wraps Blue">
+                <button class="quick-swatch blue-swatch" data-slider="swatchSlider{{ color }}" data-color="64" title="Set to SCS Wraps Blue">
                   <div class="swatch-color" style="background-color: #1a1e25;"></div>
                 </button>
-                <button class="quick-swatch navy-swatch" data-slider="swatchSliderL1" data-color="71" title="Set to Oxford Blue">
+                  <button class="quick-swatch navy-swatch" data-slider="swatchSlider{{ color }}" data-color="71" title="Set to Oxford Blue">
                   <div class="swatch-color" style="background-color: #005297;"></div>
                 </button>
-                <button class="quick-swatch bright-blue-swatch" data-slider="swatchSliderL1" data-color="86" title="Set to Dazzaling Blue">
+                <button class="quick-swatch bright-blue-swatch" data-slider="swatchSlider{{ color }}" data-color="86" title="Set to Dazzaling Blue">
                   <div class="swatch-color" style="background-color: #043bff;"></div>
                 </button>
               </div>
-              <button class="lock-button" id="lockL1">
+              <button class="lock-button" id="lock{{ color }}">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
                   <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
@@ -364,384 +327,12 @@
             </div>
             <div class="slider-svg-wrapper">
               {{ color_palette }}
-              <input type="range" id="swatchSliderL1" class="color-slider" min="1" max="93" value="12" step="1">
+              <input type="range" id="swatchSlider{{ color }}" class="color-slider" min="1" max="93" value="12" step="1">
             </div>
           </div>
         </div>
       </div>
-  <!-- BG Slider -->
-  <div class="accordion-item">
-    <button class="accordion-header" type="button" aria-expanded="false" aria-controls="panelBG" id="headerBG">
-      <span class="color-label">BG Color: <span id="colorNameBG"></span></span>
-      <span class="accordion-close-icon" aria-hidden="true" style="margin-left:auto;display:flex;align-items:center;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-      </span>
-    </button>
-    <div class="accordion-panel accordion-collapsed" id="panelBG" role="region" aria-labelledby="headerBG">
-      <div class="color-control">
-        <div class="color-control-header">
-          <div class="color-swatch" id="colorDisplayBG"></div>
-          <div class="quick-color-swatches">
-            <button class="quick-swatch black-swatch" data-slider="swatchSliderBG" data-color="1" title="Set to Black">
-              <div class="swatch-color" style="background-color: #000000;"></div>
-            </button>
-            <button class="quick-swatch gold-swatch" data-slider="swatchSliderBG" data-color="17" title="Set to Ski-Doo Gold">
-              <div class="swatch-color" style="background-color: #a49764;"></div>
-            </button>
-            <button class="quick-swatch grey-swatch" data-slider="swatchSliderBG" data-color="26" title="Set to Catalyst Grey">
-              <div class="swatch-color" style="background-color: #c8cacc;"></div>
-            </button>
-            <button class="quick-swatch white-swatch" data-slider="swatchSliderBG" data-color="28" title="Set to White">
-              <div class="swatch-color" style="background-color: #ffffff;"></div>
-            </button>
-            <button class="quick-swatch red-swatch" data-slider="swatchSliderBG" data-color="36" title="Set to True Red">
-              <div class="swatch-color" style="background-color: #da0002;"></div>
-            </button>
-            <button class="quick-swatch orange-swatch" data-slider="swatchSliderBG" data-color="44" title="Set to Blaze Orange">
-              <div class="swatch-color" style="background-color: #dc4410;"></div>
-            </button>
-            <button class="quick-swatch yellow-swatch" data-slider="swatchSliderBG" data-color="52" title="Set to Sunburst Yellow">
-              <div class="swatch-color" style="background-color: #fcf73a;"></div>
-            </button>
-            <button class="quick-swatch blue-swatch" data-slider="swatchSliderBG" data-color="64" title="Set to SCS Wraps Blue">
-              <div class="swatch-color" style="background-color: #1a1e25;"></div>
-            </button>
-            <button class="quick-swatch navy-swatch" data-slider="swatchSliderBG" data-color="71" title="Set to Oxford Blue">
-              <div class="swatch-color" style="background-color: #005297;"></div>
-            </button>
-            <button class="quick-swatch bright-blue-swatch" data-slider="swatchSliderBG" data-color="86" title="Set to Dazzaling Blue">
-              <div class="swatch-color" style="background-color: #043bff;"></div>
-            </button>
-          </div>
-          <button class="lock-button" id="lockBG">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
-              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-            </svg>
-          </button>
-        </div>
-        <div class="slider-svg-wrapper">
-          {{ color_palette }}
-          <input type="range" id="swatchSliderBG" class="color-slider" min="1" max="93" value="12" step="1">
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- C1 Slider -->
-  <div class="accordion-item">
-    <button class="accordion-header" type="button" aria-expanded="false" aria-controls="panelC1" id="headerC1">
-      <span class="color-label">Color C1: <span id="colorNameC1"></span></span>
-      <span class="accordion-close-icon" aria-hidden="true" style="margin-left:auto;display:flex;align-items:center;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-      </span>
-    </button>
-    <div class="accordion-panel accordion-collapsed" id="panelC1" role="region" aria-labelledby="headerC1">
-      <div class="color-control">
-        <div class="color-control-header">
-          <div class="color-swatch" id="colorDisplayC1"></div>
-          <div class="quick-color-swatches">
-            <button class="quick-swatch black-swatch" data-slider="swatchSliderC1" data-color="1" title="Set to Black">
-              <div class="swatch-color" style="background-color: #000000;"></div>
-            </button>
-            <button class="quick-swatch gold-swatch" data-slider="swatchSliderC1" data-color="17" title="Set to Ski-Doo Gold">
-              <div class="swatch-color" style="background-color: #a49764;"></div>
-            </button>
-            <button class="quick-swatch grey-swatch" data-slider="swatchSliderC1" data-color="26" title="Set to Catalyst Grey">
-              <div class="swatch-color" style="background-color: #c8cacc;"></div>
-            </button>
-            <button class="quick-swatch white-swatch" data-slider="swatchSliderC1" data-color="28" title="Set to White">
-              <div class="swatch-color" style="background-color: #ffffff;"></div>
-            </button>
-            <button class="quick-swatch red-swatch" data-slider="swatchSliderC1" data-color="36" title="Set to True Red">
-              <div class="swatch-color" style="background-color: #da0002;"></div>
-            </button>
-            <button class="quick-swatch orange-swatch" data-slider="swatchSliderC1" data-color="44" title="Set to Blaze Orange">
-              <div class="swatch-color" style="background-color: #dc4410;"></div>
-            </button>
-            <button class="quick-swatch yellow-swatch" data-slider="swatchSliderC1" data-color="52" title="Set to Sunburst Yellow">
-              <div class="swatch-color" style="background-color: #fcf73a;"></div>
-            </button>
-            <button class="quick-swatch blue-swatch" data-slider="swatchSliderC1" data-color="64" title="Set to SCS Wraps Blue">
-              <div class="swatch-color" style="background-color: #1a1e25;"></div>
-            </button>
-            <button class="quick-swatch navy-swatch" data-slider="swatchSliderC1" data-color="71" title="Set to Oxford Blue">
-              <div class="swatch-color" style="background-color: #005297;"></div>
-            </button>
-            <button class="quick-swatch bright-blue-swatch" data-slider="swatchSliderC1" data-color="86" title="Set to Dazzaling Blue">
-              <div class="swatch-color" style="background-color: #043bff;"></div>
-            </button>
-          </div>
-          <button class="lock-button" id="lockC1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
-              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-            </svg>
-          </button>
-        </div>
-        <div class="slider-svg-wrapper">
-          {{ color_palette }}
-          <input type="range" id="swatchSliderC1" class="color-slider" min="1" max="93" value="80" step="1">
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- C2 Slider -->
-  <div class="accordion-item">
-    <button class="accordion-header" type="button" aria-expanded="false" aria-controls="panelC2" id="headerC2">
-      <span class="color-label">Color C2: <span id="colorNameC2"></span></span>
-      <span class="accordion-close-icon" aria-hidden="true" style="margin-left:auto;display:flex;align-items:center;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-      </span>
-    </button>
-    <div class="accordion-panel accordion-collapsed" id="panelC2" role="region" aria-labelledby="headerC2">
-      <div class="color-control">
-        <div class="color-control-header">
-          <div class="color-swatch" id="colorDisplayC2"></div>
-          <div class="quick-color-swatches">
-            <button class="quick-swatch black-swatch" data-slider="swatchSliderC2" data-color="1" title="Set to Black">
-              <div class="swatch-color" style="background-color: #000000;"></div>
-            </button>
-            <button class="quick-swatch gold-swatch" data-slider="swatchSliderC2" data-color="17" title="Set to Ski-Doo Gold">
-              <div class="swatch-color" style="background-color: #a49764;"></div>
-            </button>
-            <button class="quick-swatch grey-swatch" data-slider="swatchSliderC2" data-color="26" title="Set to Catalyst Grey">
-              <div class="swatch-color" style="background-color: #c8cacc;"></div>
-            </button>
-            <button class="quick-swatch white-swatch" data-slider="swatchSliderC2" data-color="28" title="Set to White">
-              <div class="swatch-color" style="background-color: #ffffff;"></div>
-            </button>
-            <button class="quick-swatch red-swatch" data-slider="swatchSliderC2" data-color="36" title="Set to True Red">
-              <div class="swatch-color" style="background-color: #da0002;"></div>
-            </button>
-            <button class="quick-swatch orange-swatch" data-slider="swatchSliderC2" data-color="44" title="Set to Blaze Orange">
-              <div class="swatch-color" style="background-color: #dc4410;"></div>
-            </button>
-            <button class="quick-swatch yellow-swatch" data-slider="swatchSliderC2" data-color="52" title="Set to Sunburst Yellow">
-              <div class="swatch-color" style="background-color: #fcf73a;"></div>
-            </button>
-            <button class="quick-swatch blue-swatch" data-slider="swatchSliderC2" data-color="64" title="Set to SCS Wraps Blue">
-              <div class="swatch-color" style="background-color: #1a1e25;"></div>
-            </button>
-            <button class="quick-swatch navy-swatch" data-slider="swatchSliderC2" data-color="71" title="Set to Oxford Blue">
-              <div class="swatch-color" style="background-color: #005297;"></div>
-            </button>
-            <button class="quick-swatch bright-blue-swatch" data-slider="swatchSliderC2" data-color="86" title="Set to Dazzaling Blue">
-              <div class="swatch-color" style="background-color: #043bff;"></div>
-            </button>
-          </div>
-          <button class="lock-button" id="lockC2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
-              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-            </svg>
-          </button>
-        </div>
-        <div class="slider-svg-wrapper">
-          {{ color_palette }}
-          <input type="range" id="swatchSliderC2" class="color-slider" min="1" max="93" value="60" step="1">
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- C3 Slider -->
-  <div class="accordion-item">
-    <button class="accordion-header" type="button" aria-expanded="false" aria-controls="panelC3" id="headerC3">
-      <span class="color-label">Color C3: <span id="colorNameC3"></span></span>
-      <span class="accordion-close-icon" aria-hidden="true" style="margin-left:auto;display:flex;align-items:center;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-      </span>
-    </button>
-    <div class="accordion-panel accordion-collapsed" id="panelC3" role="region" aria-labelledby="headerC3">
-      <div class="color-control">
-        <div class="color-control-header">
-          <div class="color-swatch" id="colorDisplayC3"></div>
-          <div class="quick-color-swatches">
-            <button class="quick-swatch black-swatch" data-slider="swatchSliderC3" data-color="1" title="Set to Black">
-              <div class="swatch-color" style="background-color: #000000;"></div>
-            </button>
-            <button class="quick-swatch gold-swatch" data-slider="swatchSliderC3" data-color="17" title="Set to Ski-Doo Gold">
-              <div class="swatch-color" style="background-color: #a49764;"></div>
-            </button>
-            <button class="quick-swatch grey-swatch" data-slider="swatchSliderC3" data-color="26" title="Set to Catalyst Grey">
-              <div class="swatch-color" style="background-color: #c8cacc;"></div>
-            </button>
-            <button class="quick-swatch white-swatch" data-slider="swatchSliderC3" data-color="28" title="Set to White">
-              <div class="swatch-color" style="background-color: #ffffff;"></div>
-            </button>
-            <button class="quick-swatch red-swatch" data-slider="swatchSliderC3" data-color="36" title="Set to True Red">
-              <div class="swatch-color" style="background-color: #da0002;"></div>
-            </button>
-            <button class="quick-swatch orange-swatch" data-slider="swatchSliderC3" data-color="44" title="Set to Blaze Orange">
-              <div class="swatch-color" style="background-color: #dc4410;"></div>
-            </button>
-            <button class="quick-swatch yellow-swatch" data-slider="swatchSliderC3" data-color="52" title="Set to Sunburst Yellow">
-              <div class="swatch-color" style="background-color: #fcf73a;"></div>
-            </button>
-            <button class="quick-swatch blue-swatch" data-slider="swatchSliderC3" data-color="64" title="Set to SCS Wraps Blue">
-              <div class="swatch-color" style="background-color: #1a1e25;"></div>
-            </button>
-            <button class="quick-swatch navy-swatch" data-slider="swatchSliderC3" data-color="71" title="Set to Oxford Blue">
-              <div class="swatch-color" style="background-color: #005297;"></div>
-            </button>
-            <button class="quick-swatch bright-blue-swatch" data-slider="swatchSliderC3" data-color="86" title="Set to Dazzaling Blue">
-              <div class="swatch-color" style="background-color: #043bff;"></div>
-            </button>
-          </div>
-          <button class="lock-button" id="lockC3">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
-              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-            </svg>
-          </button>
-        </div>
-        <div class="slider-svg-wrapper">
-          {{ color_palette }}
-          <input type="range" id="swatchSliderC3" class="color-slider" min="1" max="93" value="40" step="1">
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- C4 Slider -->
-  <div class="accordion-item">
-    <button class="accordion-header" type="button" aria-expanded="false" aria-controls="panelC4" id="headerC4">
-      <span class="color-label">Color C4: <span id="colorNameC4"></span></span>
-      <span class="accordion-close-icon" aria-hidden="true" style="margin-left:auto;display:flex;align-items:center;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-      </span>
-    </button>
-    <div class="accordion-panel accordion-collapsed" id="panelC4" role="region" aria-labelledby="headerC4">
-      <div class="color-control">
-        <div class="color-control-header">
-          <div class="color-swatch" id="colorDisplayC4"></div>
-          <div class="quick-color-swatches">
-            <button class="quick-swatch black-swatch" data-slider="swatchSliderC4" data-color="1" title="Set to Black">
-              <div class="swatch-color" style="background-color: #000000;"></div>
-            </button>
-            <button class="quick-swatch gold-swatch" data-slider="swatchSliderC4" data-color="17" title="Set to Ski-Doo Gold">
-              <div class="swatch-color" style="background-color: #a49764;"></div>
-            </button>
-            <button class="quick-swatch grey-swatch" data-slider="swatchSliderC4" data-color="26" title="Set to Catalyst Grey">
-              <div class="swatch-color" style="background-color: #c8cacc;"></div>
-            </button>
-            <button class="quick-swatch white-swatch" data-slider="swatchSliderC4" data-color="28" title="Set to White">
-              <div class="swatch-color" style="background-color: #ffffff;"></div>
-            </button>
-            <button class="quick-swatch red-swatch" data-slider="swatchSliderC4" data-color="36" title="Set to True Red">
-              <div class="swatch-color" style="background-color: #da0002;"></div>
-            </button>
-            <button class="quick-swatch orange-swatch" data-slider="swatchSliderC4" data-color="44" title="Set to Blaze Orange">
-              <div class="swatch-color" style="background-color: #dc4410;"></div>
-            </button>
-            <button class="quick-swatch yellow-swatch" data-slider="swatchSliderC4" data-color="52" title="Set to Sunburst Yellow">
-              <div class="swatch-color" style="background-color: #fcf73a;"></div>
-            </button>
-            <button class="quick-swatch blue-swatch" data-slider="swatchSliderC4" data-color="64" title="Set to SCS Wraps Blue">
-              <div class="swatch-color" style="background-color: #1a1e25;"></div>
-            </button>
-            <button class="quick-swatch navy-swatch" data-slider="swatchSliderC4" data-color="71" title="Set to Oxford Blue">
-              <div class="swatch-color" style="background-color: #005297;"></div>
-            </button>
-            <button class="quick-swatch bright-blue-swatch" data-slider="swatchSliderC4" data-color="86" title="Set to Dazzaling Blue">
-              <div class="swatch-color" style="background-color: #043bff;"></div>
-            </button>
-          </div>
-          <button class="lock-button" id="lockC4">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
-              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-            </svg>
-          </button>
-        </div>
-        <div class="slider-svg-wrapper">
-          {{ color_palette }}
-          <input type="range" id="swatchSliderC4" class="color-slider" min="1" max="93" value="20" step="1">
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- C5 Slider -->
-  <div class="accordion-item">
-    <button class="accordion-header" type="button" aria-expanded="false" aria-controls="panelC5" id="headerC5">
-      <span class="color-label">Color C5: <span id="colorNameC5"></span></span>
-      <span class="accordion-close-icon" aria-hidden="true" style="margin-left:auto;display:flex;align-items:center;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-      </span>
-    </button>
-    <div class="accordion-panel accordion-collapsed" id="panelC5" role="region" aria-labelledby="headerC5">
-      <div class="color-control">
-        <div class="color-control-header">
-          <div class="color-swatch" id="colorDisplayC5"></div>
-          <div class="quick-color-swatches">
-            <button class="quick-swatch black-swatch" data-slider="swatchSliderC5" data-color="1" title="Set to Black">
-              <div class="swatch-color" style="background-color: #000000;"></div>
-            </button>
-            <button class="quick-swatch gold-swatch" data-slider="swatchSliderC5" data-color="17" title="Set to Ski-Doo Gold">
-              <div class="swatch-color" style="background-color: #a49764;"></div>
-            </button>
-            <button class="quick-swatch grey-swatch" data-slider="swatchSliderC5" data-color="26" title="Set to Catalyst Grey">
-              <div class="swatch-color" style="background-color: #c8cacc;"></div>
-            </button>
-            <button class="quick-swatch white-swatch" data-slider="swatchSliderC5" data-color="28" title="Set to White">
-              <div class="swatch-color" style="background-color: #ffffff;"></div>
-            </button>
-            <button class="quick-swatch red-swatch" data-slider="swatchSliderC5" data-color="36" title="Set to True Red">
-              <div class="swatch-color" style="background-color: #da0002;"></div>
-            </button>
-            <button class="quick-swatch orange-swatch" data-slider="swatchSliderC5" data-color="44" title="Set to Blaze Orange">
-              <div class="swatch-color" style="background-color: #dc4410;"></div>
-            </button>
-            <button class="quick-swatch yellow-swatch" data-slider="swatchSliderC5" data-color="52" title="Set to Sunburst Yellow">
-              <div class="swatch-color" style="background-color: #fcf73a;"></div>
-            </button>
-            <button class="quick-swatch blue-swatch" data-slider="swatchSliderC5" data-color="64" title="Set to SCS Wraps Blue">
-              <div class="swatch-color" style="background-color: #1a1e25;"></div>
-            </button>
-            <button class="quick-swatch navy-swatch" data-slider="swatchSliderC5" data-color="71" title="Set to Oxford Blue">
-              <div class="swatch-color" style="background-color: #005297;"></div>
-            </button>
-            <button class="quick-swatch bright-blue-swatch" data-slider="swatchSliderC5" data-color="86" title="Set to Dazzaling Blue">
-              <div class="swatch-color" style="background-color: #043bff;"></div>
-            </button>
-          </div>
-          <button class="lock-button" id="lockC5">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
-              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-            </svg>
-          </button>
-        </div>
-        <div class="slider-svg-wrapper">
-          {{ color_palette }}
-          <input type="range" id="swatchSliderC5" class="color-slider" min="1" max="93" value="1" step="1">
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Logo Slider -->
+   {% endfor %}
   
 </div>
 
@@ -773,118 +364,23 @@
       </h3>
 
       <div class="level-grid">
-        {% if product.type == 'Sea-Doo Spark24' %}
-          <button
-            id="triggerButtonLevel1"
-            class="level-button active"
-            data-level-handle="sea-doo-spark24-level-1"
-            data-id="{{ all_products['sea-doo-spark24-level-1'].selected_or_first_available_variant.id }}"
-          >
-            <span>Level 1</span>
-            <span class="level-price">{{ all_products['sea-doo-spark24-level-1'].price | money }}</span>
-          </button>
-          <button
-            id="triggerButtonLevel2"
-            class="level-button active"
-            data-level-handle="sea-doo-spark24-level-2"
-            data-id="{{ all_products['sea-doo-spark24-level-2'].selected_or_first_available_variant.id }}"
-          >
-            <span>Level 2</span>
-            <span class="level-price">{{ all_products['sea-doo-spark24-level-2'].price | money }}</span>
-          </button>
-          <button
-            id="triggerButtonLevel3"
-            class="level-button active"
-            data-level-handle="sea-doo-spark24-level-3"
-            data-id="{{ all_products['sea-doo-spark24-level-3'].selected_or_first_available_variant.id }}"
-          >
-            <span>Level 3</span>
-            <span class="level-price">{{ all_products['sea-doo-spark24-level-3'].price | money }}</span>
-          </button>
-          <button
-            id="triggerButtonLevel4"
-            class="level-button active"
-            data-level-handle="sea-doo-spark24-level-4"
-            data-id="{{ all_products['sea-doo-spark24-level-4'].selected_or_first_available_variant.id }}"
-          >
-            <span>Level 4</span>
-            <span class="level-price">{{ all_products['sea-doo-spark24-level-4'].price | money }}</span>
-          </button>
-          <button
-            id="triggerButtonLevel5"
-            class="level-button active"
-            data-level-handle="sea-doo-spark24-level-5"
-            data-id="{{ all_products['sea-doo-spark24-level-5'].selected_or_first_available_variant.id }}"
-          >
-            <span>Level 5</span>
-            <span class="level-price">{{ all_products['sea-doo-spark24-level-5'].price | money }}</span>
-          </button>
-        {% elsif product.type == 'Sea-Doo Switch' %}
-          <button
-            id="triggerButtonLevel1"
-            class="level-button active"
-            data-level-handle="sea-doo-level-16"
-            data-id="{{ all_products['sea-doo-level-16'].selected_or_first_available_variant.id }}"
-          >
-            <span>Level 1</span>
-            <span class="level-price">{{ all_products['sea-doo-level-16'].price | money }}</span>
-          </button>
-          <button
-            id="triggerButtonLevel2"
-            class="level-button active"
-            data-level-handle="sea-doo-level-19"
-            data-id="{{ all_products['sea-doo-level-19'].selected_or_first_available_variant.id }}"
-          >
-            <span>Level 2</span>
-            <span class="level-price">{{ all_products['sea-doo-level-19'].price | money }}</span>
-          </button>
-          <button
-            id="triggerButtonLevel3"
-            class="level-button active"
-            data-level-handle="sea-doo-level-13"
-            data-id="{{ all_products['sea-doo-level-13'].selected_or_first_available_variant.id }}"
-          >
-            <span>Level 3</span>
-            <span class="level-price">{{ all_products['sea-doo-level-13'].price | money }}</span>
-          </button>
-        {% else %}
-          <button
-            id="triggerButtonLevel1"
-            class="level-button active"
-            data-level-handle="ski-doo-gen5-level-1"
-            data-id="{{ all_products['ski-doo-gen5-level-1'].selected_or_first_available_variant.id }}"
-          >
-            <span>Level 1</span>
-            <span class="level-price">{{ all_products['ski-doo-gen5-level-1'].price | money }}</span>
-          </button>
-          <button
-            id="triggerButtonLevel2"
-            class="level-button active"
-            data-level-handle="ski-doo-gen5-level-2"
-            data-id="{{ all_products['ski-doo-gen5-level-2'].selected_or_first_available_variant.id }}"
-          >
-            <span>Level 2</span>
-            <span class="level-price">{{ all_products['ski-doo-gen5-level-2'].price | money }}</span>
-          </button>
-          <button
-            id="triggerButtonLevel3"
-            class="level-button active"
-            data-level-handle="ski-doo-gen5-level-3"
-            data-id="{{ all_products['ski-doo-gen5-level-3'].selected_or_first_available_variant.id }}"
-          >
-            <span>Level 3</span>
-            <span class="level-price">{{ all_products['ski-doo-gen5-level-3'].price | money }}</span>
-          </button>
-          <button
-            id="triggerButtonLevel4"
-            class="level-button active"
-            data-level-handle="ski-doo-gen5-level-4"
-            data-id="{{ all_products['ski-doo-gen5-level-4'].selected_or_first_available_variant.id }}"
-          >
-            <span>Level 4</span>
-            <span class="level-price">{{ all_products['ski-doo-gen5-level-4'].price | money }}</span>
-          </button>
-        {% endif %}
+        {%- if product.metafields.custom.materials -%}
+          {%- for material_item in product.metafields.custom.materials.value -%}
+            {%- if material_item -%}
+              <button
+                id="triggerButtonLevel{{ forloop.index }}"
+                class="level-button active"
+                data-level-handle="{{ material_item.title | downcase | replace: ' ', '-' }}"
+                data-id="{{ material_item.selected_or_first_available_variant.id }}"
+                data-material-title="{{ material_item.title }}"
+                style="--bg: {{ material_item.metafields.custom.material_display }};"
+              >
+                <span>{{ material_item.title }}</span>
+                <span class="level-price">{{ material_item.price | money }}</span>
+              </button>
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
       </div>
     </div>
 
@@ -910,90 +406,27 @@
       </h3>
 
       <div class="overlaminate-grid">
-        <button
-          id="overlaminateMetallicSilver"
-          data-material="MAT-GLOSS"
-          class="overlaminate-button "
-          data-overlaminate-handle="Metallic Silver"
-          data-id="{{ all_products['overlaminate-metallic-silver'].selected_or_first_available_variant.id }}"
-        >
-          <span>Metallic Silver</span>
-          <span class="overlaminate-price">{{ all_products['overlaminate-metallic-silver'].price | money }}</span>
-        </button>
-        <button
-          id="overlaminateMetallicGold"
-          data-material="MAT-GLOSS"
-          class="overlaminate-button "
-          data-overlaminate-handle="Metallic Gold"
-          data-id="{{ all_products['overlaminate-metallic-gold'].selected_or_first_available_variant.id }}"
-        >
-          <span>Metallic Gold</span>
-          <span class="overlaminate-price">{{ all_products['overlaminate-metallic-gold'].price | money }}</span>
-        </button>
-        <button
-          id="overlaminateMatte"
-          data-material="MAT-MATTE"
-          class="overlaminate-button "
-          data-overlaminate-handle="Matte"
-          data-id="{{ all_products['overlaminate-matte'].selected_or_first_available_variant.id }}"
-        >
-          <span>Matte</span>
-          <span class="overlaminate-price">{{ all_products['overlaminate-matte'].price | money }}</span>
-        </button>
-        <button
-          id="overlaminateStandardGloss"
-          data-material="MAT-GLOSS"
-          class="overlaminate-button "
-          data-overlaminate-handle="Gloss"
-          data-id="{{ all_products['standard-gloss'].selected_or_first_available_variant.id }}"
-        >
-          <span>Gloss</span>
-          <span class="overlaminate-price">{{ all_products['standard-gloss'].price | money }}</span>
-        </button>
-        <button
-          id="overlaminateChromeGloss"
-          data-material="MAT-CHROME-GLOSS"
-          class="overlaminate-button "
-          data-overlaminate-handle="Chrome Gloss"
-          data-id="{{ all_products['chrome-gloss'].selected_or_first_available_variant.id }}"
-        >
-          <span>Chrome Gloss</span>
-          <span class="overlaminate-price">{{ all_products['chrome-gloss'].price | money }}</span>
-        </button>
-        <button
-          id="overlaminateChromeMatte"
-          data-material="MAT-CHROME-MATTE"
-          class="overlaminate-button "
-          data-overlaminate-handle="Chrome Matte"
-          data-id="{{ all_products['chrome-matte'].selected_or_first_available_variant.id }}"
-        >
-          <span>Chrome Matte</span>
-          <span class="overlaminate-price">{{ all_products['chrome-matte'].price | money }}</span>
-        </button>
-        <button
-          id="overlaminateHolographicGloss"
-          data-material="MAT-HOLO-GLOSS"
-          class="overlaminate-button "
-          data-overlaminate-handle="Holographic Gloss"
-          data-id="{{ all_products['holographic-gloss'].selected_or_first_available_variant.id }}"
-        >
-          <span>Holographic Gloss</span>
-          <span class="overlaminate-price">{{ all_products['holographic-gloss'].price | money }}</span>
-        </button>
-        <button
-          id="overlaminateHolographicMatte"
-          data-material="MAT-HOLO-MATTE"
-          class="overlaminate-button "
-          data-overlaminate-handle="Holographic Matte"
-          data-id="{{ all_products['holographic-matte'].selected_or_first_available_variant.id }}"
-        >
-          <span>Holographic Matte</span>
-          <span class="overlaminate-price">{{ all_products['holographic-matte'].price | money }}</span>
-        </button>
+        {%- if product.metafields.custom.overlaminate -%}
+          {%- for overlaminate_item in product.metafields.custom.overlaminate.value -%}
+            {%- if overlaminate_item -%}
+              <button
+                id="overlaminate{{ overlaminate_item.title | replace: ' ', '' }}"
+                data-material="{{ overlaminate_item.material }}"
+                class="overlaminate-button"
+                data-overlaminate-handle="{{ overlaminate_item.title }}"
+                data-id="{{ overlaminate_item.selected_or_first_available_variant.id }}"
+                style="--bg: {{ overlaminate_item.metafields.custom.material_display }};{% if overlaminate_item.metafields.custom.repeat_bg_pattern %}background-size: 12px 12px;background-repeat: repeat;{% endif %};background-color: #f0f0f0;"
+                
+              >
+                <span>{{ overlaminate_item.title }}</span>
+                <span class="overlaminate-price">{{ overlaminate_item.price | money }}</span>
+              </button>
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
       </div>
     </div>
   </div>
-</div>
 
 <div class="placeholder-area">
   <h3>Future Actions Area</h3>
@@ -1013,114 +446,32 @@
      price: "{{ product.price | money }}"
    }
    window.globalProductData = {
-     {% if product.handle contains 'sea-doo-spark24' %}
-       1: {
-         handle: "sea-doo-spark24-level-1",
-         id: "{{ all_products['sea-doo-spark24-level-1'].selected_or_first_available_variant.id }}",
-         price: "{{ all_products['sea-doo-spark24-level-1'].price | money }}"
-       },
-       2: {
-         handle: "sea-doo-spark24-level-2",
-         id: "{{ all_products['sea-doo-spark24-level-2'].selected_or_first_available_variant.id }}",
-         price: "{{ all_products['sea-doo-spark24-level-2'].price | money }}"
-       },
-       3: {
-         handle: "sea-doo-spark24-level-3",
-         id: "{{ all_products['sea-doo-spark24-level-3'].selected_or_first_available_variant.id }}",
-         price: "{{ all_products['sea-doo-spark24-level-3'].price | money }}"
-       },
-       4: {
-         handle: "sea-doo-spark24-level-4",
-         id: "{{ all_products['sea-doo-spark24-level-4'].selected_or_first_available_variant.id }}",
-         price: "{{ all_products['sea-doo-spark24-level-4'].price | money }}"
-       },
-       5: {
-         handle: "sea-doo-spark24-level-5",
-         id: "{{ all_products['sea-doo-spark24-level-5'].selected_or_first_available_variant.id }}",
-         price: "{{ all_products['sea-doo-spark24-level-5'].price | money }}"
-       }
-     {% elsif product.handle contains 'sea-doo-switch' %}
-       1: {
-         handle: "sea-doo-level-16",
-         id: "{{ all_products['sea-doo-level-16'].selected_or_first_available_variant.id }}",
-         price: "{{ all_products['sea-doo-level-16'].price | money }}"
-       },
-       2: {
-         handle: "sea-doo-level-19",
-         id: "{{ all_products['sea-doo-level-19'].selected_or_first_available_variant.id }}",
-         price: "{{ all_products['sea-doo-level-19'].price | money }}"
-       },
-       3: {
-         handle: "sea-doo-level-13",
-         id: "{{ all_products['sea-doo-level-13'].selected_or_first_available_variant.id }}",
-         price: "{{ all_products['sea-doo-level-13'].price | money }}"
-       }
-     {% else %}
-       1: {
-         handle: "ski-doo-gen5-level-1",
-         id: "{{ all_products['ski-doo-gen5-level-1'].selected_or_first_available_variant.id }}",
-         price: "{{ all_products['ski-doo-gen5-level-1'].price | money }}"
-       },
-       2: {
-         handle: "ski-doo-gen5-level-2",
-         id: "{{ all_products['ski-doo-gen5-level-2'].selected_or_first_available_variant.id }}",
-         price: "{{ all_products['ski-doo-gen5-level-2'].price | money }}"
-       },
-       3: {
-         handle: "ski-doo-gen5-level-3",
-         id: "{{ all_products['ski-doo-gen5-level-3'].selected_or_first_available_variant.id }}",
-         price: "{{ all_products['ski-doo-gen5-level-3'].price | money }}"
-       },
-       4: {
-         handle: "ski-doo-gen5-level-4",
-         id: "{{ all_products['ski-doo-gen5-level-4'].selected_or_first_available_variant.id }}",
-         price: "{{ all_products['ski-doo-gen5-level-4'].price | money }}"
-       }
-     {% endif %}
+     {%- if product.metafields.custom.materials -%}
+       {%- for material_item in product.metafields.custom.materials.value -%}
+         {%- if material_item -%}
+           {{ forloop.index }}: {
+             handle: "{{ material_item.title | downcase | replace: ' ', '-' }}",
+             id: "{{ material_item.selected_or_first_available_variant.id }}",
+             price: "{{ material_item.price | money }}"
+           }{%- unless forloop.last -%},{%- endunless -%}
+         {%- endif -%}
+       {%- endfor -%}
+     {%- endif -%}
    };
  
    // Add overlaminate product data
    window.overlaminateProductData = {
-     "metallic-silver": {
-       handle: "overlaminate-metallic-silver",
-       id: "{{ all_products['overlaminate-metallic-silver'].selected_or_first_available_variant.id }}",
-       price: "{{ all_products['overlaminate-metallic-silver'].price | money }}"
-     },
-     "metallic-gold": {
-       handle: "overlaminate-metallic-gold",
-       id: "{{ all_products['overlaminate-metallic-gold'].selected_or_first_available_variant.id }}",
-       price: "{{ all_products['overlaminate-metallic-gold'].price | money }}"
-     },
-     "matte": {
-       handle: "overlaminate-matte",
-       id: "{{ all_products['overlaminate-matte'].selected_or_first_available_variant.id }}",
-       price: "{{ all_products['overlaminate-matte'].price | money }}"
-     },
-     "standard-gloss": {
-       handle: "standard-gloss",
-       id: "{{ all_products['standard-gloss'].selected_or_first_available_variant.id }}",
-       price: "{{ all_products['standard-gloss'].price | money }}"
-     },
-     "chrome-gloss": {
-       handle: "chrome-gloss",
-       id: "{{ all_products['chrome-gloss'].selected_or_first_available_variant.id }}",
-       price: "{{ all_products['chrome-gloss'].price | money }}"
-     },
-     "chrome-matte": {
-       handle: "chrome-matte",
-       id: "{{ all_products['chrome-matte'].selected_or_first_available_variant.id }}",
-       price: "{{ all_products['chrome-matte'].price | money }}"
-     },
-     "holographic-gloss": {
-       handle: "holographic-gloss",
-       id: "{{ all_products['holographic-gloss'].selected_or_first_available_variant.id }}",
-       price: "{{ all_products['holographic-gloss'].price | money }}"
-     },
-     "holographic-matte": {
-       handle: "holographic-matte",
-       id: "{{ all_products['holographic-matte'].selected_or_first_available_variant.id }}",
-       price: "{{ all_products['holographic-matte'].price | money }}"
-     }
+     {%- if product.metafields.custom.overlaminate -%}
+       {%- for overlaminate_item in product.metafields.custom.overlaminate.value -%}
+         {%- if overlaminate_item -%}
+           "{{ overlaminate_item.title | downcase | replace: ' ', '-' }}": {
+             handle: "{{ overlaminate_item.title | downcase | replace: ' ', '-' }}",
+             id: "{{ overlaminate_item.selected_or_first_available_variant.id }}",
+             price: "{{ overlaminate_item.price | money }}"
+           }{%- unless forloop.last -%},{%- endunless -%}
+         {%- endif -%}
+       {%- endfor -%}
+     {%- endif -%}
    };
    
    document.getElementById("importConfigButton")?.addEventListener("click", function() {
