@@ -65,9 +65,10 @@
         {%- if image_position == 'left' -%}
           <div class="grid__item {{ product_image_width }} product-single__sticky">
 
-          {% render 'vectary-embed' %}
-
-            {% comment %} {%- render 'product-images',
+          {% if product.tags contains '3d_model' %}
+            {% render 'vectary-embed' %}
+          {% else %}
+            {%- render 'product-images',
               section_id: section_id,
               product: product,
               isModal: isModal,
@@ -79,7 +80,8 @@
               thumbnail_position: thumbnail_position,
               video_looping: video_looping,
               video_style: video_style
-            -%} {% endcomment %}
+            -%}
+          {% endif %}
           </div>
         {%- endif -%}
 
@@ -92,7 +94,9 @@
                   {%- render 'breadcrumbs' -%}
                 </div>
               {%- endif -%}
-              {% render 'vectary-controls' %}
+              {% if product.tags contains '3d' %}
+                {% render 'vectary-controls' %}
+              {% endif %}
             
 
          
