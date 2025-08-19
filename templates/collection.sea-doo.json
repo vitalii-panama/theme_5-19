@@ -107,7 +107,20 @@
       "type": "featured-collection",
       "name": "Featured collection",
       "settings": {
-        "title": "RTX",
+        "title": "Sea-Doo Spark24+",
+        "home_featured_products": "spark-24",
+        "per_row": 4,
+        "rows": 1,
+        "mobile_scrollable": true,
+        "view_all": true,
+        "divider": false
+      }
+    },
+    "featured_collection_E4UBEB": {
+      "type": "featured-collection",
+      "name": "Featured collection",
+      "settings": {
+        "title": "Sea-Doo RTX",
         "home_featured_products": "sea-doo-rxt",
         "per_row": 4,
         "rows": 1,
@@ -120,8 +133,21 @@
       "type": "featured-collection",
       "name": "Featured collection",
       "settings": {
-        "title": "GTX",
+        "title": "Sea-Doo GTX",
         "home_featured_products": "sea-doo-gtx",
+        "per_row": 5,
+        "rows": 1,
+        "mobile_scrollable": true,
+        "view_all": true,
+        "divider": false
+      }
+    },
+    "featured_collection_Nf8nE3": {
+      "type": "featured-collection",
+      "name": "Featured collection",
+      "settings": {
+        "title": "Sea-Doo RXP-X",
+        "home_featured_products": "sea-doo-rxp-x",
         "per_row": 5,
         "rows": 1,
         "mobile_scrollable": true,
@@ -131,6 +157,7 @@
     },
     "16627435957684516c": {
       "type": "featured-video",
+      "disabled": true,
       "settings": {
         "title": "",
         "video_url": "https://youtu.be/vXyZFAhsIsw",
@@ -143,7 +170,9 @@
     "promo-grid",
     "main-collection",
     "featured_collection_n4fWwg",
+    "featured_collection_E4UBEB",
     "featured_collection_VXHpDE",
+    "featured_collection_Nf8nE3",
     "16627435957684516c"
   ]
 }
