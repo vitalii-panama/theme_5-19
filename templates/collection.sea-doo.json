@@ -103,6 +103,32 @@
         "enable_sort": true
       }
     },
+    "featured_collection_n4fWwg": {
+      "type": "featured-collection",
+      "name": "Featured collection",
+      "settings": {
+        "title": "RTX",
+        "home_featured_products": "sea-doo-rxt",
+        "per_row": 4,
+        "rows": 1,
+        "mobile_scrollable": true,
+        "view_all": true,
+        "divider": false
+      }
+    },
+    "featured_collection_VXHpDE": {
+      "type": "featured-collection",
+      "name": "Featured collection",
+      "settings": {
+        "title": "GTX",
+        "home_featured_products": "sea-doo-gtx",
+        "per_row": 5,
+        "rows": 1,
+        "mobile_scrollable": true,
+        "view_all": true,
+        "divider": false
+      }
+    },
     "16627435957684516c": {
       "type": "featured-video",
       "settings": {
@@ -116,6 +142,8 @@
     "collection-header",
     "promo-grid",
     "main-collection",
+    "featured_collection_n4fWwg",
+    "featured_collection_VXHpDE",
     "16627435957684516c"
   ]
 }
