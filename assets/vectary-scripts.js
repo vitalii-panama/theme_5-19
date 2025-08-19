@@ -414,7 +414,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // *** Declare API instance variable in this scope ***
   let modelApi = null;
   let isApiReady = false;
-  let isApplyingOverlaminate = false;
   
   // Load saved color values from localStorage
   const valuesLoaded = loadColorValuesFromStorage();
@@ -479,9 +478,6 @@ document.addEventListener("DOMContentLoaded", () => {
     materialName,
     hexOverride
   ) {
-    if (isApplyingOverlaminate) {
-      return;
-    }
     if (!sliderElement || !displayElement || !nameElement) {
       console.error(
         `Slider, display, or name element not found for ${materialName}.`
@@ -527,15 +523,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const [r255, g255, b255] = hexToRgb(hexColor);
     const color = { x: r255, y: g255, z: b255 };
 
+    // Construct the material name based on current overlaminate selection
+    const dynamicMaterialName = materialName.replace(/^[^-]+-[^-]+-/, `${selectedOverlaminateMaterial || 'MAT-GLOSS'}-`);
+    console.log('Using material name:', dynamicMaterialName, 'for objects:', objectNames, 'selectedOverlaminateMaterial:', selectedOverlaminateMaterial);
+
     if (!Array.isArray(objectNames) || objectNames.length === 0) {
       return;
     }
     for (const objectName of objectNames) {
       try {
-        console.log(objectName, materialName, color);
+        console.log(objectName, dynamicMaterialName, color);
         const result = api && typeof api.addOrEditMaterial === 'function'
           ? api.addOrEditMaterial.call(api, objectName, {
-              name: materialName,
+              name: dynamicMaterialName,
               baseColor: { color },
             })
           : null;
@@ -608,7 +608,7 @@ document.addEventListener("DOMContentLoaded", () => {
         sliderElement.addEventListener("input", function () {
           if (!state.lockedMaterials[materialId]) {
             // Update UI first (already done by initializeSliderUI listener)
-            // Then update Vectary material
+            // Then update Vectary material using the same approach as presets
             updateMaterialColor(
               api,
               this,
@@ -617,6 +617,40 @@ document.addEventListener("DOMContentLoaded", () => {
               config.objects,
               config.material
             );
+            
+            // Dispatch the same event that presets use to restabilize the API
+            if (isApiReady && api && typeof api.dispatchEvent === "function") {
+              // Find which preset this color value matches and dispatch that event
+              const currentValue = parseInt(this.value, 10);
+              for (let presetNum = 1; presetNum <= 6; presetNum++) {
+                if (presets[presetNum] && presets[presetNum][materialId] === currentValue) {
+                  const eventName = `color-${presetNum}-btn`;
+                  api.dispatchEvent(eventName);
+                  break;
+                }
+              }
+            }
+            
+            // Re-apply overlaminate configuration to restabilize the API (same as presets do)
+            if (
+              isApiReady &&
+              api &&
+              typeof api.setConfigurationState === "function" &&
+              state.activeOverlaminates &&
+              state.activeOverlaminates.size > 0
+            ) {
+              try {
+                const activeHandle = Array.from(state.activeOverlaminates)[0];
+                api.setConfigurationState([
+                  { variant: "Variants-Media", active_object: activeHandle },
+                ]).catch(e => {
+                  console.warn("Failed to re-apply overlaminate after slider change", e);
+                });
+              } catch (e) {
+                console.warn("Failed to re-apply overlaminate after slider change", e);
+              }
+            }
+            
             if (state.activePreset !== null) {
               state.activePreset = null;
               updatePresetButtons();
@@ -1146,34 +1180,65 @@ document.addEventListener("DOMContentLoaded", () => {
             if (isApiReady && api) {
               // Get the new material type from the button
               const overlaminateMaterial = button.getAttribute("data-material");
-              
-              // Update all slider configs with the new material type
-              sliderConfigs.forEach(config => {
-                config.material = config.material.replace(selectedOverlaminateMaterial, overlaminateMaterial);
+              console.log('Overlaminate button clicked:', {
+                button: button.id,
+                dataMaterial: overlaminateMaterial,
+                dataOverlaminateHandle: button.getAttribute("data-overlaminate-handle")
               });
-              
-              // Store the new selected material
-              selectedOverlaminateMaterial = overlaminateMaterial;
-              
+
+              // Store the new selected material - use default if empty
+              selectedOverlaminateMaterial = overlaminateMaterial || 'MAT-MATTE';
+              console.log('Set selectedOverlaminateMaterial to:', selectedOverlaminateMaterial);
+
               // Update the configuration state in Vectary
-              isApplyingOverlaminate = true;
-              await api.setConfigurationState([
-                {
-                  "variant": "Variants-Media",
-                  "active_object": overlaminateHandle
-                }
-              ]);
-             
-              
+              try {
+                await api.setConfigurationState([
+                  {
+                    variant: "Variants-Media",
+                    active_object: overlaminateHandle
+                  }
+                ]);
+              } catch (e) {
+                console.warn("Failed to update Vectary configuration for overlaminate:", e);
+              }
+
+              // Wait for Vectary API to stabilize after configuration change
+              try {
+                await waitForApiMethod(api, "addOrEditMaterial", 50, 100);
+              } catch (e) {
+                console.warn("API method not available after overlaminate change:", e);
+              }
+
+              // Re-apply current colors to restabilize the API (same approach as presets)
+              try {
+                sliderConfigs.forEach((config) => {
+                  const sliderElement = document.getElementById(config.sliderId);
+                  const displayElement = document.getElementById(config.displayId);
+                  const nameElement = document.getElementById(config.nameId);
+                  if (sliderElement && displayElement && nameElement) {
+                    updateMaterialColor(
+                      api,
+                      sliderElement,
+                      displayElement,
+                      nameElement,
+                      config.objects,
+                      config.material
+                    );
+                  }
+                });
+              } catch (e) {
+                console.warn("Failed to re-apply colors after overlaminate change:", e);
+              }
+
               // Update the display with fresh data
-              window.updateSelectedOptionsDisplay(color_swatches_data, state);
-              
+              if (typeof window.updateSelectedOptionsDisplay === "function") {
+                window.updateSelectedOptionsDisplay(color_swatches_data, state);
+              }
+
               // Save the overlaminate state to localStorage
               saveColorValuesToStorage();
-              isApplyingOverlaminate = false;
             } else {
               console.warn(`Vectary API not ready, cannot update overlaminate configuration.`);
-              isApplyingOverlaminate = false;
             }
           }
         }
