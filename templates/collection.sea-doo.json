@@ -155,6 +155,19 @@
         "divider": false
       }
     },
+    "featured_collection_9Ypkfb": {
+      "type": "featured-collection",
+      "name": "Featured collection",
+      "settings": {
+        "title": "Sea-Doo Pontoons",
+        "home_featured_products": "sea-doo-switch",
+        "per_row": 5,
+        "rows": 1,
+        "mobile_scrollable": true,
+        "view_all": true,
+        "divider": false
+      }
+    },
     "16627435957684516c": {
       "type": "featured-video",
       "disabled": true,
@@ -173,6 +186,7 @@
     "featured_collection_E4UBEB",
     "featured_collection_VXHpDE",
     "featured_collection_Nf8nE3",
+    "featured_collection_9Ypkfb",
     "16627435957684516c"
   ]
 }
