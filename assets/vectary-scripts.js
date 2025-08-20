@@ -523,8 +523,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const [r255, g255, b255] = hexToRgb(hexColor);
     const color = { x: r255, y: g255, z: b255 };
 
-    // Construct the material name based on current overlaminate selection
-    const dynamicMaterialName = materialName.replace(/^[^-]+-[^-]+-/, `${selectedOverlaminateMaterial || 'MAT-GLOSS'}-`);
+    // Use the original material name from config - don't modify based on overlaminate
+    // The overlaminate selection affects cart products, not the 3D model materials
+    const dynamicMaterialName = materialName;
     console.log('Using material name:', dynamicMaterialName, 'for objects:', objectNames, 'selectedOverlaminateMaterial:', selectedOverlaminateMaterial);
 
     if (!Array.isArray(objectNames) || objectNames.length === 0) {
@@ -1302,10 +1303,6 @@ document.addEventListener("DOMContentLoaded", () => {
       // Apply saved overlaminate material if available
       const savedOverlaminateMaterial = localStorage.getItem('vectaryOverlaminateMaterial');
       if (savedOverlaminateMaterial) {
-        // Update all slider configs with the saved material type
-        sliderConfigs.forEach(config => {
-          config.material = config.material.replace(selectedOverlaminateMaterial, savedOverlaminateMaterial);
-        });
         selectedOverlaminateMaterial = savedOverlaminateMaterial;
         
         // Find and click the corresponding overlaminate button
