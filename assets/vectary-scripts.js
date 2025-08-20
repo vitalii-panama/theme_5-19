@@ -1626,6 +1626,49 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
+  // Function to collect all properties from product-single__form
+  function collectFormProperties(form) {
+    const properties = {};
+
+    if (!form) return properties;
+
+    // Get all input fields with name starting with "properties["
+    const propertyInputs = form.querySelectorAll('input[name^="properties["], select[name^="properties["], textarea[name^="properties["]');
+
+    propertyInputs.forEach(input => {
+      const name = input.name;
+      const value = input.value;
+
+      if (name && value) {
+        // Extract property name from properties[PropertyName]
+        const propertyName = name.match(/properties\[(.*?)\]/);
+        if (propertyName && propertyName[1]) {
+          properties[propertyName[1]] = value;
+        }
+      }
+    });
+
+    // Also collect from any custom options wrapper if it exists
+    const customOptionsWrapper = document.querySelector('[data-custom-options-wrapper]');
+    if (customOptionsWrapper) {
+      const customFields = customOptionsWrapper.querySelectorAll('input[name^="properties["], select[name^="properties["], textarea[name^="properties["]');
+
+      customFields.forEach(field => {
+        const name = field.name;
+        const value = field.value;
+
+        if (name && value) {
+          const propertyName = name.match(/properties\[(.*?)\]/);
+          if (propertyName && propertyName[1]) {
+            properties[propertyName[1]] = value;
+          }
+        }
+      });
+    }
+
+    return properties;
+  }
+
   // Handle direct "Add to Cart" button clicks that might use AJAX
   const addToCartButtons = document.querySelectorAll("[data-add-to-cart]");
   addToCartButtons.forEach((button) => {
@@ -1654,6 +1697,12 @@ document.addEventListener("DOMContentLoaded", function () {
         // Get color properties
         const colorProperties = getColorProperties();
 
+        // Get all properties from the form
+        const formProperties = collectFormProperties(parentForm);
+
+        // Combine color properties with form properties
+        const allProperties = { ...colorProperties, ...formProperties };
+
         // Get product IDs for all selected levels
         const productIds = Array.from(window.state.activeLevels)
           .map((level) => window.globalProductData[level])
@@ -1670,9 +1719,11 @@ document.addEventListener("DOMContentLoaded", function () {
         if (allProductIds.length > 0) {
           console.log(
             "Adding selected products to cart from button click:",
-            allProductIds
+            allProductIds,
+            "with properties:",
+            allProperties
           );
-          window.addMultipleProductsToCart(allProductIds, colorProperties);
+          window.addMultipleProductsToCart(allProductIds, allProperties);
           return;
         }
       }
@@ -1682,15 +1733,22 @@ document.addEventListener("DOMContentLoaded", function () {
         // This is for AJAX add to cart
         const colorProperties = getColorProperties();
 
+        // Try to find the product form to get all properties
+        const productForm = document.querySelector('.product-single__form');
+        const formProperties = collectFormProperties(productForm);
+
+        // Combine color properties with form properties
+        const allProperties = { ...colorProperties, ...formProperties };
+
         // Store the properties in sessionStorage to be used by AJAX handlers
-        if (Object.keys(colorProperties).length > 0) {
+        if (Object.keys(allProperties).length > 0) {
           sessionStorage.setItem(
             "vectaryColorProperties",
-            JSON.stringify(colorProperties)
+            JSON.stringify(allProperties)
           );
           console.log(
-            "Stored color properties for AJAX add to cart:",
-            colorProperties
+            "Stored all properties for AJAX add to cart:",
+            allProperties
           );
         }
       }
