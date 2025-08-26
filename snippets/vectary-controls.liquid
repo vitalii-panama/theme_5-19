@@ -411,7 +411,7 @@
             {%- if overlaminate_item -%}
               <button
                 id="overlaminate{{ overlaminate_item.title | replace: ' ', '' }}"
-                data-material="{{ overlaminate_item.material }}"
+                data-material="{{ overlaminate_item.metafields.custom.material_name_vectary_config }}"
                 class="overlaminate-button"
                 data-overlaminate-handle="{{ overlaminate_item.title }}"
                 data-id="{{ overlaminate_item.selected_or_first_available_variant.id }}"
