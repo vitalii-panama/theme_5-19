@@ -1299,6 +1299,27 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (availableMaterials.length > 0) {
                   mapSliderConfigsToAvailableMaterials(availableMaterials);
                 }
+
+                 sliderConfigs.forEach(config => {
+                  const sliderElement = document.getElementById(config.sliderId);
+                  const displayElement = document.getElementById(config.displayId);
+                  const nameElement = document.getElementById(config.nameId);
+
+                  if (sliderElement && displayElement && nameElement) {
+                    const currentValue = parseInt(sliderElement.value, 10);
+                    console.log(`Reapplying color for ${config.sliderId}: value ${currentValue} to material ${config.material}`);
+
+                    // Use updateMaterialColor to apply the current slider value to the new material
+                    updateMaterialColor(
+                      api,
+                      sliderElement,
+                      displayElement,
+                      nameElement,
+                      config.objects,
+                      config.material
+                    );
+                  }
+                });
                 
                 console.log('Updated sliderConfigs:', sliderConfigs);
               } catch (e) {
