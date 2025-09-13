@@ -619,8 +619,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // The overlaminate selection affects cart products, not the 3D model materials
     const dynamicMaterialName = materialName;
     console.log('Using material name:', dynamicMaterialName, 'for objects:', objectNames, 'selectedOverlaminateMaterial:', selectedOverlaminateMaterial);
-    console.log('--------------------------------');
-    
+
     if (!Array.isArray(objectNames) || objectNames.length === 0) {
       return;
     }
@@ -629,7 +628,7 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log(objectName, dynamicMaterialName, color);
         const result = api && typeof api.addOrEditMaterial === 'function'
           ? api.addOrEditMaterial.call(api, objectName, {
-              name: selectedOverlaminateMaterial + '-' + materialId,
+              name: dynamicMaterialName,
               baseColor: { color },
             })
           : null;
@@ -1108,8 +1107,6 @@ document.addEventListener("DOMContentLoaded", () => {
                   state.colorValues[materialId] = sliderValue;
                 };
                 updateSliderDisplay();
-
-                
                 // Update Vectary material
                 updateMaterialColor(
                   api,
@@ -1235,9 +1232,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Update color dots for each preset button
       const presetColorConfig = presets[presetNumber]; // Loaded from metafields at runtime
-      console.log('--------------------------------!!!!!!!!!!!');
-      console.log('presetColorConfig', presetColorConfig);
-      console.log('--------------------------------!!!!!!!!!!!');
       if (presetColorConfig) {
         const colorDotsContainer = button.querySelector(".preset-colors");
         if (colorDotsContainer) {
@@ -1471,7 +1465,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
               // Store the new selected material - use default if empty
               selectedOverlaminateMaterial = overlaminateMaterial || 'MAT-MATTE';
-              console.log('!!!!!Set selectedOverlaminateMaterial to:', selectedOverlaminateMaterial);
+              console.log('Set selectedOverlaminateMaterial to:', selectedOverlaminateMaterial);
 
               // Update the configuration state in Vectary
               try {
