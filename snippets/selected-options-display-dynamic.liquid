@@ -534,6 +534,16 @@
   }
 </style>
 
+<style>
+  /* Hide only the "Selected Colors" section in the Selected Options view */
+  .sticky-options-scrollable .sticky-section:nth-of-type(2) {
+    display: none !important;
+  }
+  /* If you prefer to keep the header and hide only the grid, use this instead:
+  #selected-colors-grid { display: none !important; }
+  */
+</style>
+
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     // Get references to key elements

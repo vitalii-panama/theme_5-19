@@ -109,9 +109,9 @@
             "type": "announcement",
             "disabled": true,
             "settings": {
-              "text": "CURRENT",
-              "link_text": "Production Estimates",
-              "link": "https://support.scsunlimited.com/hc/en-us/articles/200390795-Production-Estimates-"
+              "text": "30% OFF - Coupon Code: HayForDays",
+              "link_text": "",
+              "link": ""
             }
           }
         },

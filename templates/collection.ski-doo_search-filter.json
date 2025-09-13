@@ -17,6 +17,28 @@
         "parallax": true
       }
     },
+    "featured_collection_wq3rdP": {
+      "type": "featured-collection",
+      "name": "Featured collection",
+      "settings": {
+        "title": "Featured collection",
+        "home_featured_products": "rev-gen5",
+        "per_row": 4,
+        "rows": 1,
+        "mobile_scrollable": true,
+        "view_all": true,
+        "divider": false
+      }
+    },
+    "search_and_filter_Nq47k3": {
+      "type": "search-and-filter",
+      "settings": {
+        "title": "Ski-Doo Search / Filter",
+        "breadcrumbs": false,
+        "content_url": "",
+        "search_filter_product": ""
+      }
+    },
     "promo-grid": {
       "type": "promo-grid",
       "blocks": {
@@ -115,19 +137,11 @@
         "video_url": "https://youtu.be/Yj5JnE2RCIw",
         "divider": false
       }
-    },
-    "search_and_filter_Nq47k3": {
-      "type": "search-and-filter",
-      "settings": {
-        "title": "Ski-Doo Search / Filter",
-        "breadcrumbs": false,
-        "content_url": "",
-        "search_filter_product": ""
-      }
     }
   },
   "order": [
     "collection-header",
+    "featured_collection_wq3rdP",
     "search_and_filter_Nq47k3",
     "promo-grid",
     "main-collection",

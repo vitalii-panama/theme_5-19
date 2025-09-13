@@ -219,8 +219,25 @@
           {% assign preset_colors = color.colors_json.value %}
           {% assign preset_number = forloop.index %}
          
-          <button id="color-{{ preset_number }}-btn" class="preset-button">
-            Preset {{ preset_number }}
+          {% assign model_color = null %}
+          {% assign material_name = null %}
+          {% for color in preset_colors %}
+            {% if color.color_key == 'MC1' or color.color_key == 'Model-MAT-C3' or color.material == 'Model-MAT-C3' %}
+              {% assign model_color = color.background_color %}
+              {% assign material_name = color.material %}
+            {% endif %}
+          {% endfor %}
+          
+          <button id="color-{{ preset_number }}-btn" 
+            class="preset-button" 
+            data-colors='{{ preset_colors | json | escape }}'
+            {% if model_color %}style="--preset-top-color: {{ model_color }};"{% endif %}>
+            <div class="preset-header">
+              <div class="preset-title">Preset {{ preset_number }}</div>
+              {% if material_name %}
+                <div class="preset-material">{{ material_name | replace: 'Model-MAT-C3', 'Material' | replace: 'MC1', 'Base' }}</div>
+              {% endif %}
+            </div>
             <div class="preset-colors">
               {% for color in preset_colors %}
               {% assign color_key = color.color_key %}
@@ -271,7 +288,9 @@
     </button>
   </div>
 
-   {% for color in product.metafields.custom.color_sliders.value %}
+   <!-- Model color is now controlled only via presets -->
+
+  {% for color in product.metafields.custom.color_sliders.value %}
     <div class="accordion-item">
         <button class="accordion-header" type="button" aria-expanded="true" aria-controls="panel{{ color }}" id="header{{ color }}">
           <span class="color-label">Color {{ color }}: <span id="colorName{{ color }}"></span></span>
@@ -318,6 +337,15 @@
                   <div class="swatch-color" style="background-color: #043bff;"></div>
                 </button>
               </div>
+              <button class="color-grid-popup-btn" data-slider="swatchSlider{{ color }}" title="Show All Colors" aria-label="Open color palette">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect>
+                  <rect width="3" height="3" x="7" y="7"></rect>
+                  <rect width="3" height="3" x="14" y="7"></rect>
+                  <rect width="3" height="3" x="7" y="14"></rect>
+                  <rect width="3" height="3" x="14" y="14"></rect>
+                </svg>
+              </button>
               <button class="lock-button" id="lock{{ color }}">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
@@ -428,14 +456,17 @@
     </div>
   </div>
 
+<!-- Color Grid Popup Modal - Will be initialized by JavaScript -->
+<div id="colorGridModal" class="color-grid-modal" aria-hidden="true">
+  <!-- Modal content will be created dynamically by the ColorGridPopup module -->
+</div>
+
 <div class="placeholder-area">
-  <h3>Future Actions Area</h3>
+  <h3>Download Build</h3>
   <div class="placeholder-buttons">
     <!-- Example: attach to Action 1 -->
    <!-- Download Image Button -->
     <button id="download-image" class="btn btn-outline">Download Image</button>
-    <button class="btn btn-outline">Action 2</button>
-    <button class="btn btn-outline">Action 3</button>
   </div>
 </div>
 
@@ -443,7 +474,8 @@
    window.mainProduct = {
      handle: "{{ product.handle }}",
      id: "{{ product.selected_or_first_available_variant.id }}",
-     price: "{{ product.price | money }}"
+     price: "{{ product.price | money }}",
+     priceCents: {{ product.selected_or_first_available_variant.price | default: 0 }}
    }
    window.globalProductData = {
      {%- if product.metafields.custom.materials -%}
@@ -452,7 +484,8 @@
            {{ forloop.index }}: {
              handle: "{{ material_item.title | downcase | replace: ' ', '-' }}",
              id: "{{ material_item.selected_or_first_available_variant.id }}",
-             price: "{{ material_item.price | money }}"
+       price: "{{ material_item.price | money }}",
+       priceCents: {{ material_item.selected_or_first_available_variant.price | default: 0 }}
            }{%- unless forloop.last -%},{%- endunless -%}
          {%- endif -%}
        {%- endfor -%}
@@ -467,7 +500,8 @@
            "{{ overlaminate_item.title | downcase | replace: ' ', '-' }}": {
              handle: "{{ overlaminate_item.title | downcase | replace: ' ', '-' }}",
              id: "{{ overlaminate_item.selected_or_first_available_variant.id }}",
-             price: "{{ overlaminate_item.price | money }}"
+       price: "{{ overlaminate_item.price | money }}",
+       priceCents: {{ overlaminate_item.selected_or_first_available_variant.price | default: 0 }}
            }{%- unless forloop.last -%},{%- endunless -%}
          {%- endif -%}
        {%- endfor -%}
@@ -514,13 +548,9 @@
      reader.readAsText(file);
    });
 
-document.getElementById("download-image")?.addEventListener("click", function() {
-  if (window.api && typeof window.api.exportImage === "function") {
-    window.api.exportImage();
-  } else {
-    alert("Image export is not available.");
-  }
-});
+// The download-image button is handled in assets/vectary-scripts.js via
+// modelApi.dispatchEvent("download-image"). Removing this duplicate handler
+// avoids conflicts with the official Vectary API integration.
 
 // Add event listeners for quick color swatches
 document.addEventListener('click', function(e) {

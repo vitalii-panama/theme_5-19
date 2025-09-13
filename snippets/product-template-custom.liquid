@@ -97,10 +97,19 @@
               {% if product.tags contains '3d_model' %}
                 {% render 'vectary-controls' %}
               {% endif %}
-            
-
-         
-                
+              
+            <div class="product-nav clearfix">
+                {% if collection.previous_product %}<div class="btn btn--secondary btn--small">{% endif %}
+                  <span style="float:left;">{% if collection.previous_product %}
+                    {{ '&larr; See Previous' | link_to: collection.previous_product }}
+                    {% endif %}</span>
+                {% if collection.previous_product %}</div>{% endif %}
+                 {% if collection.next_product %}<div class="btn btn--secondary btn--small">{% endif %}
+                  <span style="float:right;">{% if collection.next_product %}
+                    {{ 'See Next &rarr;' | link_to: collection.next_product }}
+                    {% endif %}</span>
+                 {% if collection.next_product %}</div>{% endif %}
+              </div> 
                 {% comment %} {{product.type}} {% endcomment %}
              
               {%- if settings.vendor_enable -%}

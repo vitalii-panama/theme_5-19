@@ -1,0 +1,729 @@
+/* ============================================================================
+   Color Grid Popup Styles
+   Modern, accessible, and performant color picker modal
+   Mobile-first responsive design with touch-optimized interactions
+   ============================================================================ */
+
+:root {
+  --color-grid-z-index: 1000;
+  --color-grid-overlay: rgba(0, 0, 0, 0.6);
+  --color-grid-radius: 12px;
+  --color-grid-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+  --color-grid-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --color-grid-border: rgba(0, 0, 0, 0.1);
+  --color-grid-bg: #ffffff;
+  --color-grid-text: #333333;
+  --color-grid-text-muted: #666666;
+  --color-grid-hover-bg: #f8f9fa;
+  --color-grid-active-bg: #e3f2fd;
+}
+
+/* ============================================================================
+   Viewport and Mobile Foundation
+   ============================================================================ */
+
+/* Ensure proper mobile viewport handling */
+.color-grid-modal {
+  /* Support for iOS safe areas */
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+/* ============================================================================
+   Color Grid Popup Button
+   ============================================================================ */
+
+.color-grid-popup-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin-left: 8px;
+  padding: 0;
+  border: 1px solid var(--color-grid-border);
+  border-radius: 6px;
+  background: var(--color-grid-bg);
+  color: var(--color-grid-text);
+  cursor: pointer;
+  transition: var(--color-grid-transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.color-grid-popup-btn:hover {
+  background: var(--color-grid-hover-bg);
+  border-color: #007bff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.15);
+}
+
+.color-grid-popup-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0, 123, 255, 0.2);
+}
+
+.color-grid-popup-btn svg {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2;
+  transition: transform 0.2s ease;
+}
+
+.color-grid-popup-btn:hover svg {
+  transform: scale(1.1);
+}
+
+/* Add a subtle pulse animation to indicate interactivity */
+.color-grid-popup-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(0, 123, 255, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.3s ease, height 0.3s ease;
+  z-index: -1;
+}
+
+.color-grid-popup-btn:hover::before {
+  width: 40px;
+  height: 40px;
+}
+
+/* ============================================================================
+   Modal Overlay and Container
+   ============================================================================ */
+
+.color-grid-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--color-grid-overlay);
+  z-index: var(--color-grid-z-index);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: var(--color-grid-transition);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.color-grid-modal.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.color-grid-content {
+  background: var(--color-grid-bg);
+  border-radius: var(--color-grid-radius);
+  box-shadow: var(--color-grid-shadow);
+  width: 90%;
+  max-width: 900px;
+  max-height: 85vh;
+  overflow: hidden;
+  transform: scale(0.9) translateY(20px);
+  transition: var(--color-grid-transition);
+  display: flex;
+  flex-direction: column;
+}
+
+.color-grid-modal.active .color-grid-content {
+  transform: scale(1) translateY(0);
+}
+
+/* ============================================================================
+   Modal Header
+   ============================================================================ */
+
+.color-grid-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--color-grid-border);
+  background: var(--color-grid-bg);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.color-grid-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-grid-text);
+  line-height: 1.2;
+}
+
+.color-grid-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-grid-text-muted);
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+  transition: var(--color-grid-transition);
+}
+
+.color-grid-close:hover {
+  background: var(--color-grid-hover-bg);
+  color: var(--color-grid-text);
+}
+
+/* ============================================================================
+   Search Input
+   ============================================================================ */
+
+.color-grid-search-container {
+  padding: 0 24px 16px;
+  background: var(--color-grid-bg);
+  position: sticky;
+  top: 69px;
+  z-index: 9;
+}
+
+.color-grid-search {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--color-grid-border);
+  border-radius: 8px;
+  font-size: 14px;
+  background: var(--color-grid-bg);
+  color: var(--color-grid-text);
+  transition: var(--color-grid-transition);
+}
+
+.color-grid-search:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.color-grid-search::placeholder {
+  color: var(--color-grid-text-muted);
+}
+
+/* ============================================================================
+   Color Categories and Grid
+   ============================================================================ */
+
+.color-grid-categories {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 24px 24px;
+}
+
+.color-category {
+  margin-bottom: 32px;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.4s ease forwards;
+}
+
+.color-category:nth-child(1) { animation-delay: 0.1s; }
+.color-category:nth-child(2) { animation-delay: 0.15s; }
+.color-category:nth-child(3) { animation-delay: 0.2s; }
+.color-category:nth-child(4) { animation-delay: 0.25s; }
+.color-category:nth-child(5) { animation-delay: 0.3s; }
+.color-category:nth-child(6) { animation-delay: 0.35s; }
+.color-category:nth-child(7) { animation-delay: 0.4s; }
+.color-category:nth-child(8) { animation-delay: 0.45s; }
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.color-category:last-child {
+  margin-bottom: 0;
+}
+
+.color-category-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-grid-text);
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f0f0f0;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+}
+
+.color-swatches-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 18px;
+}
+
+/* ============================================================================
+   Color Swatch Items
+   ============================================================================ */
+
+.color-swatch-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  padding: 12px 8px 16px;
+  border-radius: 8px;
+  background: var(--color-grid-bg);
+  transition: var(--color-grid-transition);
+  border: 1px solid transparent;
+  position: relative;
+  min-height: 110px;
+}
+
+.color-swatch-item:hover {
+  background: var(--color-grid-hover-bg);
+  border-color: var(--color-grid-border);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.color-swatch-item:active {
+  transform: translateY(-1px);
+}
+
+.color-swatch-item:focus {
+  outline: none;
+  background: var(--color-grid-hover-bg);
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.color-swatch-box {
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  margin-bottom: 8px;
+  position: relative;
+  overflow: hidden;
+  transition: var(--color-grid-transition);
+}
+
+.color-swatch-item:hover .color-swatch-box {
+  border-color: #007bff;
+  box-shadow: 
+    0 4px 15px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.color-swatch-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: #2c3e50;
+  text-align: center;
+  line-height: 1.3;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: 6px;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.95);
+  padding: 4px 8px;
+  border-radius: 4px;
+  backdrop-filter: blur(2px);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  min-height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ============================================================================
+   Tooltip
+   ============================================================================ */
+
+.color-swatch-tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: var(--color-grid-transition);
+  z-index: 1000;
+  max-width: 200px;
+  text-align: center;
+}
+
+.color-swatch-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 4px solid transparent;
+  border-top-color: rgba(0, 0, 0, 0.9);
+}
+
+.color-swatch-item:hover .color-swatch-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(-12px);
+}
+
+/* ============================================================================
+   Loading State
+   ============================================================================ */
+
+.color-grid-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: var(--color-grid-text-muted);
+}
+
+.color-grid-loading::after {
+  content: '';
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--color-grid-border);
+  border-top-color: #007bff;
+  border-radius: 50%;
+  animation: color-grid-spin 0.8s linear infinite;
+  margin-left: 8px;
+}
+
+@keyframes color-grid-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ============================================================================
+   Loading States
+   ============================================================================ */
+
+.color-grid-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: var(--color-grid-text-muted);
+  text-align: center;
+}
+
+.color-grid-loading::before {
+  content: '';
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--color-grid-border);
+  border-top-color: #007bff;
+  border-radius: 50%;
+  animation: color-grid-spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes color-grid-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.color-grid-loading-text {
+  font-weight: 500;
+  margin-top: 12px;
+}
+
+/* ============================================================================
+   Empty State
+   ============================================================================ */
+
+.color-grid-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: var(--color-grid-text-muted);
+  text-align: center;
+}
+
+.color-grid-empty svg {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+/* ============================================================================
+   Responsive Design
+   ============================================================================ */
+
+@media (max-width: 768px) {
+  .color-grid-popup-btn {
+    width: 40px;
+    height: 40px;
+    margin-left: 12px;
+    border-radius: 8px;
+    /* Better touch target for mobile */
+    min-width: 44px;
+    min-height: 44px;
+  }
+  
+  .color-grid-popup-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .color-grid-content {
+    width: 95%;
+    max-height: 90vh;
+    margin: 20px;
+  }
+  
+  .color-grid-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--color-grid-border);
+  }
+  
+  .color-grid-header h3 {
+    font-size: 20px;
+    margin: 0;
+  }
+  
+  .color-grid-close {
+    font-size: 28px;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+  
+  .color-grid-search-container {
+    padding: 16px 24px;
+  }
+  
+  .color-grid-search {
+    padding: 16px 20px;
+    font-size: 16px;
+    border-radius: 12px;
+  }
+  
+  .color-grid-categories {
+    padding: 0 24px 24px;
+  }
+  
+  .color-swatches-grid {
+    grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
+    gap: 16px;
+  }
+  
+  .color-swatch-item {
+    padding: 12px 8px 16px;
+    min-height: 120px;
+  }
+  
+  .color-swatch-box {
+    width: 56px;
+    height: 56px;
+  }
+  
+  .color-swatch-name {
+    font-size: 12px;
+    max-width: 80px;
+    padding: 6px 8px;
+  }
+  
+  .color-category {
+    margin-bottom: 32px;
+  }
+  
+  .color-category-title {
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .color-grid-popup-btn {
+    width: 44px;
+    height: 44px;
+    margin-left: 16px;
+    border-radius: 10px;
+  }
+  
+  .color-grid-popup-btn svg {
+    width: 22px;
+    height: 22px;
+  }
+  
+  .color-grid-content {
+    width: 100%;
+    height: 100vh;
+    border-radius: 0;
+    margin: 0;
+    max-height: none;
+  }
+  
+  .color-grid-header {
+    padding: 24px 20px 20px;
+    /* Account for mobile status bar */
+    padding-top: max(24px, env(safe-area-inset-top));
+  }
+  
+  .color-grid-search-container {
+    padding: 0 20px 16px;
+  }
+  
+  .color-grid-search {
+    padding: 18px 20px;
+    font-size: 16px;
+    border-radius: 14px;
+  }
+  
+  .color-grid-categories {
+    padding: 0 20px 20px;
+    /* Account for mobile home indicator */
+    padding-bottom: max(20px, env(safe-area-inset-bottom));
+  }
+  
+  .color-swatches-grid {
+    grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+    gap: 14px;
+  }
+  
+  .color-swatch-item {
+    padding: 10px 6px 14px;
+    min-height: 110px;
+  }
+  
+  .color-swatch-box {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .color-swatch-name {
+    font-size: 11px;
+    max-width: 70px;
+    padding: 5px 6px;
+  }
+  
+  .color-category-title {
+    font-size: 15px;
+    margin-bottom: 14px;
+  }
+}
+
+/* ============================================================================
+   Touch and Mobile Enhancements
+   ============================================================================ */
+
+/* Better touch targets and accessibility */
+@media (pointer: coarse) {
+  .color-grid-popup-btn {
+    min-width: 44px;
+    min-height: 44px;
+    width: 44px;
+    height: 44px;
+  }
+  
+  .color-swatch-item {
+    min-height: 120px;
+    padding: 14px 8px 18px;
+  }
+  
+  .color-swatch-box {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .color-grid-close {
+    min-width: 48px;
+    min-height: 48px;
+    font-size: 24px;
+  }
+}
+
+/* Prevent zoom on double tap for iOS */
+.color-grid-popup-btn,
+.color-swatch-item,
+.color-grid-close,
+.color-grid-search {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Improve scrolling on mobile */
+.color-grid-categories {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* High Contrast Mode Support
+   ============================================================================ */
+
+@media (prefers-contrast: high) {
+  .color-swatch-box {
+    border-width: 3px;
+    border-color: #000000;
+  }
+  
+  .color-grid-modal {
+    background: rgba(0, 0, 0, 0.8);
+  }
+}
+
+/* ============================================================================
+   Reduced Motion Support
+   ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .color-grid-modal,
+  .color-grid-content,
+  .color-swatch-item,
+  .color-swatch-box,
+  .color-swatch-tooltip {
+    transition: none;
+  }
+  
+  .color-grid-popup-btn:hover svg {
+    transform: none;
+  }
+  
+  .color-swatch-item:hover {
+    transform: none;
+  }
+}
+
+/* ============================================================================
+   Print Styles
+   ============================================================================ */
+
+@media print {
+  .color-grid-modal {
+    display: none !important;
+  }
+}

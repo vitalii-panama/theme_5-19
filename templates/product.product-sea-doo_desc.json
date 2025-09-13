@@ -12,6 +12,12 @@
     "main": {
       "type": "main-product-custom",
       "blocks": {
+        "4ace5886-7327-4487-9ab3-d902adc6cc8c": {
+          "type": "custom",
+          "settings": {
+            "code": "{{ product.type }}"
+          }
+        },
         "price": {
           "type": "price",
           "settings": {}
@@ -26,12 +32,6 @@
             "variant_labels": true,
             "picker_type": "button",
             "color_swatches": true
-          }
-        },
-        "4ace5886-7327-4487-9ab3-d902adc6cc8c": {
-          "type": "custom",
-          "settings": {
-            "code": ""
           }
         },
         "buy_buttons": {
@@ -99,10 +99,10 @@
         }
       },
       "block_order": [
+        "4ace5886-7327-4487-9ab3-d902adc6cc8c",
         "price",
         "separator",
         "variant_picker",
-        "4ace5886-7327-4487-9ab3-d902adc6cc8c",
         "buy_buttons",
         "description",
         "3b3b0a79-c3a0-4d67-a1be-301adabd3a8e",

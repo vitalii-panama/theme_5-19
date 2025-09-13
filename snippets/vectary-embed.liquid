@@ -1,5 +1,6 @@
 {%- assign current_variant = product.selected_or_first_available_variant -%}
 {{ 'vectary-styles.css' | asset_url | stylesheet_tag }}
+{{ 'color-grid-popup.css' | asset_url | stylesheet_tag }}
 <div class="hide-desktop">
   {%- render 'breadcrumbs' -%}
 </div>
@@ -37,4 +38,5 @@
 
 {% render 'selected-options-display-dynamic' %}
 
+<script src="{{ 'color-grid-popup.js' | asset_url }}" defer></script>
 <script type="module" src="{{ 'vectary-scripts.js' | asset_url }}" defer></script>

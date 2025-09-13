@@ -1,4 +1,6 @@
+console.log('Vectary Scripts loading...');
 import { VctrModelApi } from "https://www.vectary.com/studio-lite/scripts/api.js";
+console.log('Vectary Scripts loaded, checking for ColorGridPopup availability:', typeof window.ColorGridPopup);
 let selectedOverlaminateMaterial = "MAT-GLOSS"
 
 // Color palette organized by color groups from the CSV file
@@ -42,9 +44,9 @@ const colorPalette = [
       nameId: "colorNameC6",
       lockId: "lockC6",
       objects: ["wrapkit-partial 6", "wrapkit-full 6"],
-      id: "C6",
       material: "MAT-GLOSS-C6",
     },
+    // Model color (MC1) is now controlled only via presets
     {
       sliderId: "swatchSliderC5",
       displayId: "colorDisplayC5",
@@ -56,7 +58,6 @@ const colorPalette = [
         "wrapkit-full 5",
         "wrapkit-premium 5",
       ],
-      id: "C5",
       material: "MAT-GLOSS-C5",
     },
     {
@@ -65,7 +66,6 @@ const colorPalette = [
       nameId: "colorNameC4",
       lockId: "lockC4",
       objects: ["wrapkit-partial 4", "wrapkit-full 4"],
-      id: "C4",
       material: "MAT-GLOSS-C4",
     },
     {
@@ -74,7 +74,6 @@ const colorPalette = [
       nameId: "colorNameC3",
       lockId: "lockC3",
       objects: ["wrapkit-partial 3", "wrapkit-full 3"],
-      id: "C3",
       material: "MAT-GLOSS-C3",
     },
     {
@@ -83,7 +82,6 @@ const colorPalette = [
       nameId: "colorNameC2",
       lockId: "lockC2",
       objects: ["wrapkit-partial 2", "wrapkit-full 2"],
-      id: "C2",
       material: "MAT-GLOSS-C2",
     },
     {
@@ -92,7 +90,6 @@ const colorPalette = [
       nameId: "colorNameC1",
       lockId: "lockC1",
       objects: ["wrapkit-partial 1", "wrapkit-full 1"],
-      id: "C1",
       material: "MAT-GLOSS-C1",
     },
     {
@@ -101,7 +98,6 @@ const colorPalette = [
       nameId: "colorNameBG",
       lockId: "lockBG",
       objects: ["background_object"],
-      id: "BG",
       material: "MAT-GLOSS-BG",
     },
     {
@@ -110,8 +106,7 @@ const colorPalette = [
       nameId: "colorNameL1",
       lockId: "lockL1",
       objects: ["wrapkit-partial 1", "wrapkit-full 1"],
-      id: "L1",
-      material: "MAT-Logos-L1", 
+      material: "MAT-Logos-L2", 
     },
   ];
 // Helper function to get color properties from the UI
@@ -216,6 +211,9 @@ function parseColorData(rawData) {
 const structuredColors = parseColorData(rawColorData);
 const numColors = structuredColors.length;
 
+// Expose structured colors globally for the color grid popup
+window.structuredColors = structuredColors;
+
 for (let i = 1; i <= 100; i++) {
   const colorIndex = (i - 1) % numColors;
   color_swatches_data[`A${i}`] = structuredColors[colorIndex].name; // Assign name to 'A' key
@@ -240,9 +238,39 @@ const selectedColorIndex = selectedColor
     ).indexOf(selectedColor)
   : 0;
 
+// Utility: normalize material ids and state color values (top-level for global access)
+function normalizeMaterialId(input) {
+  if (!input) return '';
+  let s = String(input).trim();
+  if (s.includes('-')) {
+    const parts = s.split('-').filter(Boolean);
+    if (parts.length) {
+      s = parts[parts.length - 1];
+    }
+  }
+  s = s.replace(/^[^A-Za-z0-9]+/, '');
+  return s;
+}
+
+function normalizeStateColorValues() {
+  try {
+    if (!window.state || !window.state.colorValues) return;
+    const normalized = {};
+    Object.keys(window.state.colorValues).forEach((k) => {
+      const nk = normalizeMaterialId(k);
+      if (nk) normalized[nk] = window.state.colorValues[k];
+    });
+    window.state.colorValues = normalized;
+  } catch (_) {
+    // no-op
+  }
+}
+
 // Functions to save and load color values from localStorage
 function saveColorValuesToStorage() {
   try {
+  // Normalize keys before saving
+  normalizeStateColorValues();
     // Save color values
     localStorage.setItem('vectaryColorValues', JSON.stringify(state.colorValues));
     
@@ -315,6 +343,7 @@ const state = {
     C1: false,
     BG: false,
     L1: false, // Added for Logos
+    MC1: false, // Added for Model-specific material
   },
   colorValues: {
     C5: 1,
@@ -324,6 +353,7 @@ const state = {
     C1: 80,
     BG: 12,
     L1: 20, // Default value for Logos
+    MC1: 38, // Default value for Model-specific material (red)
   },
   activeLevels: new Set(), // Add a Set to track active levels
   activeOverlaminates: new Set(), // Add a Set to track active overlaminates
@@ -331,59 +361,6 @@ const state = {
 
 // Make state accessible to other scripts
 window.state = state;
-
-// Function to manually set overlaminate material (for debugging)
-window.setOverlaminateMaterial = function(materialName) {
-  if (typeof materialName !== 'string') {
-    console.error('setOverlaminateMaterial: materialName must be a string');
-    return;
-  }
-  
-  console.log('Manually setting overlaminate material to:', materialName);
-  selectedOverlaminateMaterial = materialName;
-  
-  // Save to localStorage
-  localStorage.setItem('vectaryOverlaminateMaterial', materialName);
-  
-  // Find and activate the corresponding button
-  const overlaminateButton = document.querySelector(`.overlaminate-button[data-material="${materialName}"]`);
-  if (overlaminateButton) {
-    // Update UI state
-    document.querySelectorAll(".overlaminate-button").forEach(btn => btn.classList.remove("active"));
-    overlaminateButton.classList.add("active");
-    
-    // Update active overlaminates in state
-    const overlaminateHandle = overlaminateButton.getAttribute("data-overlaminate-handle");
-    if (overlaminateHandle) {
-      state.activeOverlaminates.clear();
-      state.activeOverlaminates.add(overlaminateHandle);
-    }
-    
-    console.log('Successfully set overlaminate material to:', materialName);
-  } else {
-    console.warn('Overlaminate button not found for material:', materialName);
-  }
-};
-
-// Function to check current overlaminate material state (for debugging)
-window.checkOverlaminateMaterialState = function() {
-  console.log('=== Overlaminate Material State Debug ===');
-  console.log('selectedOverlaminateMaterial:', selectedOverlaminateMaterial);
-  console.log('localStorage value:', localStorage.getItem('vectaryOverlaminateMaterial'));
-  console.log('state.activeOverlaminates:', Array.from(state.activeOverlaminates));
-  
-  const allButtons = document.querySelectorAll('.overlaminate-button');
-  console.log('All overlaminate buttons:', allButtons.length);
-  
-  allButtons.forEach((btn, index) => {
-    const material = btn.getAttribute('data-material');
-    const handle = btn.getAttribute('data-overlaminate-handle');
-    const isActive = btn.classList.contains('active');
-    console.log(`Button ${index}: material="${material}", handle="${handle}", active=${isActive}`);
-  });
-  
-  console.log('=== End Debug ===');
-};
 
 // Make function available globally for other event handlers
 window.addMultipleProductsToCart = function (
@@ -480,15 +457,42 @@ document.addEventListener("DOMContentLoaded", () => {
   const valuesLoaded = loadColorValuesFromStorage();
   const statusMessage = document.getElementById("status-message");
 
-  // Define presets here to be accessible by updatePresetButtons and applyPreset
-  const presets = {
-    1: { C5: 55, C4: 34, C3: 72, C2: 91, C1: 12, BG: 93 },
-    2: { C5: 23, C4: 45, C3: 67, C2: 89, C1: 11, BG: 56 },
-    3: { C5: 78, C4: 32, C3: 17, C2: 42, C1: 99, BG: 33 },
-    4: { C5: 5, C4: 10, C3: 15, C2: 20, C1: 25, BG: 30 },
-    5: { C5: 50, C4: 52, C3: 54, C2: 56, C1: 58, BG: 60 },
-    6: { C5: 88, C4: 77, C3: 66, C2: 55, C1: 44, BG: 33 },
-  };
+  // Load presets from metafields embedded on preset buttons
+  const presets = (function loadPresetsFromDOM() {
+    const map = {};
+    try {
+      const buttons = document.querySelectorAll('.preset-button');
+      buttons.forEach((btn, idx) => {
+        const id = btn.id || '';
+        const m = id.match(/color-(\d+)-btn/);
+        const number = m ? parseInt(m[1], 10) : (idx + 1);
+        const raw = btn.getAttribute('data-colors');
+        if (!raw) return;
+        let arr;
+        try { arr = JSON.parse(raw); } catch (_) { return; }
+        const obj = {};
+        arr.forEach((entry) => {
+          if (!entry) return;
+          const key = entry.color_key || entry.key || entry.name;
+          if (!key) return;
+          // Prefer hex if provided; fall back to numeric index if it's there
+          const hex = entry.background_color || entry.color_hex || entry.hex || entry.hex_value || entry.value_hex;
+          const idxVal = entry.color_index || entry.index || entry.swatch || entry.value_index;
+          let val = null;
+          if (typeof hex === 'string' && /^#?[0-9a-fA-F]{6}$/.test(hex)) {
+            val = hex.startsWith('#') ? hex : `#${hex}`;
+          } else if (typeof idxVal === 'number') {
+            val = idxVal;
+          } else if (typeof idxVal === 'string' && /^\d+$/.test(idxVal)) {
+            val = parseInt(idxVal, 10);
+          }
+          if (val !== null) obj[key] = val;
+        });
+        if (Object.keys(obj).length) map[number] = obj;
+      });
+    } catch (_) {}
+    return map;
+  })();
 
 
 
@@ -504,6 +508,33 @@ document.addEventListener("DOMContentLoaded", () => {
     const b = parseInt(cleanHex.substring(4, 6), 16);
     return [r, g, b];
   };
+
+  // Normalize various material identifiers (e.g., 'MAT-GLOSS-C5', 'GLOSS-C5', '-C5') to canonical keys like 'C5'
+  function normalizeMaterialId(input) {
+    if (!input) return '';
+    let s = String(input).trim();
+    // If it's a full material path, use the last hyphen-delimited token
+    if (s.includes('-')) {
+      const parts = s.split('-').filter(Boolean);
+      if (parts.length) {
+        s = parts[parts.length - 1];
+      }
+    }
+    // Strip any non-alphanumeric prefix (e.g., leading '-')
+    s = s.replace(/^[^A-Za-z0-9]+/, '');
+    return s;
+  }
+
+  function normalizeStateColorValues() {
+    try {
+      const normalized = {};
+      Object.keys(state.colorValues || {}).forEach((k) => {
+        const nk = normalizeMaterialId(k);
+        if (nk) normalized[nk] = state.colorValues[k];
+      });
+      state.colorValues = normalized;
+    } catch (_) { /* no-op */ }
+  }
 
   function colorDistanceSq(hexA, hexB) {
     const [ar, ag, ab] = hexToRgb(hexA);
@@ -578,7 +609,7 @@ document.addEventListener("DOMContentLoaded", () => {
     displayElement.style.backgroundColor = hexColor;
     displayElement.closest(".color-control").querySelector('.color-slider').style.setProperty('--color-value', hexColor);
     nameElement.textContent = colorName;
-    const materialId = materialName.replace(/.*-/, "");
+  const materialId = normalizeMaterialId(materialName);
     console.log(11,materialId, state.colorValues);
     state.colorValues[materialId] = sliderValue;
     const [r255, g255, b255] = hexToRgb(hexColor);
@@ -589,45 +620,23 @@ document.addEventListener("DOMContentLoaded", () => {
     const dynamicMaterialName = materialName;
     console.log('Using material name:', dynamicMaterialName, 'for objects:', objectNames, 'selectedOverlaminateMaterial:', selectedOverlaminateMaterial);
 
-    // Check if material exists before trying to update it
-    if (!api || typeof api.addOrEditMaterial !== 'function') {
-      console.warn('Vectary API not available for material update');
-      return;
-    }
-
     if (!Array.isArray(objectNames) || objectNames.length === 0) {
       return;
     }
     for (const objectName of objectNames) {
       try {
         console.log(objectName, dynamicMaterialName, color);
-        const result = api.addOrEditMaterial.call(api, objectName, {
-          name: dynamicMaterialName,
-          baseColor: { color },
-        });
-
+        const result = api && typeof api.addOrEditMaterial === 'function'
+          ? api.addOrEditMaterial.call(api, objectName, {
+              name: selectedOverlaminateMaterial + '-' + materialId,
+              baseColor: { color },
+            })
+          : null;
         if (result && typeof result.then === 'function') {
           await result;
         }
-        console.log(`Successfully applied material ${dynamicMaterialName} to object ${objectName}`);
-
-        // Debug: Check if the material was actually updated
-        if (typeof api.getMaterial === 'function') {
-          try {
-            const updatedMaterial = await api.getMaterial(objectName, dynamicMaterialName);
-            console.log(`Material ${dynamicMaterialName} on ${objectName} after update:`, updatedMaterial);
-          } catch (e) {
-            console.warn(`Could not get material ${dynamicMaterialName} on ${objectName}:`, e);
-          }
-        }
-      } catch (error) {
-        // Handle specific addMaterialToList error
-        if (error.message && error.message.includes('addMaterialToList')) {
-          console.warn(`Material ${dynamicMaterialName} not available for object ${objectName} (possibly due to overlaminate configuration). Skipping.`);
-        } else {
-          console.warn(`Failed to update material ${dynamicMaterialName} for object ${objectName}:`, error);
-        }
-        // Continue with other objects instead of breaking
+      } catch (_) {
+        // Intentionally ignore to avoid breaking UI on missing/hidden objects
       }
     }
     
@@ -645,7 +654,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const displayElement = document.getElementById(config.displayId);
       const nameElement = document.getElementById(config.nameId);
       const lockElement = document.getElementById(config.lockId);
-      const materialId = config.material.replace(/^[^-]+-[^-]+-/, "");
+  const materialId = normalizeMaterialId(config.material);
 
       if (sliderElement && displayElement && nameElement && lockElement) {
         // Apply SVG gradient background to the slider
@@ -673,6 +682,44 @@ document.addEventListener("DOMContentLoaded", () => {
             !state.lockedMaterials[materialId];
           this.classList.toggle("locked", state.lockedMaterials[materialId]);
         });
+
+        // Add event listener for color grid popup button if it exists
+        const colorGridBtn = document.querySelector(`[data-slider="${config.sliderId}"].color-grid-popup-btn`);
+        if (colorGridBtn) {
+          colorGridBtn.addEventListener("click", function(event) {
+            event.preventDefault();
+            console.log(`Color grid button clicked for slider: ${config.sliderId}`);
+            
+            // Robust waiting mechanism for ColorGridPopup
+            const openColorGridPopup = async () => {
+              let attempts = 0;
+              const maxAttempts = 30; // 3 seconds at 100ms intervals
+              
+              while (typeof window.ColorGridPopup === 'undefined' && attempts < maxAttempts) {
+                console.log(`Waiting for ColorGridPopup... attempt ${attempts + 1}/${maxAttempts}`);
+                await new Promise(resolve => setTimeout(resolve, 100));
+                attempts++;
+              }
+              
+              if (typeof window.ColorGridPopup !== 'undefined') {
+                console.log('ColorGridPopup is now available, opening for slider:', config.sliderId);
+                try {
+                  await window.ColorGridPopup.open(config.sliderId);
+                } catch (error) {
+                  console.error('Error opening ColorGridPopup:', error);
+                }
+              } else {
+                console.error('ColorGridPopup failed to load after waiting 3 seconds. Please check if color-grid-popup.js is included.');
+              }
+            };
+            
+            openColorGridPopup();
+          });
+          
+          console.log(`Color grid popup button set up for slider: ${config.sliderId}`);
+        } else {
+          console.warn(`Color grid popup button not found for slider: ${config.sliderId}`);
+        }
       } else {
         console.warn(`HTML elements not found for slider config:`, config);
       }
@@ -685,7 +732,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const displayElement = document.getElementById(config.displayId);
       const nameElement = document.getElementById(config.nameId);
       const lockElement = document.getElementById(config.lockId); // Needed for listener
-      const materialId = config.material.replace(/^[^-]+-[^-]+-/, "");
+  const materialId = normalizeMaterialId(config.material);
 
       if (sliderElement && displayElement && nameElement && lockElement) {
         // Add input listener that calls API
@@ -984,12 +1031,44 @@ document.addEventListener("DOMContentLoaded", () => {
       // Store the preset color values in a global cache for use with material changes
       window.cachedPresetColors = presetColorValues;
       
+      // Special handling for MC1 (model color) which doesn't have a slider
+      if (presets[presetNumber]['MC1'] !== undefined) {
+        const modelColor = presets[presetNumber]['MC1'];
+        // Update state to track the color value
+        state.colorValues['MC1'] = typeof modelColor === 'string' ? modelColor : 
+                                  (typeof modelColor === 'number' ? modelColor : 38); // Default red if invalid
+        
+        // Apply the model color directly to the 3D model
+        if (isApiReady && api) {
+          const modelObjects = ["model-object", "model-detail"];
+          const hexColor = typeof modelColor === 'string' && /^#?[0-9a-fA-F]{6}$/.test(modelColor) 
+            ? (modelColor.startsWith('#') ? modelColor : `#${modelColor}`) 
+            : null;
+          
+          if (hexColor) {
+            // If we have a hex color, apply it directly
+            const [r255, g255, b255] = hexToRgb(hexColor);
+            const color = { x: r255, y: g255, z: b255 };
+            
+            for (const objectName of modelObjects) {
+              try {
+                await api.addOrEditMaterial(objectName, {
+                  name: "Model-MAT-C3",
+                  baseColor: { color },
+                });
+              } catch (e) {
+                console.warn(`Error applying model color to ${objectName}:`, e);
+              }
+            }
+            colorsApplied = true;
+          }
+        }
+      }
+      
       if (!forceEvent || state.activePreset !== presetNumber) {
         sliderConfigs.forEach((config) => {
           // Extract the material ID by removing the prefix and keeping the material part (C5, C4, etc.)
-          // Use the actual prefix from the material name, not selectedOverlaminateMaterial
-          const materialParts = config.material.split('-');
-          const materialId = materialParts[materialParts.length - 1]; // Get the last part (e.g., C5, C4)
+          const materialId = normalizeMaterialId(config.material);
           
           if (
             !state.lockedMaterials[materialId] &&
@@ -1090,22 +1169,57 @@ document.addEventListener("DOMContentLoaded", () => {
     const presetGrid = document.querySelector(".preset-grid");
     if (!presetGrid) return;
     presetGrid.addEventListener("click", (event) => {
-      if (event.target.matches(".preset-button")) {
-        const buttonId = event.target.id;
-        const presetNumber = parseInt(buttonId.split("-")[1]);
-        if (!isNaN(presetNumber)) {
-          applyPreset(api, presetNumber);
-        }
+      const btn = event.target.closest('.preset-button');
+      if (!btn) return;
+      const buttonId = btn.id || '';
+      const presetNumber = parseInt(buttonId.split("-")[1]);
+      if (!isNaN(presetNumber)) {
+        applyPreset(api, presetNumber);
       }
     });
     updatePresetButtons();
   }
 
   function updatePresetButtons() {
-    document.querySelectorAll(".preset-button").forEach((button, index) => {
-      const presetNumber = index + 1;
+    const buttons = Array.from(document.querySelectorAll(".preset-button"));
+    buttons.forEach((button, index) => {
+      // Prefer number from id if available, else fall back to order
+      const idMatch = (button.id || '').match(/color-(\d+)-btn/);
+      const presetNumber = idMatch ? parseInt(idMatch[1], 10) : (index + 1);
       const isActive = state.activePreset === presetNumber;
       button.classList.toggle("active", isActive);
+      
+      // Get color from preset metafields
+      try {
+        const colorsData = button.getAttribute('data-colors');
+        if (colorsData) {
+          const colors = JSON.parse(colorsData);
+          // Find C3 color or Model-MAT-C3 color in the preset
+          const modelColor = colors.find(c => 
+            c.color_key === 'MC1' || 
+            c.color_key === 'Model-MAT-C3' || 
+            c.material === 'Model-MAT-C3'
+          );
+          
+          // If we have a color, apply it to button background
+          if (modelColor && modelColor.background_color) {
+            button.style.setProperty('--preset-top-color', modelColor.background_color);
+            
+            // Also set it for MC1 material in presets object if this is the active preset
+            if (isActive && presets[presetNumber]) {
+              // Make sure the MC1 color will be applied when this preset is selected
+              presets[presetNumber]['MC1'] = modelColor.background_color;
+              // If MC1 not in the model state yet, add it
+              if (!state.colorValues.MC1) {
+                state.colorValues.MC1 = modelColor.background_color;
+              }
+            }
+          }
+        }
+      } catch (e) {
+        console.warn('Error parsing preset colors for button styling:', e);
+      }
+      
       let indicator = button.querySelector(".active-indicator");
       if (isActive && !indicator) {
         indicator = document.createElement("span");
@@ -1117,20 +1231,30 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // Update color dots for each preset button
-      const presetColorConfig = presets[presetNumber]; // Access the moved presets object
+      const presetColorConfig = presets[presetNumber]; // Loaded from metafields at runtime
       if (presetColorConfig) {
         const colorDotsContainer = button.querySelector(".preset-colors");
         if (colorDotsContainer) {
             const colorDots = colorDotsContainer.querySelectorAll(".preset-color-dot");
             colorDots.forEach(dot => {
               const colorKey = dot.dataset.colorKey; // e.g., C5, C4, from data-color-key attribute
-              const colorValueIndex = presetColorConfig[colorKey]; // e.g., 55 for preset 1, C5
-              if (colorValueIndex !== undefined) {
-                const hexColorKey = `B${colorValueIndex}`; // Key for color_swatches_data
-                const hexColor = color_swatches_data[hexColorKey] || "#FFFFFF"; // Fallback to white
-                dot.style.backgroundColor = hexColor;
+              const val = presetColorConfig[colorKey]; // can be hex (from metafield) or numeric index
+              if (val !== undefined) {
+                if (typeof val === 'string' && /^#?[0-9a-fA-F]{6}$/.test(val)) {
+                  const hex = val.startsWith('#') ? val : `#${val}`;
+                  dot.style.backgroundColor = hex;
+                } else {
+                  const idx = parseInt(val, 10);
+                  if (!isNaN(idx)) {
+                    const hexColorKey = `B${idx}`;
+                    const hexColor = (typeof color_swatches_data !== 'undefined' && color_swatches_data[hexColorKey]) ? color_swatches_data[hexColorKey] : '#FFFFFF';
+                    dot.style.backgroundColor = hexColor;
+                  } else {
+                    dot.style.backgroundColor = '#FFFFFF';
+                  }
+                }
               } else {
-                dot.style.backgroundColor = "#FFFFFF"; // Fallback if colorKey is not in preset
+                dot.style.backgroundColor = '#FFFFFF'; // Fallback if colorKey is not in preset
               }
             });
         }
@@ -1161,6 +1285,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
           // Update selected levels counter
           updateSelectedLevelsCounter();
+          // Update price display
+          renderConfiguratorTotal();
         }
       }
     });
@@ -1170,6 +1296,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Initialize selected levels counter
     updateSelectedLevelsCounter();
+  // Initial price render after syncing button states
+  renderConfiguratorTotal();
   }
 
   // Function to update the selected levels counter
@@ -1187,6 +1315,20 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function updateLevelButtonsActiveState() {
+    // If nothing is selected yet, select all levels by default on load
+    try {
+      if (state && state.activeLevels && state.activeLevels.size === 0) {
+        document.querySelectorAll('.level-button').forEach((button) => {
+          const levelId = button.id;
+          const level = parseInt(levelId.replace('triggerButtonLevel', ''));
+          if (!isNaN(level)) {
+            state.activeLevels.add(level);
+            button.classList.add('active');
+          }
+        });
+      }
+    } catch (_) { /* no-op */ }
+
     // Update all level buttons to match state.activeLevels
     document.querySelectorAll(".level-button").forEach((button) => {
       const levelId = button.id;
@@ -1198,6 +1340,53 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Update selected levels counter
     updateSelectedLevelsCounter();
+  }
+
+  // Calculate total price in cents for selected levels and overlaminates
+  function calculateConfiguratorTotalCents() {
+    let total = 0;
+    try {
+      // Sum selected levels from globalProductData by numeric index
+      if (window.globalProductData && state.activeLevels && state.activeLevels.size > 0) {
+        Array.from(state.activeLevels).forEach((level) => {
+          const item = window.globalProductData[level];
+          if (item && typeof item.priceCents === 'number') {
+            total += item.priceCents;
+          }
+        });
+      }
+      // Sum overlaminate selections by handle key
+      if (window.overlaminateProductData && state.activeOverlaminates && state.activeOverlaminates.size > 0) {
+        Array.from(state.activeOverlaminates).forEach((handle) => {
+          const key = String(handle).toLowerCase().replace(/\s+/g, '-');
+          const item = window.overlaminateProductData[key];
+          if (item && typeof item.priceCents === 'number') {
+            total += item.priceCents;
+          }
+        });
+      }
+    } catch (e) {
+      console.warn('Failed calculating configurator total:', e);
+    }
+    return total;
+  }
+
+  // Render the total into the main price element using theme's formatter
+  function renderConfiguratorTotal() {
+    const priceEls = document.querySelectorAll('[data-product-price]');
+    if (!priceEls.length || typeof theme === 'undefined' || !theme.Currency || typeof theme.Currency.formatMoney !== 'function') {
+      return;
+    }
+    const totalCents = calculateConfiguratorTotalCents();
+    // Fallback to main product price if nothing selected
+    const baseCents = (window.mainProduct && typeof window.mainProduct.priceCents === 'number') ? window.mainProduct.priceCents : 0;
+    const displayCents = totalCents > 0 ? totalCents : baseCents;
+    try {
+      const formattedPrice = theme.Currency.formatMoney(displayCents, theme.settings && theme.settings.moneyFormat ? theme.settings.moneyFormat : undefined);
+      priceEls.forEach(el => el.innerHTML = formattedPrice);
+    } catch (e) {
+      console.warn('Failed formatting configurator total:', e);
+    }
   }
 
   function triggerLevelEvent(api, level) {
@@ -1232,7 +1421,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const overlaminateHandle = button.getAttribute("data-overlaminate-handle");
         if (overlaminateHandle) {
           const isCurrentlyActive = state.activeOverlaminates.has(overlaminateHandle);
-          console.log('Overlaminate button clicked - handle:', overlaminateHandle, 'currently active:', isCurrentlyActive);
           
           // Only add the new selection if it wasn't already active
           if (!isCurrentlyActive) {
@@ -1262,6 +1450,8 @@ document.addEventListener("DOMContentLoaded", () => {
             
             // Add to activeOverlaminates in state
             state.activeOverlaminates.add(overlaminateHandle);
+            // Update price display after overlaminate change
+            renderConfiguratorTotal();
             
             // Apply overlaminate by configuration only (no extra dispatch) to avoid API re-init races
             if (isApiReady && api) {
@@ -1275,41 +1465,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
               // Store the new selected material - use default if empty
               selectedOverlaminateMaterial = overlaminateMaterial || 'MAT-MATTE';
-              console.log('Set selectedOverlaminateMaterial to:', selectedOverlaminateMaterial);
-              
-              // Force save to localStorage immediately
-              localStorage.setItem('vectaryOverlaminateMaterial', selectedOverlaminateMaterial);
-              console.log('Immediately saved overlaminate material to localStorage:', selectedOverlaminateMaterial);
+              console.log('!!!!!Set selectedOverlaminateMaterial to:', selectedOverlaminateMaterial);
 
               // Update the configuration state in Vectary
               try {
-                sliderConfigs.forEach(config => {
-                  config.material = overlaminateMaterial + '-' + config.id;
-                });
                 await api.setConfigurationState([
                   {
                     variant: "Variants-Media",
                     active_object: overlaminateHandle
                   }
                 ]);
-                console.log('Configuration state updated to:', overlaminateHandle);
+              } catch (e) {
+                console.warn("Failed to update Vectary configuration for overlaminate:", e);
+              }
 
-                // Detect available materials and update slider configs
-                const availableMaterials = await detectAvailableMaterials(api);
-                if (availableMaterials.length > 0) {
-                  mapSliderConfigsToAvailableMaterials(availableMaterials);
-                }
+              // Wait for Vectary API to stabilize after configuration change
+              try {
+                await waitForApiMethod(api, "addOrEditMaterial", 50, 100);
+              } catch (e) {
+                console.warn("API method not available after overlaminate change:", e);
+              }
 
-                 sliderConfigs.forEach(config => {
+              // Re-apply current colors to restabilize the API (same approach as presets)
+              try {
+                sliderConfigs.forEach((config) => {
                   const sliderElement = document.getElementById(config.sliderId);
                   const displayElement = document.getElementById(config.displayId);
                   const nameElement = document.getElementById(config.nameId);
-
                   if (sliderElement && displayElement && nameElement) {
-                    const currentValue = parseInt(sliderElement.value, 10);
-                    console.log(`Reapplying color for ${config.sliderId}: value ${currentValue} to material ${config.material}`);
-
-                    // Use updateMaterialColor to apply the current slider value to the new material
                     updateMaterialColor(
                       api,
                       sliderElement,
@@ -1320,17 +1503,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     );
                   }
                 });
-                
-                console.log('Updated sliderConfigs:', sliderConfigs);
               } catch (e) {
-                console.warn("Failed to update Vectary configuration for overlaminate:", e);
-              }
-
-              // Wait for Vectary API to stabilize after configuration change
-              try {
-                await waitForApiMethod(api, "addOrEditMaterial", 50, 100);
-              } catch (e) {
-                console.warn("API method not available after overlaminate change:", e);
+                console.warn("Failed to re-apply colors after overlaminate change:", e);
               }
 
               // Update the display with fresh data
@@ -1348,60 +1522,36 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // Note: updateOverlaminateButtonsActiveState() will be called after API is ready
-    // to ensure proper material selection
+    // Set initial active states
+    updateOverlaminateButtonsActiveState();
   }
 
   // Function to update the overlaminate buttons active state
   function updateOverlaminateButtonsActiveState() {
     // Update all overlaminate buttons to match state.activeOverlaminates
-    if (!isApiReady) {
-      console.log('updateOverlaminateButtonsActiveState: API not ready, returning');
-      return;
-    }
-    
-    console.log('updateOverlaminateButtonsActiveState: Starting with selectedOverlaminateMaterial:', selectedOverlaminateMaterial);
-    
-    // Check if we have a saved overlaminate material and apply it
-    const savedOverlaminateMaterial = localStorage.getItem('vectaryOverlaminateMaterial');
-    if (savedOverlaminateMaterial) {
-      console.log('updateOverlaminateButtonsActiveState: Found saved material:', savedOverlaminateMaterial);
-      const savedButton = document.querySelector(`.overlaminate-button[data-material="${savedOverlaminateMaterial}"]`);
-      if (savedButton) {
-        console.log('updateOverlaminateButtonsActiveState: Applying saved overlaminate material:', savedOverlaminateMaterial);
-        // Update UI state without triggering click event
-        document.querySelectorAll(".overlaminate-button").forEach(btn => btn.classList.remove("active"));
-        savedButton.classList.add("active");
-        
-        // Update active overlaminates in state
-        const overlaminateHandle = savedButton.getAttribute("data-overlaminate-handle");
-        if (overlaminateHandle) {
-          state.activeOverlaminates.clear();
-          state.activeOverlaminates.add(overlaminateHandle);
-          console.log('updateOverlaminateButtonsActiveState: Set active overlaminate handle:', overlaminateHandle);
-        }
-        return; // Exit early since we've handled the saved material
-      } else {
-        console.warn('updateOverlaminateButtonsActiveState: Saved button not found for material:', savedOverlaminateMaterial);
-      }
-    } else {
-      console.log('updateOverlaminateButtonsActiveState: No saved material found');
-    }
-    
-    // Fallback: if no saved material or button not found, use first button
+    if (!isApiReady) return;
     const firstBtn = document.querySelector(".overlaminate-button");
     if (firstBtn && typeof firstBtn.click === 'function') {
-      console.log('updateOverlaminateButtonsActiveState: Using first button as fallback');
       firstBtn.click();
-    } else {
-      console.log('updateOverlaminateButtonsActiveState: No first button found');
     }
   }
 
   function saveConfiguration() {
-    const configData = {
+  // Normalize keys before exporting
+  normalizeStateColorValues();
+  
+  // Enrich colorValues with hex and name
+  const enrichedColorValues = {};
+  Object.keys(state.colorValues).forEach(key => {
+    const index = state.colorValues[key];
+    const name = color_swatches_data[`A${index}`] || 'Unknown';
+    const hex = color_swatches_data[`B${index}`] || '#ffffff';
+    enrichedColorValues[key] = { index, hex, name };
+  });
+  
+  const configData = {
       activePreset: state.activePreset,
-      colorValues: state.colorValues,
+      colorValues: enrichedColorValues,
       lockedMaterials: state.lockedMaterials,
       activeLevels: Array.from(state.activeLevels), // Convert Set to Array for JSON serialization
       activeOverlaminates: Array.from(state.activeOverlaminates), // Add overlaminates to saved config
@@ -1420,66 +1570,11 @@ document.addEventListener("DOMContentLoaded", () => {
     statusMessage.textContent = "Configuration saved successfully";
   }
 
-  // Function to detect available materials after configuration change
-  async function detectAvailableMaterials(api) {
-    try {
-      if (typeof api.getMaterialList === 'function') {
-        const materialList = await api.getMaterialList();
-        console.log('Available materials detected:', materialList);
-        return materialList;
-      } else {
-        console.warn('getMaterialList method not available');
-        return [];
-      }
-    } catch (e) {
-      console.warn('Failed to detect available materials:', e);
-      return [];
-    }
-  }
-
-  // Function to map slider configs to available materials for current variant
-  function mapSliderConfigsToAvailableMaterials(availableMaterials) {
-    console.log('Mapping slider configs to available materials...');
-
-    sliderConfigs.forEach(config => {
-      // Find the best matching material for this slider config
-      const baseId = config.material.split('-').pop(); // Get the ID part (C6, C5, etc.)
-      let bestMatch = null;
-      let bestScore = 0;
-
-      // Look for materials that end with the same ID or have similar patterns
-      availableMaterials.forEach(materialName => {
-        if (typeof materialName === 'string') {
-          const materialParts = materialName.split('-');
-          const materialId = materialParts.pop();
-
-          // Score matches based on similarity
-          let score = 0;
-          if (materialId === baseId) score += 10; // Exact ID match
-          if (materialName.includes('GLOSS') && config.material.includes('GLOSS')) score += 5;
-          if (materialName.includes('MATTE') && config.material.includes('MATTE')) score += 5;
-
-          if (score > bestScore) {
-            bestScore = score;
-            bestMatch = materialName;
-          }
-        }
-      });
-
-      if (bestMatch && bestMatch !== config.material) {
-        console.log(`Mapping slider ${config.sliderId} from ${config.material} to ${bestMatch}`);
-        config.material = bestMatch;
-      } else if (!bestMatch) {
-        console.warn(`No suitable material found for slider ${config.sliderId} (wanted ID: ${baseId})`);
-      }
-    });
-
-    console.log('Updated sliderConfigs:', sliderConfigs);
-  }
-
   // --- Initial UI Setup Calls ---
   updatePresetButtons();
   initializeSliderUI(); // Setup slider UI without API calls
+  // Repaint preset dots shortly after DOM hydration (handles metafields rendered after first paint)
+  setTimeout(updatePresetButtons, 50);
 
   // --- Initialize Vectary API ---
   (async () => {
@@ -1499,12 +1594,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const savedOverlaminateMaterial = localStorage.getItem('vectaryOverlaminateMaterial');
       if (savedOverlaminateMaterial) {
         selectedOverlaminateMaterial = savedOverlaminateMaterial;
-        console.log('Initialization: Loaded saved overlaminate material:', savedOverlaminateMaterial);
         
         // Find and click the corresponding overlaminate button
         const overlaminateButton = document.querySelector(`.overlaminate-button[data-material="${savedOverlaminateMaterial}"]`);
         if (overlaminateButton) {
-          console.log('Initialization: Applying saved overlaminate material:', savedOverlaminateMaterial);
+          console.log('Applying saved overlaminate material:', savedOverlaminateMaterial);
           // Just update the UI, don't trigger the click event to avoid double processing
           overlaminateButton.classList.add('active');
           
@@ -1513,142 +1607,69 @@ document.addEventListener("DOMContentLoaded", () => {
           if (overlaminateHandle) {
             state.activeOverlaminates.clear();
             state.activeOverlaminates.add(overlaminateHandle);
-            console.log('Initialization: Set active overlaminate handle:', overlaminateHandle);
           }
-        } else {
-          console.warn('Initialization: Overlaminate button not found for saved material:', savedOverlaminateMaterial);
         }
-      } else {
-        console.log('Initialization: No saved overlaminate material found');
       }
 
       // Re-Initialize Sliders with API connection
       initializeSlidersWithAPI(modelApi); // Changed name for clarity
       
       // Apply saved preset if available
-      try {
-        const savedActivePreset = localStorage.getItem('vectaryActivePreset');
-        if (savedActivePreset) {
-          const presetNumber = parseInt(savedActivePreset, 10);
-          if (presetNumber >= 1 && presetNumber <= 6) {
-            console.log('Applying saved preset:', presetNumber);
-            applyPreset(modelApi, presetNumber, true);
-          } else {
-            console.warn('Invalid saved preset number:', presetNumber);
-          }
-                } else {
-          // If no preset is saved, apply the saved color values directly
-          const savedColorValues = localStorage.getItem('vectaryColorValues');
-          if (savedColorValues) {
-            try {
-              const colorValues = JSON.parse(savedColorValues);
-              console.log('Applying saved color values:', colorValues);
-
-              // Apply each saved color value
-              for (const colorKey in colorValues) {
-                const colorValue = colorValues[colorKey];
-                const sliderConfig = sliderConfigs.find(config =>
-                  config.material.endsWith(colorKey));
-
-                if (sliderConfig) {
-                  const slider = document.getElementById(sliderConfig.sliderId);
-                  const display = document.getElementById(sliderConfig.displayId);
-                  const nameElement = document.getElementById(sliderConfig.nameId);
-
-                  if (slider && display && nameElement) {
-                    slider.value = colorValue;
-                    updateMaterialColor(
-                      modelApi,
-                      slider,
-                      display,
-                      nameElement,
-                      sliderConfig.objects,
-                      sliderConfig.material
-                    );
-                  }
-                }
+      const savedActivePreset = localStorage.getItem('vectaryActivePreset');
+      if (savedActivePreset) {
+        const presetNumber = parseInt(savedActivePreset, 10);
+        console.log('Applying saved preset:', presetNumber);
+        applyPreset(modelApi, presetNumber, true);
+      } else {
+        // If no preset is saved, apply the saved color values directly
+        const savedColorValues = localStorage.getItem('vectaryColorValues');
+        if (savedColorValues) {
+          const colorValues = JSON.parse(savedColorValues);
+          console.log('Applying saved color values:', colorValues);
+          
+          // Apply each saved color value
+          for (const colorKey in colorValues) {
+            const colorValue = colorValues[colorKey];
+            const sliderConfig = sliderConfigs.find(config => 
+              config.material.endsWith(colorKey));
+            
+            if (sliderConfig) {
+              const slider = document.getElementById(sliderConfig.sliderId);
+              const display = document.getElementById(sliderConfig.displayId);
+              const nameElement = document.getElementById(sliderConfig.nameId);
+              
+              if (slider && display && nameElement) {
+                slider.value = colorValue;
+                updateMaterialColor(
+                  modelApi,
+                  slider,
+                  display,
+                  nameElement,
+                  sliderConfig.objects,
+                  sliderConfig.material
+                );
               }
-
-              // Update the selected options display with the loaded values
-              if (typeof window.updateSelectedOptionsDisplay === "function") {
-                window.updateSelectedOptionsDisplay(color_swatches_data, state);
-              }
-            } catch (error) {
-              console.error('Error parsing saved color values:', error);
             }
           }
-        }
-      } catch (error) {
-        console.error('Error loading saved preset:', error);
-        // Fallback: Apply default preset if loading fails
-        console.log('Applying default preset as fallback');
-        try {
-          applyPreset(modelApi, 1, true); // Apply preset 1 as default
-        } catch (fallbackError) {
-          console.error('Error applying default preset:', fallbackError);
+          
+          // Update the selected options display with the loaded values
+          if (typeof window.updateSelectedOptionsDisplay === "function") {
+            window.updateSelectedOptionsDisplay(color_swatches_data, state);
+          }
         }
       }
-
-      // Set initial button states after API is ready and presets are loaded
-      // This prevents interference with saved preset loading
-      setTimeout(() => {
-        console.log('Setting initial button states after API initialization');
-
-        // Sync variant buttons with current preset state
-        const currentPreset = state.activePreset;
-        if (currentPreset && currentPreset >= 1 && currentPreset <= 6) {
-          try {
-            const variantButton = variantButtons[currentPreset - 1];
-            if (variantButton) {
-              variantButton.checked = true;
-              variantButton.dispatchEvent(new Event('change', { bubbles: true }));
-              console.log('Synced variant button for preset:', currentPreset);
-            } else {
-              console.warn('Variant button not found for preset:', currentPreset);
-            }
-          } catch (error) {
-            console.error('Error syncing variant button for preset:', currentPreset, error);
-          }
-        }
-
-        // Set initial level button states based on coverage buttons
-        const levelButtons = document.querySelectorAll(".level-button");
-        const coverageButtons = document.querySelectorAll('[data-handle="coverage"] [data-variant-input]');
-
-        coverageButtons.forEach((button, index) => {
-          const levelButton = levelButtons[index];
-          if (levelButton) {
-            levelButton.classList.toggle("active", button.checked);
-            const level = parseInt(
-              levelButton.id.replace("triggerButtonLevel", "")
-            );
-            if (!isNaN(level)) {
-              if (button.checked) {
-                window.state.activeLevels.add(level);
-              } else {
-                window.state.activeLevels.delete(level);
-              }
-            }
-          }
-        });
-
-        // Update UI elements that depend on button states
-        if (typeof window.updateSelectedOptionsDisplay === "function") {
-          window.updateSelectedOptionsDisplay(color_swatches_data, state);
-        }
-      }, 100); // Small delay to ensure all preset operations are complete
 
       // Setup Event Listeners
       setupEventListeners(modelApi);
       window.modelApi = modelApi;
-      
-      // Now that API is ready, update overlaminate button states
-      updateOverlaminateButtonsActiveState();
 
       // Initialize Selected Options Display
       if (typeof window.initSelectedOptionsDisplay === "function") {
         window.initSelectedOptionsDisplay(products, color_swatches_data, state);
       }
+
+  // Initial render of configurator total after init
+  renderConfiguratorTotal();
 
       // Add listeners for color changes to update selected options display
       sliderConfigs.forEach((config) => {
@@ -1761,16 +1782,17 @@ const variantButtons = document.querySelectorAll(
 );
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Set up one-way preset to variant button connection
-  // Remove circular triggering that interferes with preset loading
+  // Guard to avoid reacting to programmatic initializations
+  window.__initializingLevels = true;
   presetButtons.forEach((button, index) => {
     button.addEventListener("click", () => {
-      // Only update variant button state, don't trigger click to avoid circular triggering
-      if (variantButtons[index]) {
-        variantButtons[index].checked = true;
-        // Dispatch change event to trigger any listeners
-        variantButtons[index].dispatchEvent(new Event('change', { bubbles: true }));
-      }
+      if (variantButtons[index]) variantButtons[index].click();
+    });
+  });
+
+  variantButtons.forEach((button, index) => {
+    button.addEventListener("click", () => {
+      if (presetButtons[index]) presetButtons[index].click();
     });
   });
 
@@ -1787,6 +1809,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Update coverage buttons to work with multi-selection
   coverageButtons.forEach((button, index) => {
     button.addEventListener("click", () => {
+      if (window.__initializingLevels) return; // ignore during boot
       const levelButton = levelButtons[index];
       if (levelButton) {
         levelButton.classList.toggle("active", button.checked);
@@ -1806,8 +1829,30 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Initial button state setting moved to after API initialization
-  // to prevent interference with saved preset loading
+  // Set initial button states
+  variantButtons.forEach((button, index) => {
+    if (button.checked) {
+      presetButtons[index].click();
+    }
+  });
+
+  // Set initial level button states based on coverage buttons
+  coverageButtons.forEach((button, index) => {
+    // if (button.checked) {
+      const levelButton = levelButtons[index];
+      if (levelButton) {
+        levelButton.classList.add("active");
+        const level = parseInt(
+          levelButton.id.replace("triggerButtonLevel", "")
+        );
+        if (!isNaN(level)) {
+          window.state.activeLevels.add(level);
+        }
+      }
+    // }
+  });
+  // End of initialization; enable user-driven coverage toggles
+  window.__initializingLevels = false;
 });
 document.addEventListener("DOMContentLoaded", function () {   
   // Access state from vectary embed context
@@ -2113,4 +2158,17 @@ document.getElementById("expandAllSliders")?.addEventListener("click", function(
   document.querySelectorAll('.accordion-panel').forEach(panel => {
     panel.classList.remove('accordion-collapsed');
   });
+});
+
+// Initialize Color Grid Popup when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('DOM loaded, checking for ColorGridPopup...');
+  if (typeof window.ColorGridPopup !== 'undefined') {
+    console.log('ColorGridPopup available, initializing...');
+    window.ColorGridPopup.init().catch(error => {
+      console.error('Failed to initialize ColorGridPopup on DOM ready:', error);
+    });
+  } else {
+    console.log('ColorGridPopup not yet available on DOM ready, will initialize on first use');
+  }
 });
