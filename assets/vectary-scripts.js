@@ -619,7 +619,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // The overlaminate selection affects cart products, not the 3D model materials
     const dynamicMaterialName = materialName;
     console.log('Using material name:', dynamicMaterialName, 'for objects:', objectNames, 'selectedOverlaminateMaterial:', selectedOverlaminateMaterial);
-
+    console.log('--------------------------------');
+    
     if (!Array.isArray(objectNames) || objectNames.length === 0) {
       return;
     }
@@ -1107,6 +1108,8 @@ document.addEventListener("DOMContentLoaded", () => {
                   state.colorValues[materialId] = sliderValue;
                 };
                 updateSliderDisplay();
+
+                
                 // Update Vectary material
                 updateMaterialColor(
                   api,
@@ -1232,6 +1235,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Update color dots for each preset button
       const presetColorConfig = presets[presetNumber]; // Loaded from metafields at runtime
+      console.log('--------------------------------!!!!!!!!!!!');
+      console.log('presetColorConfig', presetColorConfig);
+      console.log('--------------------------------!!!!!!!!!!!');
       if (presetColorConfig) {
         const colorDotsContainer = button.querySelector(".preset-colors");
         if (colorDotsContainer) {
